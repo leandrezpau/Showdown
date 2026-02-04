@@ -1,8 +1,10 @@
 #define _ABILITY_H_
 #ifdef _ABILITY_H_
 
-class Ability {
+#include "types.h"
 
+class Ability {
+  
 };
 
 
