@@ -15,7 +15,7 @@ project "TestSDL"
     objdir "../build/obj"
 
     -- Archivos del proyecto
-    files { "../src/*.cc" }
+    files { "../src/**" }
 
     -- Rutas de SDL3
     includedirs { "../include" }
