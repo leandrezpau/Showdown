@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+
 #include "TablaTipo.cc"
 #include "CajaPokemon.cc"
 #include "CajaMovimientos.cc"

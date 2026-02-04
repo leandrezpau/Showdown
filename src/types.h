@@ -4,24 +4,25 @@
 #include <string>
 
 enum en_Types{
-  TYPE_FIRE,
-  TYPE_WATER,
-  TYPE_GRASS,
-  TYPE_ELECTRIC,
-  TYPE_PSYCHIC,
-  TYPE_DARK,
-  TYPE_FAIRY,
-  TYPE_NORMAL,
-  TYPE_FIGHTING,
-  TYPE_FLYING,
-  TYPE_POISON,
-  TYPE_GROUND,
-  TYPE_ROCK,
-  TYPE_BUG,
-  TYPE_GHOST,
-  TYPE_STEEL,
-  TYPE_ICE,
-  TYPE_DRAGON
+  TYPE_NORMAL,  // Normal
+  TYPE_FIRE,    // Fuego
+  TYPE_WATER,   // Agua
+  TYPE_ELECTRIC,// Electrico
+  TYPE_GRASS,   // Planta
+  TYPE_ICE,     // Hielo
+  TYPE_FIGHTING,// Lucha
+  TYPE_POISON,  // Veneno
+  TYPE_GROUND,  // Tierra
+  TYPE_FLYING,  // Volador
+  TYPE_PSYCHIC, // Psiquico
+  TYPE_BUG,     // Bicho
+  TYPE_ROCK,    // Roca
+  TYPE_GHOST,   // Fantasma
+  TYPE_DRAGON,  // Dragon
+  TYPE_DARK,    // Siniestro
+  TYPE_STEEL,   // Acero
+  TYPE_FAIRY,   // Hada
+  //TYPE_STELLAR
 };
 
 class cl_Type {
@@ -29,6 +30,9 @@ class cl_Type {
 
   int typeID;
   std::string typeName;
+
+  float Attacking(cl_Type otherType);
+  float Defending(cl_Type otherType);
 };
 
 
