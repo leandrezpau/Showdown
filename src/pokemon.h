@@ -2,6 +2,8 @@
 #ifdef _POKEMON_H_
 
 #include "types.h"
+#include "movements.h"
+
 #include <vector>
 #include <string>
 
@@ -12,7 +14,7 @@ class Pokemon {
   std::string name;
   enum en_Type type;
 
-  std::vector<en_Type> movement;
+  std::vector<cl_Movement> movement;
 };
 
 

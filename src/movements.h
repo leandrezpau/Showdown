@@ -3,10 +3,21 @@
 
 #include "types.h"
 #include <string>
+enum en_Movement {
+  mv_Base,
+  /*
+  *
+  * ....
+  * ....
+  * ....
+  * 
+  */
+  mv_NULL
+};
 
-class Movement {
-  enum en_Type type;
-  std::string name;
+class cl_Movement {
+  enum en_Type moveType;
+  std::string moveName;
 };
 
 

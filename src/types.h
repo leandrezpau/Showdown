@@ -1,6 +1,8 @@
 #define _TYPES_H
 #ifdef _TYPES_H
 
+#include <string>
+
 enum en_Types{
   TYPE_FIRE,
   TYPE_WATER,
@@ -24,7 +26,9 @@ enum en_Types{
 
 class cl_Type {
   en_Types type;
-  
+
+  int typeID;
+  std::string typeName;
 };
 
 
