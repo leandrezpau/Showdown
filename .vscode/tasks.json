@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "compilar",
+      "type": "shell",
+      "command": "cl",
+      "args": [
+        "${workspaceFolder}/src/test.cc",
+        "/I", "${workspaceFolder}/include",
+        "/link",
+        "/LIBPATH:${workspaceFolder}/lib/x64",
+        "SDL3.lib",
+        "/OUT:${workspaceFolder}/bin/test.exe"
+      ],
+      "problemMatcher": ["$msCompile"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
