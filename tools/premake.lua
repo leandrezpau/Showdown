@@ -2,7 +2,7 @@ workspace "TestSDL"
     configurations { "Debug", "Release" }
     architecture "x64"
 
-    -- Aquí forzamos que TODO se genere en /build
+    -- La solución se genera en /build
     location "../build"
 
 project "TestSDL"
@@ -10,23 +10,29 @@ project "TestSDL"
     language "C++"
     cppdialect "C++17"
 
+    -- El exe se genera directamente en /bin
     targetdir "../bin"
     objdir "../build/obj"
 
+    -- Archivos del proyecto
     files { "../src/*.cc" }
 
+    -- Rutas de SDL3
     includedirs { "../include" }
-
     libdirs { "../lib/x64" }
 
+    -- Librerías
     links { "SDL3.lib" }
 
-    postbuildcommands {
-        "{COPY} ../bin/SDL3.dll %{cfg.targetdir}"
-    }
+    -- Configuración MSVC recomendada
+    filter "system:windows"
+        systemversion "latest"
+        defines { "_CRT_SECURE_NO_WARNINGS" }
 
     filter "configurations:Debug"
         symbols "On"
+        runtime "Debug"
 
     filter "configurations:Release"
         optimize "On"
+        runtime "Release"
