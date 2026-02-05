@@ -1,5 +1,5 @@
+#ifndef _TYPES_CC_
 #define _TYPES_CC_
-#ifdef _TYPES_CC_
 
 #include "types.h"
 

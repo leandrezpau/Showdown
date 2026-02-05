@@ -39,6 +39,10 @@ public:
   std::string typeName;
 
   cl_Type(en_Types t = TYPE_NORMAL) : type(t) {}
+
+  float GetEffectivenessAgainst(cl_Type defender);
+  float GetEffectivenessAgainst(cl_Type defender1, cl_Type defender2);
+  
   float Attacking(cl_Type defender);
   float Defending(cl_Type attacker);
 };
