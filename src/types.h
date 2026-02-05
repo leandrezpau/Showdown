@@ -1,5 +1,5 @@
 #pragma once
-#ifndef _TYPES_H
+
 #define _TYPES_H
 #ifdef _TYPES_H
 
