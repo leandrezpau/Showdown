@@ -1,3 +1,5 @@
+#pragma once
+
 #define _MOVEMENTS_H_
 #ifdef _MOVEMENTS_H_
 

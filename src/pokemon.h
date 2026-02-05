@@ -1,3 +1,6 @@
+#pragma once
+
+
 #define _POKEMON_H_
 #ifdef _POKEMON_H_
 

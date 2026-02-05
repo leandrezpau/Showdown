@@ -15,14 +15,21 @@ project "TestSDL"
     objdir "../build/obj"
 
     -- Archivos del proyecto
-    files { "../src/**" }
+    files { "../src/*.cc", "../src/*.h" }
 
     -- Rutas de SDL3
-    includedirs { "../include" }
+    includedirs {
+        "../include",
+        "../include/SDL3",
+        "../include/SDL3_image",
+    }
     libdirs { "../lib/x64" }
 
     -- Librerías
-    links { "SDL3.lib" }
+    links {
+        "SDL3.lib",
+        "SDL3_image.lib"
+    }
 
     -- Configuración MSVC recomendada
     filter "system:windows"

@@ -11,19 +11,37 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <SDL3_image/SDL_image.h>
+#include <stdio.h>
+
+#include <string>
+
+#include "sprites.h"
 
 /* We will use this renderer to draw into this window every frame. */
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
+SDL_Texture* sprite;
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
-{
-    SDL_SetAppMetadata("Example Renderer Debug Texture", "1.0", "com.example.renderer-debug-text");
+{   
+    SDL_Init(SDL_INIT_VIDEO);
 
+    for(int i = 0; i < Sprite::kNPokes; i++){
+        class Sprite buffer;
+
+        snprintf(buffer.fileSprite, 50, "../assets/sprites/%04d.png", i);
+
+        // Extraer el sprite directamente desde sprites.dat
+        buffer.ExtractSprite(i, buffer.fileSprite);
+    }
+
+
+    SDL_SetAppMetadata("Example Renderer Debug Texture", "1.0", "com.example.renderer-debug-text");
+    
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
         return SDL_APP_FAILURE;
@@ -34,6 +52,10 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         return SDL_APP_FAILURE;
     }
     SDL_SetRenderLogicalPresentation(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+
+
+    sprite = IMG_LoadTexture(renderer, "../assets/sprites/0005.png");
+
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
@@ -51,7 +73,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
     const int charsize = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE;
-
+    /*
     /* as you can see from this, rendering draws over whatever was drawn before it. */
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
     SDL_RenderClear(renderer);  /* start with a blank canvas. */
@@ -70,14 +92,18 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     SDL_RenderDebugText(renderer, 64, 350, "This only does ASCII chars. So this laughing emoji won't draw: 🤣");
 
     SDL_RenderDebugTextFormat(renderer, (float) ((WINDOW_WIDTH - (charsize * 46)) / 2), 400, "(This program has been running for %" SDL_PRIu64 " seconds.)", SDL_GetTicks() / 1000);
+    
+    SDL_FRect dst = { WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, 192, 192 };
+    SDL_RenderTexture(renderer, sprite, NULL, &dst);
 
     SDL_RenderPresent(renderer);  /* put it all on the screen! */
-
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
 
 /* This function runs once at shutdown. */
 void SDL_AppQuit(void *appstate, SDL_AppResult result)
-{
+{   
+    Sprite buffer;
+    buffer.DeleteAllSprites();
     /* SDL will clean up the window/renderer for us. */
 }
