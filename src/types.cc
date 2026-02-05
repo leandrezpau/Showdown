@@ -25,6 +25,14 @@ static const float TypeChart[TYPE_COUNT][TYPE_COUNT] = {
     /* FAI */     { NEU, NVE, NEU, NEU, NEU, NEU, SUP, NVE, NEU, NEU, NEU, NEU, NEU, NEU, SUP, SUP, NVE, NEU }
 };
 
+float cl_Type::GetEffectivenessAgainst(cl_Type defender) {
+    if (this->type >= TYPE_COUNT || defender.type >= TYPE_COUNT ||
+        this->type < 0 || defender.type < 0) {
+        return 1.0f;
+    }
+    return TypeChart[this->type][defender.type];
+}
+
 float cl_Type::GetEffectivenessAgainst(cl_Type defender1, cl_Type defender2) {
     float multiplier1 = GetEffectivenessAgainst(defender1);
 
