@@ -54,7 +54,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     SDL_SetRenderLogicalPresentation(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
 
-    sprite = IMG_LoadTexture(renderer, "../assets/sprites/0005.png");
+    sprite = IMG_LoadTexture(renderer, "../assets/sprites/0006.png");
 
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */

@@ -4,7 +4,7 @@
 #include "sprites.h"
 
 int Sprite::ExtractSprite(int number, const char *out_path) {
-    FILE *in = fopen("../assets/sprites/sprites.dat", "rb");
+    FILE *in = fopen("../assets/sprites.dat", "rb");
     if (!in) { perror("fopen"); return 1; }
 
     // Saltar al índice específico en la cabecera
