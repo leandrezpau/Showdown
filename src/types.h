@@ -1,6 +1,7 @@
 #pragma once
 #ifndef _TYPES_H
 #define _TYPES_H
+#ifdef _TYPES_H
 
 #include <string>
 constexpr float IMM = 0.0f; // Inmune (Immune)
@@ -41,8 +42,8 @@ public:
 
   cl_Type(en_Types t = TYPE_NORMAL) : type(t) {}
 
-  float GetEffectivenessAgainst(cl_Type defender);
   float GetEffectivenessAgainst(cl_Type defender1, cl_Type defender2);
+  float GetEffectivenessAgainst(cl_Type defender);
   
   float Attacking(cl_Type defender);
   float Defending(cl_Type attacker);
