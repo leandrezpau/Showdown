@@ -7,6 +7,7 @@
 #include <math.h>
 #include <vector>
 #include <string>
+#include <array>
 
 struct Stats {
   float Atk;
@@ -16,6 +17,7 @@ struct Stats {
   float Vel;
   float HP;
 };
+
 //vec2 natures[5][6] = {
 //  ((Atk * 1.1f)), ((Atk * 1.1f)), ((Atk * 1.1f)), ((Atk * 1.1f)), (1.0f, 1.0f),
 //  ((Def * 1.1f)), ((Def * 1.1f)), ((Def * 1.1f)), ((Def * 1.1f)), (1.0f, 1.0f),
@@ -58,16 +60,13 @@ struct Stats {
 //  float Carefyl (1.1f, 0.9f); //SpcDef+ /
 //};
 
-
-
 class Pokemon {
   int id;
   int level;
 
   Stats stats;
   std::string name;
-  enum en_Type type_1, type_2;
-
+  std::array<enum en_Type, 2> type;
   std::vector<cl_Movement> movement;
 };
 

@@ -22,6 +22,7 @@ enum en_Types{
   TYPE_DARK,    // Siniestro
   TYPE_STEEL,   // Acero
   TYPE_FAIRY,   // Hada
+  TYPE_NULL,
   //TYPE_STELLAR
 };
 
