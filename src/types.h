@@ -1,9 +1,14 @@
+#ifndef _TYPES_H  
 #define _TYPES_H
-#ifdef _TYPES_H
 
 #include <string>
+constexpr float IMM = 0.0f; // Inmune (Immune)
+constexpr float NVE = 0.5f; // No muy efectivo (Not Very Effective)
+constexpr float NEU = 1.0f; // Neutro (Neutral)
+constexpr float SUP = 2.0f; // Super efectivo (Super Effective)
 
 enum en_Types{
+  TYPE_NONE = -1,
   TYPE_NORMAL,  // Normal
   TYPE_FIRE,    // Fuego
   TYPE_WATER,   // Agua
@@ -22,17 +27,20 @@ enum en_Types{
   TYPE_DARK,    // Siniestro
   TYPE_STEEL,   // Acero
   TYPE_FAIRY,   // Hada
+
+  TYPE_COUNT    //how many types
   //TYPE_STELLAR
 };
 
 class cl_Type {
+public:
   en_Types type;
 
-  int typeID;
   std::string typeName;
 
-  float Attacking(cl_Type otherType);
-  float Defending(cl_Type otherType);
+  cl_Type(en_Types t = TYPE_NORMAL) : type(t) {}
+  float Attacking(cl_Type defender);
+  float Defending(cl_Type attacker);
 };
 
 
