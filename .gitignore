@@ -1,2 +1,4 @@
 /build
 ./build
+bin/TestSDL.exe
+bin/TestSDL.pdb
