@@ -69,8 +69,14 @@ class Pokemon {
 
   Stats stats;
   std::string name;
-  std::array<enum en_Type, 2> type;
+  cl_Type type1; 
+  cl_Type type2;
+
   std::vector<cl_Movement> movement;
+
+  float CalculateIncomingDamageMult(cl_Type attackType) {
+      return attackType.GetEffectivenessAgainst(this->type1, this->type2);
+  }
 };
 
 
