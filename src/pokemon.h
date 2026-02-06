@@ -66,10 +66,10 @@ public:
   int id;
   int level;
   float weight;
-  int gender;     //0 masc, 1 fem, 2 unknown
-  int generation; //para que cuando los clasifiquemos en un futuro se pueda filtrar por generación y tipo...
+  int gender;     //0 masc, 1 fem, 2 genderless
+  int generation; //para que cuando los clasifiquemos en un futuro se pueda filtrar por generaciï¿½n y tipo...
   int stage;
-  bool fully_evolved;  //está en su última fase?
+  bool fully_evolved;  //estï¿½ en su ï¿½ltima fase?
   bool shiny;
 
 
