@@ -85,7 +85,7 @@ public:
 
     int chance = rand() % 100;
     if (chance > move.accuracy) {
-      SDL_Log("¡Pero falló!");
+      SDL_Log("ï¿½Pero fallï¿½!");
       return;
     }
     if (move.isState != true) {
@@ -107,13 +107,13 @@ public:
       target.stats.HP -= damage;
       if (target.stats.HP < 0) target.stats.HP = 0;
 
-      SDL_Log("Daño infligido: %.0f (HP restante: %.0f)", damage, target.stats.HP);
+      SDL_Log("Danyo infligido: %.0f (HP restante: %.0f)", damage, target.stats.HP);
 
-      if (typeMult > 1.0f) SDL_Log("¡Es súper efectivo!");
+      if (typeMult > 1.0f) SDL_Log("!Es super efectivo!");
       else if (typeMult == 0.0f) SDL_Log("No afecta a %s...", target.name.c_str());
       else if (typeMult < 1.0f) SDL_Log("No es muy efectivo...");
     }
-    }
+  }
 };
 
 
