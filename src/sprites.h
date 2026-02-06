@@ -15,8 +15,7 @@ public:
 		int32_t size;
 	};
 
-	char fileSprite[50];
-	int ExtractSprite(int number, const char *out_path);
+	int ExtractSprite(int kNPokemons);
 	void DeleteAllSprites();
 };
 

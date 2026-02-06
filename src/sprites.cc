@@ -3,40 +3,52 @@
 
 #include "sprites.h"
 
-int Sprite::ExtractSprite(int number, const char *out_path) {
+int Sprite::ExtractSprite(int kNPokemons) {
+
     FILE *in = fopen("../assets/sprites.dat", "rb");
     if (!in) { perror("fopen"); return 1; }
 
-    // Saltar al índice específico en la cabecera
-    fseek(in, (number - 1) * sizeof(SpriteIndex), SEEK_SET);
+    for(int i = 0; i < kNPokemons; i++) {
 
-    SpriteIndex idx;
-    if (fread(&idx, sizeof(SpriteIndex), 1, in) != 1) {
-        printf("Error leyendo índice %d\n", number);
-        fclose(in);
-        return 1;
-    }
+        char fileSprite[50];
+        snprintf(fileSprite, sizeof(fileSprite), "../assets/sprites/%04d.png", i + 1);
 
-    // Ir al bloque de datos
-    fseek(in, idx.offset, SEEK_SET);
+        // Leer índice correcto
+        fseek(in, i * sizeof(SpriteIndex), SEEK_SET);
 
-    char *buffer = (char*) malloc(idx.size);
-    if (!buffer) { perror("malloc"); fclose(in); return 1; }
+        SpriteIndex idx;
+        if (fread(&idx, sizeof(SpriteIndex), 1, in) != 1) {
+            printf("Error leyendo índice %d\n", i);
+            fclose(in);
+            return 1;
+        } 
 
-    if (fread(buffer, 1, idx.size, in) != (size_t)idx.size) {
-        printf("Error leyendo sprite %d\n", number);
+        fseek(in, idx.offset, SEEK_SET);
+
+        char *buffer = (char*)malloc(idx.size);
+        if (!buffer) { perror("malloc"); fclose(in); return 1; }
+
+        if (fread(buffer, 1, idx.size, in) != (size_t)idx.size) {
+            printf("Error leyendo sprite %d\n", i);
+            free(buffer);
+            fclose(in);
+            return 1;
+        }
+
+        FILE *out = fopen(fileSprite, "wb");
+        if (!out) {
+            perror("fopen salida");
+            free(buffer);
+            fclose(in);
+            return 1;
+        }
+
+        fwrite(buffer, 1, idx.size, out);
+
+        fclose(out);
         free(buffer);
-        fclose(in);
-        return 1;
     }
 
-    FILE *out = fopen(out_path, "wb");
-    if (!out) { perror("fopen salida"); free(buffer); fclose(in); return 1; }
-
-    fwrite(buffer, 1, idx.size, out);
-
-    fclose(out);
-    free(buffer);
     fclose(in);
     return 0;
 }
