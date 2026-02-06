@@ -55,11 +55,11 @@ void Pokemon::UseMove(Pokemon& target, cl_Movement move) {
   }
 
   if (move.isState != true) {
-    float attackStat = move.isSpecial ? this->stats.spcAtk : this->stats.Atk;
-    float defenseStat = move.isSpecial ? target.stats.spcDef : target.stats.Def;
+    float attackStat = move.isSpecial ? this->currentStats.spcAtk : this->currentStats.Atk;
+    float defenseStat = move.isSpecial ? target.currentStats.spcDef : target.currentStats.Def;
 
     float damage = (((2.0f * (float)this->level / 5.0f + 2.0f) * (float)move.power * (attackStat / defenseStat)) / 50.0f) + 2.0f;
-
+..
     if (move.moveType.type == this->type1.type || move.moveType.type == this->type2.type) {
       damage *= 1.5f;
     }
@@ -70,10 +70,10 @@ void Pokemon::UseMove(Pokemon& target, cl_Movement move) {
     if (damage < 1.0f && typeMult > 0.0f) damage = 1.0f;
     if (typeMult == 0.0f) damage = 0.0f;
 
-    target.stats.HP -= damage;
-    if (target.stats.HP < 0) target.stats.HP = 0;
+    target.currentStats.HP -= damage;
+    if (target.currentStats.HP < 0) target.currentStats.HP = 0;
 
-    SDL_Log("Danyo infligido: %.0f (HP restante: %.0f)", damage, target.stats.HP);
+    SDL_Log("Danyo infligido: %.0f (HP restante: %.0f)", damage, target.currentStats.HP);
 
     if (typeMult > 1.0f) SDL_Log("!Es super efectivo!");
     else if (typeMult == 0.0f) SDL_Log("No afecta a %s...", target.name.c_str());
