@@ -8,13 +8,13 @@
  */
 
 #define SDL_MAIN_USE_CALLBACKS 1  /* use the callbacks instead of main() */
+#include "pokemon.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <SDL3_image/SDL_image.h>
 #include <stdio.h>
 
 #include <string>
-
 #include "sprites.h"
 
 /* We will use this renderer to draw into this window every frame. */

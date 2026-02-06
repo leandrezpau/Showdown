@@ -1,7 +1,7 @@
 #pragma once
 
+#ifndef _TYPES_H
 #define _TYPES_H
-#ifdef _TYPES_H
 
 #include <string>
 constexpr float IMM = 0.0f; // Inmune (Immune)

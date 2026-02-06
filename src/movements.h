@@ -24,10 +24,11 @@ public:
     int power;
     int accuracy;
     int pp;
+    bool isState;
     bool isSpecial;
 
-    cl_Movement(std::string n, cl_Type t, int p, int acc, int powpoints, bool special)
-        : moveName(n), moveType(t), power(p), accuracy(acc), pp(powpoints), isSpecial(special) {
+    cl_Movement(std::string n, cl_Type t, int p, int acc, int powpoints, bool state, bool special)
+        : moveName(n), moveType(t), power(p), accuracy(acc), pp(powpoints), isState(state), isSpecial(special) {
     }
 };
 
