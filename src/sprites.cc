@@ -1,64 +1,58 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "sprites.h"
 
-int Sprite::ExtractSprite(int kNPokemons) {
+void Sprite::SelectSprite(SDL_Renderer* renderer, bool shiny, en_SpriteType type, int pokeID){
+    //Find Pokemon Name
+    std::ifstream file("../assets/SpritesPokemon/pokedex.txt");
+    if (!file.is_open()) return;
 
-    FILE *in = fopen("../assets/sprites.dat", "rb");
-    if (!in) { perror("fopen"); return 1; }
+    std::string nombre;
+    int i = 1;
+    bool found = false;
 
-    for(int i = 0; i < kNPokemons; i++) {
-
-        char fileSprite[50];
-        snprintf(fileSprite, sizeof(fileSprite), "../assets/sprites/%04d.png", i + 1);
-
-        // Leer índice correcto
-        fseek(in, i * sizeof(SpriteIndex), SEEK_SET);
-
-        SpriteIndex idx;
-        if (fread(&idx, sizeof(SpriteIndex), 1, in) != 1) {
-            printf("Error leyendo índice %d\n", i);
-            fclose(in);
-            return 1;
-        } 
-
-        fseek(in, idx.offset, SEEK_SET);
-
-        char *buffer = (char*)malloc(idx.size);
-        if (!buffer) { perror("malloc"); fclose(in); return 1; }
-
-        if (fread(buffer, 1, idx.size, in) != (size_t)idx.size) {
-            printf("Error leyendo sprite %d\n", i);
-            free(buffer);
-            fclose(in);
-            return 1;
-        }
-
-        FILE *out = fopen(fileSprite, "wb");
-        if (!out) {
-            perror("fopen salida");
-            free(buffer);
-            fclose(in);
-            return 1;
-        }
-
-        fwrite(buffer, 1, idx.size, out);
-
-        fclose(out);
-        free(buffer);
+    while (std::getline(file, nombre)) {
+    if (i == pokeID) {
+        found = true;
+        break;
+    }
+    i++;
     }
 
-    fclose(in);
-    return 0;
+    file.close();
+
+    if (!found) return;
+
+    std::string isShiny = shiny ? "" : " shiny";
+    std::string whichType;
+    switch(type){
+        case en_SpriteType::type_Attacker:{
+            whichType = "Back";
+            break;
+        }
+        case en_SpriteType::type_Defender:{
+            whichType = "Front";
+            break;
+        }
+    }
+    char filesprite[50];
+    snprintf(filesprite, 50, "../assets/SpritesPokemon/%s%s/%s.png", whichType.c_str(), isShiny.c_str(), nombre.c_str());
+
+    s = IMG_LoadTexture(renderer, filesprite);
+
+    std::cout << "\nSprite Lodaded";
+    std::cout << "\n" << nombre;
+    std::cout << "\n" << filesprite;
+    return;   // no encontrado
 }
 
-void Sprite::DeleteAllSprites(){
-	char filename[64];
-	for(int i = 0; i < 722; i++){
-		snprintf(filename, sizeof(filename), "../assets/sprites/%04d.png", i);
-		if(remove(filename) == 0){
-			printf("Sprite %s eliminado.\n", filename);
-		}
-	}
+void Sprite::SelectDst(en_SpriteType type, float x, float y){
+    dst.x = x;
+    dst.y = y;
+
+    if(type == en_SpriteType::type_Attacker){
+        dst.h = 160;
+        dst.w = 160;
+    }else{
+        dst.h = 192;
+        dst.w = 192;
+    }
 }

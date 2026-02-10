@@ -59,7 +59,7 @@ void Pokemon::UseMove(Pokemon& target, cl_Movement move) {
     float defenseStat = move.isSpecial ? target.currentStats.spcDef : target.currentStats.Def;
 
     float damage = (((2.0f * (float)this->level / 5.0f + 2.0f) * (float)move.power * (attackStat / defenseStat)) / 50.0f) + 2.0f;
-..
+    
     if (move.moveType.type == this->type1.type || move.moveType.type == this->type2.type) {
       damage *= 1.5f;
     }

@@ -22,8 +22,8 @@
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 
-SDL_Texture* sprite;
-void InitSprites();
+Sprite poke1;
+Sprite poke2;
 
 int main(int argc, char* argv[]){
   //SDL Initializations
@@ -32,8 +32,11 @@ int main(int argc, char* argv[]){
   SDL_Window* window = SDL_CreateWindow("ShowDown >:L", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
   SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
 
-  InitSprites();
-  sprite = IMG_LoadTexture(renderer, "../assets/sprites/0006.png");
+  poke1.SelectSprite(renderer, true, Sprite::en_SpriteType::type_Attacker, 400);
+  poke1.SelectDst(Sprite::en_SpriteType::type_Attacker, 100, 300);
+
+  poke2.SelectSprite(renderer, true, Sprite::en_SpriteType::type_Defender, 555);
+  poke2.SelectDst(Sprite::en_SpriteType::type_Defender, 300, 30);
 
   bool running = true;
   while (running) {
@@ -69,18 +72,12 @@ int main(int argc, char* argv[]){
 
     SDL_RenderDebugTextFormat(renderer, (float) ((WINDOW_WIDTH - (charsize * 46)) / 2), 400, "(This program has been running for %" SDL_PRIu64 " seconds.)", SDL_GetTicks() / 1000);
 
-    SDL_FRect dst = { (float)WINDOW_WIDTH / 2 - 96, (float)WINDOW_HEIGHT / 2 - 96, 192, 192 };
-    SDL_RenderTexture(renderer, sprite, NULL, &dst);
+    SDL_RenderTexture(renderer, poke1.s, NULL, &poke1.dst);
+    SDL_RenderTexture(renderer, poke2.s, NULL, &poke2.dst);
 
     //DRAW CLEAR
     SDL_RenderPresent(renderer);
   }
-  Sprite buffer;
-  buffer.DeleteAllSprites();
-  return 0;
-}
 
-void InitSprites(){
-    class Sprite buffer;
-    buffer.ExtractSprite(Sprite::kNPokes);
+  return 0;
 }
