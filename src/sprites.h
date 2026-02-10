@@ -20,12 +20,20 @@ public:
 	};
 	static const int kNPokes = 721;
 
-	SDL_Texture* s; //Where to load sprite
-
+	en_SpriteType typeSprite;
+	SDL_Texture* sprite; //Where to load sprite
 	SDL_FRect dst; // x, y, w (width), h (height)
 
-	void SelectSprite(SDL_Renderer* renderer, bool shiny, en_SpriteType type, int pokeID);
+	SDL_Renderer* renderer_; //Same renderer as window
+	
+
+	void SelectSprite(bool shiny, en_SpriteType type, int pokeID);
 	void SelectDst(en_SpriteType type, float x, float y);
+
+	void DrawSprite();
+	void ApplyFilter(float r, float g, float b);
+
+	Sprite(SDL_Renderer* renderer);
 };
 
 #endif //_SPRITES_H_

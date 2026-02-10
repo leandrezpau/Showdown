@@ -1,6 +1,6 @@
 #include "sprites.h"
 
-void Sprite::SelectSprite(SDL_Renderer* renderer, bool shiny, en_SpriteType type, int pokeID){
+void Sprite::SelectSprite(bool shiny, en_SpriteType type, int pokeID){
     //Find Pokemon Name
     std::ifstream file("../assets/SpritesPokemon/pokedex.txt");
     if (!file.is_open()) return;
@@ -36,12 +36,12 @@ void Sprite::SelectSprite(SDL_Renderer* renderer, bool shiny, en_SpriteType type
     char filesprite[50];
     snprintf(filesprite, 50, "../assets/SpritesPokemon/%s%s/%s.png", whichType.c_str(), isShiny.c_str(), nombre.c_str());
 
-    s = IMG_LoadTexture(renderer, filesprite);
+    sprite = IMG_LoadTexture(renderer_, filesprite);
 
     std::cout << "\nSprite Lodaded";
     std::cout << "\n" << nombre;
     std::cout << "\n" << filesprite;
-    return;   // no encontrado
+    return;
 }
 
 void Sprite::SelectDst(en_SpriteType type, float x, float y){
@@ -55,4 +55,16 @@ void Sprite::SelectDst(en_SpriteType type, float x, float y){
         dst.h = 192;
         dst.w = 192;
     }
+}
+
+void Sprite::DrawSprite(){
+    SDL_RenderTexture(renderer_, sprite, NULL, &dst);
+}
+
+void Sprite::ApplyFilter(float r, float g, float b){
+    SDL_SetTextureColorMod(sprite, r, g, b);
+}
+
+Sprite::Sprite(SDL_Renderer* renderer){
+    renderer_ = renderer;
 }
