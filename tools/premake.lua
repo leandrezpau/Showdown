@@ -1,11 +1,11 @@
-workspace "TestSDL"
+workspace "ShowDown"
     configurations { "Debug", "Release" }
     architecture "x64"
 
     -- La solución se genera en /build
     location "../build"
 
-project "TestSDL"
+project "ShowDown"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
