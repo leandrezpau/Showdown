@@ -4,6 +4,7 @@
 #define _TYPES_H
 
 #include <string>
+
 constexpr float IMM = 0.0f; // Inmune (Immune)
 constexpr float NVE = 0.5f; // No muy efectivo (Not Very Effective)
 constexpr float NEU = 1.0f; // Neutro (Neutral)

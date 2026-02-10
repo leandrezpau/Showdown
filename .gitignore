@@ -2,6 +2,5 @@
 ./build
 bin/TestSDL.exe
 bin/TestSDL.pdb
-
-/assets/sprites
-bin/TestSDL.pdb
+bin/ShowDown.exe
+bin/ShowDown.pdb

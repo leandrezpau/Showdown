@@ -1,14 +1,21 @@
-workspace "TestSDL"
-  configurations { "Debug", "Release" }
-  location "../build"
+workspace "ShowDown"
+    configurations { "Debug", "Release" }
+    architecture "x64"
 
-project "TestSDL"
-  kind "ConsoleApp"
-  language "C++"
-  cppdialect "C++17"
-  targetdir "../bin"
-  objdir "../build/obj"
-  files { "../src/*.cc", "../src/*.h" }
+    -- La solución se genera en /build
+    location "../build"
+
+project "ShowDown"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++17"
+
+    -- El exe se genera directamente en /bin
+    targetdir "../bin"
+    objdir "../build/obj"
+
+    -- Archivos del proyecto
+    files { "../src/*.cc", "../src/*.h" }
 
   includedirs {
     "../include",

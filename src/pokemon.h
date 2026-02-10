@@ -1,13 +1,15 @@
 #pragma once
+
 #ifndef _POKEMON_H_ 
 #define _POKEMON_H_
 
 #include <SDL3/SDL.h> 
-#include "types.h"
-#include "movements.h"
 #include <vector>
 #include <string>
 #include <cmath>
+
+#include "types.h"
+#include "movements.h"
 
 struct Stats {
   float Atk;
@@ -17,6 +19,45 @@ struct Stats {
   float Vel;
   float HP;
   float maxHP;
+};
+
+class Pokemon {
+public:
+  int id;
+  int level;
+  float weight;
+  int gender;     //0 masc, 1 fem, 2 genderless
+  int generation; //para que cuando los clasifiquemos en un futuro se pueda filtrar por generaci�n y tipo...
+  int stage;
+  bool fully_evolved;  //est� en su �ltima fase?
+  bool shiny;
+
+  Stats baseStats;
+  Stats currentStats;
+  std::string name;
+  cl_Type type1; 
+  cl_Type type2;
+  int statStages[8];
+
+  std::vector<cl_Movement> moves;
+  std::vector<cl_Movement> movement;
+
+  Pokemon(int _id, std::string _name, cl_Type _t1, cl_Type _t2, Stats _stats, int _level, float _weight, int _gender, int _generation, int _stage,
+    bool _fully_evolved, bool _shiny)
+    : id(_id), name(_name), type1(_t1), type2(_t2), baseStats(_stats), currentStats(_stats), level(50), weight(_weight), gender(_gender),
+    generation(_generation), stage(_stage), fully_evolved(_fully_evolved), shiny(_shiny)
+  {
+    for (int i = 0; i < 6; i++) statStages[i] = 0;
+    currentStats.maxHP = _stats.HP; 
+  }
+
+  float CalculateIncomingDamageMult(cl_Type attackType);
+  void UseMove(Pokemon& target, cl_Movement move);
+
+  void ModifyStat(StatID stat, int amount);
+
+private:
+  void RecalculateStats();
 };
 
 //vec2 natures[5][6] = {
@@ -60,46 +101,5 @@ struct Stats {
 //  float Sassy   (1.1f, 0.9f); //SpcDef+ /
 //  float Carefyl (1.1f, 0.9f); //SpcDef+ /
 //};
-
-class Pokemon {
-public:
-  int id;
-  int level;
-  float weight;
-  int gender;     //0 masc, 1 fem, 2 genderless
-  int generation; //para que cuando los clasifiquemos en un futuro se pueda filtrar por generaci�n y tipo...
-  int stage;
-  bool fully_evolved;  //est� en su �ltima fase?
-  bool shiny;
-
-
-  Stats baseStats;
-  Stats currentStats;
-  std::string name;
-  cl_Type type1; 
-  cl_Type type2;
-  int statStages[8];
-
-  std::vector<cl_Movement> moves;
-  std::vector<cl_Movement> movement;
-
-  Pokemon(int _id, std::string _name, cl_Type _t1, cl_Type _t2, Stats _stats, int _level, float _weight, int _gender, int _generation, int _stage,
-    bool _fully_evolved, bool _shiny)
-    : id(_id), name(_name), type1(_t1), type2(_t2), baseStats(_stats), currentStats(_stats), level(50), weight(_weight), gender(_gender),
-    generation(_generation), stage(_stage), fully_evolved(_fully_evolved), shiny(_shiny)
-  {
-    for (int i = 0; i < 6; i++) statStages[i] = 0;
-    currentStats.maxHP = _stats.HP; 
-  }
-
-  float CalculateIncomingDamageMult(cl_Type attackType);
-  void UseMove(Pokemon& target, cl_Movement move);
-
-  void ModifyStat(StatID stat, int amount);
-
-private:
-  void RecalculateStats();
-};
-
 
 #endif //_POKEMON_H_

@@ -3,22 +3,37 @@
 #define _SPRITES_H_
 #ifdef _SPRITES_H_
 
-#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <string>
 
-class Sprite{
-public:
+#include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
+
+class Sprite {
+public: 
+	enum en_SpriteType{
+		type_Attacker = 0,
+		type_Defender,
+	};
 	static const int kNPokes = 721;
 
-	struct SpriteIndex{									//Struct to store sprites while init
-		int id;
-		int32_t offset;
-		int32_t size;
-	};
+	en_SpriteType typeSprite;
+	SDL_Texture* sprite; //Where to load sprite
+	SDL_FRect dst; // x, y, w (width), h (height)
 
-	int ExtractSprite(int kNPokemons);
-	void DeleteAllSprites();
+	SDL_Renderer* renderer_; //Same renderer as window
+	
+
+	void SelectSprite(bool shiny, en_SpriteType type, int pokeID);
+	void SelectDst(en_SpriteType type, float x, float y);
+
+	void DrawSprite();
+	void ApplyFilter(float r, float g, float b);
+
+	Sprite(SDL_Renderer* renderer);
 };
-
-
 
 #endif //_SPRITES_H_

@@ -10,7 +10,9 @@ cls
 .\Premake5 --file=premake.lua vs2022
 
 @echo ---------------------------------------------------
-@echo            Author: Pau Leandrez Gomez
+@echo            Authors: Pau Leandrez
+@echo                     Nicolás Ferrando
+@echo                     Sergio Tordera
 @echo ---------------------------------------------------
 
 pause
