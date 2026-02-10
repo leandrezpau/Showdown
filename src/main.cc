@@ -31,6 +31,7 @@ int main(int argc, char* argv[]){
 
   SDL_Window* window = SDL_CreateWindow("ShowDown >:L", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
   SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
+  SDL_SetRenderVSync(renderer, 1);
 
   InitSprites();
   sprite = IMG_LoadTexture(renderer, "../assets/sprites/0006.png");

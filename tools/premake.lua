@@ -1,45 +1,36 @@
 workspace "TestSDL"
-    configurations { "Debug", "Release" }
-    architecture "x64"
-
-    -- La solución se genera en /build
-    location "../build"
+  configurations { "Debug", "Release" }
+  location "../build"
 
 project "TestSDL"
-    kind "ConsoleApp"
-    language "C++"
-    cppdialect "C++17"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  targetdir "../bin"
+  objdir "../build/obj"
+  files { "../src/*.cc", "../src/*.h" }
 
-    -- El exe se genera directamente en /bin
-    targetdir "../bin"
-    objdir "../build/obj"
+  includedirs {
+    "../include",
+    "../include/SDL3",
+    "../include/SDL3_image"
+  }
 
-    -- Archivos del proyecto
-    files { "../src/*.cc", "../src/*.h" }
-
-    -- Rutas de SDL3
-    includedirs {
-        "../include",
-        "../include/SDL3",
-        "../include/SDL3_image",
-    }
+  filter "system:macosx"
+    architecture "ARM64"
     libdirs { "../lib/x64" }
-
-    -- Librerías
-    links {
-        "SDL3.lib",
-        "SDL3_image.lib"
+    links { "SDL3", "SDL3_image" }
+    
+    linkoptions { 
+      "-Wl,-rpath,@loader_path/../lib/x64" 
     }
 
-    -- Configuración MSVC recomendada
-    filter "system:windows"
-        systemversion "latest"
-        defines { "_CRT_SECURE_NO_WARNINGS" }
+  filter "system:windows"
+    architecture "x64"
+    libdirs { "../lib/x64" }
+    links { "SDL3.lib", "SDL3_image.lib" }
 
-    filter "configurations:Debug"
-        symbols "On"
-        runtime "Debug"
-
-    filter "configurations:Release"
-        optimize "On"
-        runtime "Release"
+  filter "configurations:Debug"
+    symbols "On"
+  filter "configurations:Release"
+    optimize "On"

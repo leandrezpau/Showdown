@@ -3,10 +3,21 @@
   "configurations": [
     {
       "name": "Ejecutar SDL3",
-      "type": "cppvsdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/bin/test.exe",
-      "console": "externalTerminal"
+
+      "windows": {
+        "type": "cppvsdbg",
+        "program": "${workspaceFolder}/bin/test.exe",
+        "console": "externalTerminal"
+      },
+
+      "osx": {
+        "type": "cppdbg",
+        "MIMode": "lldb",
+        "program": "${workspaceFolder}/bin/test",
+        "externalConsole": true,
+      },
+
+      "request": "launch"
     }
   ]
 }
