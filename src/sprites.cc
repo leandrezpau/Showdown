@@ -32,11 +32,17 @@ void Sprite::SelectSprite(bool shiny, en_SpriteType type, int pokeID){
             whichType = "Front";
             break;
         }
+        case en_SpriteType::type_Icon:{
+            whichType = "Icons";
+            break;
+        }
     }
     char filesprite[50];
-    snprintf(filesprite, 50, "../assets/SpritesPokemon/%s%s/%s.png", whichType.c_str(), isShiny.c_str(), nombre.c_str());
+    snprintf(filesprite, 50, "../assets/SpritesAnimated/%s%s/%s.png", whichType.c_str(), isShiny.c_str(), nombre.c_str());
 
+    
     sprite = IMG_LoadTexture(renderer_, filesprite);
+    SDL_SetTextureScaleMode(sprite, SDL_SCALEMODE_NEAREST);
 
     std::cout << "\nSprite Lodaded";
     std::cout << "\n" << nombre;
@@ -44,27 +50,100 @@ void Sprite::SelectSprite(bool shiny, en_SpriteType type, int pokeID){
     return;
 }
 
-void Sprite::SelectDst(en_SpriteType type, float x, float y){
-    dst.x = x;
-    dst.y = y;
+void Sprite::InitSpriteSrc(){
+    float w, h;
+    SDL_GetTextureSize(sprite, &w, &h);
+    
+    tileSize = h;
 
-    if(type == en_SpriteType::type_Attacker){
-        dst.h = 160;
-        dst.w = 160;
-    }else{
-        dst.h = 192;
-        dst.w = 192;
+    numTiles = w / tileSize;
+
+    src.x = 0;
+    src.y = 0;
+    src.w = tileSize;
+    src.h = tileSize;
+}
+
+void Sprite::InitSpriteDst(en_SpriteType type, float x, float y){
+    if(sprite){
+        dst.x = x;
+        dst.y = y;
+        switch(type){
+            case en_SpriteType::type_Attacker:{
+                dst.h = tileSize * 3;
+                dst.w = tileSize * 3;
+                break;
+            }
+            case en_SpriteType::type_Defender:{
+                dst.h = tileSize * 3;
+                dst.w = tileSize * 3;
+                break;
+            }
+            case en_SpriteType::type_Icon:{
+                dst.h = 128;
+                dst.w = 64;
+                break;
+            }
+        }
+    }
+}
+void Sprite::UpdateSpriteDst(en_SpriteType type, float x, float y){
+    if(sprite){
+        dst.x = x;
+        dst.y = y;
+        switch(type){
+            case en_SpriteType::type_Attacker:{
+                dst.h = src.h * 3;
+                dst.w = src.h * 3;
+                break;
+            }
+            case en_SpriteType::type_Defender:{
+                dst.h = src.h * 3;
+                dst.w = src.h * 3;
+                break;
+            }
+            case en_SpriteType::type_Icon:{
+                dst.h = 128;
+                dst.w = 64;
+                break;
+            }
+        }
     }
 }
 
+
 void Sprite::DrawSprite(){
-    SDL_RenderTexture(renderer_, sprite, NULL, &dst);
+    if(sprite){
+        SDL_RenderTexture(renderer_, sprite, &src, &dst);
+        DecideNextFrame();
+    } 
 }
 
 void Sprite::ApplyFilter(float r, float g, float b){
-    SDL_SetTextureColorMod(sprite, r, g, b);
+    if(sprite) SDL_SetTextureColorMod(sprite, r, g, b);
+    
+}
+void Sprite::DestroySprite(){
+    if(sprite != NULL) SDL_DestroyTexture(sprite);     
+}
+
+void Sprite::DecideNextFrame(){
+  Uint64 now = SDL_GetTicks();
+
+  if (last == 0) last = now;
+
+  if ((now - last) >= 120) {
+    currentTile++;
+    last = now;
+  }
+
+  src.x = src.h * (currentTile % numTiles);
 }
 
 Sprite::Sprite(SDL_Renderer* renderer){
     renderer_ = renderer;
+}
+
+Sprite::~Sprite(){
+    DestroySprite();
 }

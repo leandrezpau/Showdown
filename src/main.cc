@@ -23,10 +23,17 @@
 
 en_SceneManager sceneManager = en_SceneManager::kSceneInit;
 
+#pragma region Main
+/*
+    .___  ___.      ___       __  .__   __. 
+    |   \/   |     /   \     |  | |  \ |  | 
+    |  \  /  |    /  ^  \    |  | |   \|  | 
+    |  |\/|  |   /  /_\  \   |  | |  . `  | 
+    |  |  |  |  /  _____  \  |  | |  |\   | 
+    |__|  |__| /__/     \__\ |__| |__| \__|     
 
-
+*/
 int main(int argc, char* argv[]){
-  /*********************************      SDL Initializations              ******************************************/
 
   SDL_Init(SDL_INIT_VIDEO);
 
@@ -34,16 +41,12 @@ int main(int argc, char* argv[]){
   SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
   SDL_SetRenderVSync(renderer, 1);
 
-  /*********************************      End of SDL Initializations       *****************************************/
-
-  /*********************************      Variable Declaration              ******************************************/
   
   bool running = true;
 
   Sprite poke1{renderer};
   Sprite poke2{renderer};
 
-  /*********************************      End of Variable Declaration       *****************************************/
  
   while (running) {
     SDL_Event event;
@@ -55,11 +58,14 @@ int main(int argc, char* argv[]){
       case en_SceneManager::kSceneInit:{  //CURRENT SCENE
 
         poke1.SelectSprite(true, Sprite::en_SpriteType::type_Attacker, 400);
-        poke1.SelectDst(Sprite::en_SpriteType::type_Attacker, 100, 300);
+        poke1.InitSpriteSrc();
+        poke1.InitSpriteDst(Sprite::en_SpriteType::type_Attacker, 100, 300);
+        
 
         poke2.SelectSprite(true, Sprite::en_SpriteType::type_Defender, 555);
-        poke2.SelectDst(Sprite::en_SpriteType::type_Defender, 300, 30);
-
+        poke2.InitSpriteSrc();
+        poke2.InitSpriteDst(Sprite::en_SpriteType::type_Defender, 300, 30);
+        
 
         sceneManager = en_SceneManager::kSceneGameMode;
         break;
@@ -90,7 +96,7 @@ int main(int argc, char* argv[]){
 
         SDL_RenderDebugTextFormat(renderer, (float) ((WINDOW_WIDTH - (charsize * 46)) / 2), 400, "(This program has been running for %" SDL_PRIu64 " seconds.)", SDL_GetTicks() / 1000);
 
-        poke1.ApplyFilter(255, 100, 100);
+        //poke1.ApplyFilter(255, 100, 100);
         poke1.DrawSprite();
         poke2.DrawSprite();
 
