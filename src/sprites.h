@@ -37,11 +37,16 @@ public:
 	SDL_Renderer* renderer_; //Same renderer as window
 	
 
-	void SelectSprite(bool shiny, en_SpriteType type, int pokeID);
-	void InitSpriteDst(en_SpriteType type, float x, float y);
-	void InitSpriteSrc();
+	void SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID);
+	void SelectSpriteFromRoute(const char* route);
+
+	void InitSpriteDst(float x, float y, float scale);
+	void InitPokemonSpriteDst(float x, float y, float scale);
+	void UpdateSpriteDst(float x, float y, float scale);
 	
-	void UpdateSpriteDst(en_SpriteType type, float x, float y);
+	void InitSpriteSrc(bool tile = true);
+	
+	
 	
 
 	void DecideNextFrame();

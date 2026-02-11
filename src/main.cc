@@ -19,7 +19,7 @@
 #include <string>
 
 #define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
+#define WINDOW_HEIGHT 380
 
 en_SceneManager sceneManager = en_SceneManager::kSceneInit;
 
@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
 
   Sprite poke1{renderer};
   Sprite poke2{renderer};
-
+  Sprite background{renderer};
  
   while (running) {
     SDL_Event event;
@@ -57,21 +57,40 @@ int main(int argc, char* argv[]){
     switch(sceneManager){
       case en_SceneManager::kSceneInit:{  //CURRENT SCENE
 
-        poke1.SelectSprite(true, Sprite::en_SpriteType::type_Attacker, 400);
+        poke1.SelectPokemonSprite(true, Sprite::en_SpriteType::type_Attacker, 255);
         poke1.InitSpriteSrc();
-        poke1.InitSpriteDst(Sprite::en_SpriteType::type_Attacker, 100, 300);
+        poke1.InitPokemonSpriteDst(100, 200, 3);
         
 
-        poke2.SelectSprite(true, Sprite::en_SpriteType::type_Defender, 555);
+        poke2.SelectPokemonSprite(true, Sprite::en_SpriteType::type_Defender, 555);
         poke2.InitSpriteSrc();
-        poke2.InitSpriteDst(Sprite::en_SpriteType::type_Defender, 300, 30);
+        poke2.InitPokemonSpriteDst(400, 60, 2);
         
+        background.SelectSpriteFromRoute("../assets/background_Sprites/lava_battle.png");
+        background.InitSpriteSrc(false);
+        background.InitSpriteDst(0, 0, 1);
 
         sceneManager = en_SceneManager::kSceneGameMode;
         break;
       }
       case en_SceneManager::kSceneGameMode:{  //CURRENT SCENE
-        const int charsize = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE;
+        //DRAW INIT
+        SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
+        SDL_RenderClear(renderer);
+
+        background.DrawSprite();
+        poke1.DrawSprite();
+        poke2.DrawSprite();
+        
+
+        //DRAW CLEAR
+        SDL_RenderPresent(renderer);
+
+        //sceneManager = en_SceneManager::kSceneChoseTeam;
+        break;
+      }
+      case en_SceneManager::kSceneChoseTeam:{ //CURRENT SCENE
+                const int charsize = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE;
 
         //DRAW INIT
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
@@ -95,19 +114,9 @@ int main(int argc, char* argv[]){
         SDL_RenderDebugText(renderer, 64, 350, "This only does ASCII chars. So this laughing emoji won't draw: 🤣");
 
         SDL_RenderDebugTextFormat(renderer, (float) ((WINDOW_WIDTH - (charsize * 46)) / 2), 400, "(This program has been running for %" SDL_PRIu64 " seconds.)", SDL_GetTicks() / 1000);
-
-        //poke1.ApplyFilter(255, 100, 100);
-        poke1.DrawSprite();
-        poke2.DrawSprite();
-
         //DRAW CLEAR
         SDL_RenderPresent(renderer);
-
-        //sceneManager = en_SceneManager::kSceneChoseTeam;
-        break;
-      }
-      case en_SceneManager::kSceneChoseTeam:{ //CURRENT SCENE
-
+        
         sceneManager = en_SceneManager::kSceneFight;
         break;
       }

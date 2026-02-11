@@ -1,7 +1,7 @@
 #include "sprites.h"
 #include "packer/unpackThis.cc"
 
-void Sprite::SelectSprite(bool shiny, en_SpriteType type, int pokeID){
+void Sprite::SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID){
     //Find Pokemon Name
     std::ifstream file("../assets/SpritesAnimated/pokedex.txt");
     if (!file.is_open()) return;
@@ -58,65 +58,59 @@ void Sprite::SelectSprite(bool shiny, en_SpriteType type, int pokeID){
     
     return;
 }
+void Sprite::SelectSpriteFromRoute(const char* route){
+    sprite = IMG_LoadTexture(renderer_, route);
+}
 
-void Sprite::InitSpriteSrc(){
+void Sprite::InitSpriteSrc(bool tile){
     float w, h;
     SDL_GetTextureSize(sprite, &w, &h);
-    
-    tileSize = h;
 
-    numTiles = w / tileSize;
+    if(tile){
+        tileSize = h;
 
-    src.x = 0;
-    src.y = 0;
-    src.w = tileSize;
-    src.h = tileSize;
-}
+        numTiles = w / tileSize;
 
-void Sprite::InitSpriteDst(en_SpriteType type, float x, float y){
-    if(sprite){
-        dst.x = x;
-        dst.y = y;
-        switch(type){
-            case en_SpriteType::type_Attacker:{
-                dst.h = tileSize * 3;
-                dst.w = tileSize * 3;
-                break;
-            }
-            case en_SpriteType::type_Defender:{
-                dst.h = tileSize * 3;
-                dst.w = tileSize * 3;
-                break;
-            }
-            case en_SpriteType::type_Icon:{
-                dst.h = 128;
-                dst.w = 64;
-                break;
-            }
-        }
+        src.x = 0;
+        src.y = 0;
+        src.w = tileSize;
+        src.h = tileSize;
+    }else{
+        numTiles = 1;
+
+        src.x = 0;
+        src.y = 0;
+        src.w = w;
+        src.h = h;
     }
 }
-void Sprite::UpdateSpriteDst(en_SpriteType type, float x, float y){
+
+void Sprite::InitSpriteDst(float x, float y, float scale){
     if(sprite){
         dst.x = x;
         dst.y = y;
-        switch(type){
-            case en_SpriteType::type_Attacker:{
-                dst.h = src.h * 3;
-                dst.w = src.h * 3;
-                break;
-            }
-            case en_SpriteType::type_Defender:{
-                dst.h = src.h * 3;
-                dst.w = src.h * 3;
-                break;
-            }
-            case en_SpriteType::type_Icon:{
-                dst.h = 128;
-                dst.w = 64;
-                break;
-            }
-        }
+
+        SDL_GetTextureSize(sprite, &dst.w, &dst.h);
+        dst.h *= scale;
+        dst.w *= scale;
+    }
+}
+void Sprite::InitPokemonSpriteDst(float x, float y, float scale){
+    if(sprite){
+        dst.x = x;
+        dst.y = y;
+
+        dst.h = tileSize * scale;
+        dst.w = tileSize * scale;
+    }
+}
+void Sprite::UpdateSpriteDst(float x, float y, float scale){
+    if(sprite){
+        dst.x = x;
+        dst.y = y;
+
+        dst.h = tileSize * scale;
+        dst.w = tileSize * scale;
     }
 }
 
