@@ -34,7 +34,7 @@ en_SceneManager sceneManager = en_SceneManager::kSceneInit;
 
 */
 int main(int argc, char* argv[]){
-
+  system("cls");
   SDL_Init(SDL_INIT_VIDEO);
 
   SDL_Window* window = SDL_CreateWindow("Pokemon Showdown", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);

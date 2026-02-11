@@ -1,4 +1,5 @@
 #include "sprites.h"
+#include "packer/unpackThis.cc"
 
 void Sprite::SelectSprite(bool shiny, en_SpriteType type, int pokeID){
     //Find Pokemon Name
@@ -20,7 +21,6 @@ void Sprite::SelectSprite(bool shiny, en_SpriteType type, int pokeID){
     file.close();
 
     if (!found) return;
-
     std::string isShiny = shiny ? "" : " shiny";
     std::string whichType;
     switch(type){
@@ -38,15 +38,24 @@ void Sprite::SelectSprite(bool shiny, en_SpriteType type, int pokeID){
         }
     }
     char filesprite[50];
+    char filedatabase[50];
+    char fileindex[50];
     snprintf(filesprite, 50, "../assets/SpritesAnimated/%s%s/%s.png", whichType.c_str(), isShiny.c_str(), nombre.c_str());
-    printf("\n%s", filesprite);
+    snprintf(filedatabase, 50, "../assets/SpritesAnimated/%s%s/_sprites.dat", whichType.c_str(), isShiny.c_str());
+    snprintf(fileindex, 50, "../assets/SpritesAnimated/%s%s/_index.txt", whichType.c_str(), isShiny.c_str());
+
+    UnpackSprite(nombre.c_str(), fileindex, filedatabase);
     
     sprite = IMG_LoadTexture(renderer_, filesprite);
     SDL_SetTextureScaleMode(sprite, SDL_SCALEMODE_NEAREST);
-
     std::cout << "\nSprite Lodaded";
     std::cout << "\n" << nombre;
     std::cout << "\n" << filesprite;
+
+    remove(filesprite);
+    std::cout << "\nFile Ended";
+    
+    
     return;
 }
 
