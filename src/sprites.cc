@@ -2,7 +2,7 @@
 
 void Sprite::SelectSprite(bool shiny, en_SpriteType type, int pokeID){
     //Find Pokemon Name
-    std::ifstream file("../assets/SpritesPokemon/pokedex.txt");
+    std::ifstream file("../assets/SpritesAnimated/pokedex.txt");
     if (!file.is_open()) return;
 
     std::string nombre;
@@ -39,7 +39,7 @@ void Sprite::SelectSprite(bool shiny, en_SpriteType type, int pokeID){
     }
     char filesprite[50];
     snprintf(filesprite, 50, "../assets/SpritesAnimated/%s%s/%s.png", whichType.c_str(), isShiny.c_str(), nombre.c_str());
-
+    printf("\n%s", filesprite);
     
     sprite = IMG_LoadTexture(renderer_, filesprite);
     SDL_SetTextureScaleMode(sprite, SDL_SCALEMODE_NEAREST);
