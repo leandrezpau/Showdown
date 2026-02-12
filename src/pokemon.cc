@@ -81,4 +81,57 @@ void Pokemon::UseMove(Pokemon& target, cl_Movement move) {
   }
 }
 
+Pokemon::Pokemon(int _id, en_Types _t1, en_Types _t2, Stats _stats, int _level, float _weight, int _gender, int _stage,
+    bool _fully_evolved, bool _shiny, SDL_Renderer* renderer_, en_SpriteType spriteType_)
+    : id(_id), type1(_t1), type2(_t2), baseStats(_stats), currentStats(_stats), level(50), weight(_weight), gender(_gender),
+     stage(_stage), fully_evolved(_fully_evolved), shiny(_shiny), PokeSprite(renderer_)
+  {
+    for (int i = 0; i < 6; i++) statStages[i] = 0;
+    currentStats.maxHP = _stats.HP; 
+
+    type1.InitWithEnum(_t1);
+    type2.InitWithEnum(_t2);
+    
+    //Find Pokemon NAME
+    std::ifstream file("../assets/SpritesAnimated/pokedex.txt");
+    if (!file.is_open()) return;
+
+    std::string nombre;
+    int i = 1;
+    bool found = false;
+
+    while (std::getline(file, nombre)) {
+      if (i == _id) {
+        found = true;
+        break;
+      }
+      i++;
+    }
+
+    file.close();
+    name = nombre; //<-- Selecting name without putting it into constructor
+
+    // GENERATION
+    if (_id >= 1   && _id <= 151)  generation = 1;
+    else if (_id <= 251)           generation = 2;
+    else if (_id <= 386)           generation = 3;
+    else if (_id <= 493)           generation = 4;
+    else if (_id <= 649)           generation = 5;
+    else if (_id <= 721)           generation = 6;
+    else if (_id <= 809)           generation = 7;
+    else if (_id <= 905)           generation = 8;
+    else if (_id <= 1025)          generation = 9;
+
+
+    //Sprite Things
+    typeSprite = spriteType_;
+    sRenderer_ = renderer_;
+    SelectPokemonSprite(_shiny, spriteType_, _id);
+    InitSpriteSrc();
+    switch(typeSprite){
+      case en_SpriteType::type_Attacker: InitPokemonSpriteDst(160, 350, 3); break;
+      case en_SpriteType::type_Defender: InitPokemonSpriteDst(480, 200, 2); break;
+      case en_SpriteType::type_Icon:     InitPokemonSpriteDst(400, 400, 2); break;
+    }
+  }
 #endif

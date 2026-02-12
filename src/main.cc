@@ -43,9 +43,12 @@ int main(int argc, char* argv[]){
 
   
   bool running = true;
+  Stats stats1 = {100, 100, 100, 100, 100, 100};
+  Pokemon poke1{988, en_Types::TYPE_BUG, en_Types::TYPE_DARK, stats1, 100, 100.0, 0, 3, true, true, renderer, en_SpriteType::type_Attacker};
 
-  PokeSprite poke1{renderer};
-  PokeSprite poke2{renderer};
+  Stats stats2 = {100, 100, 100, 100, 100, 100};
+  Pokemon poke2{532, en_Types::TYPE_BUG, en_Types::TYPE_DARK, stats1, 100, 100.0, 0, 3, true, true, renderer, en_SpriteType::type_Defender};
+
   Sprite background{renderer};
  
   while (running) {
@@ -56,15 +59,6 @@ int main(int argc, char* argv[]){
 
     switch(sceneManager){
       case en_SceneManager::kSceneInit:{  //CURRENT SCENE
-
-        poke1.SelectPokemonSprite(false, en_SpriteType::type_Attacker, 988);
-        poke1.InitSpriteSrc();
-        poke1.InitPokemonSpriteDst(160, 350, 3);
-        
-
-        poke2.SelectPokemonSprite(true, en_SpriteType::type_Defender, 555);
-        poke2.InitSpriteSrc();
-        poke2.InitPokemonSpriteDst(480, 200, 2);
         
         background.SelectSpriteFromRoute("../assets/background_Sprites/lava_battle.png");
         background.InitSpriteSrc(false);

@@ -39,14 +39,13 @@ class cl_Type {
 public:
   en_Types type;
 
-  std::string typeName;
-
   float GetEffectivenessAgainst(cl_Type defender1, cl_Type defender2);
   float GetEffectivenessAgainst(cl_Type defender);
   
   float Attacking(cl_Type defender);
   float Defending(cl_Type attacker);
 
+  void InitWithEnum(en_Types typeEnum);
   cl_Type(en_Types t = TYPE_NORMAL) : type(t) {}
 };
 

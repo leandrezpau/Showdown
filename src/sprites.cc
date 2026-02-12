@@ -63,7 +63,7 @@ void PokeSprite::SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID)
 
   UnpackSprite(nombre.c_str(), fileindex, filedatabase);
   
-  sprite = IMG_LoadTexture(renderer_, filesprite);
+  sprite = IMG_LoadTexture(sRenderer_, filesprite);
   SDL_SetTextureScaleMode(sprite, SDL_SCALEMODE_NEAREST);
 
   std::cout << "\nSprite Lodaded";
@@ -131,7 +131,7 @@ void PokeSprite::UpdateSpriteDst(float x, float y, float scale){
 
 void PokeSprite::DrawSprite(){
   if(sprite){
-    SDL_RenderTexture(renderer_, sprite, &src, &dst);
+    SDL_RenderTexture(sRenderer_, sprite, &src, &dst);
     DecideNextFrame();
   } 
 }
@@ -158,7 +158,7 @@ void PokeSprite::DecideNextFrame(){
 }
 
 PokeSprite::PokeSprite(SDL_Renderer* renderer){
-  renderer_ = renderer;
+  sRenderer_ = renderer;
 }
 
 PokeSprite::~PokeSprite(){
@@ -178,7 +178,7 @@ PokeSprite::~PokeSprite(){
 */
 
 void Sprite::SelectSpriteFromRoute(const char* route){
-  sprite = IMG_LoadTexture(renderer_, route);
+  sprite = IMG_LoadTexture(sRenderer_, route);
 }
 
 void Sprite::InitSpriteSrc(bool tile){
@@ -226,7 +226,7 @@ void Sprite::UpdateSpriteDst(float x, float y, float scale){
 
 void Sprite::DrawSprite(){
   if(sprite){
-    SDL_RenderTexture(renderer_, sprite, &src, &dst);
+    SDL_RenderTexture(sRenderer_, sprite, &src, &dst);
     DecideNextFrame();
   } 
 }
@@ -255,7 +255,7 @@ void Sprite::DecideNextFrame(){
 }
 
 Sprite::Sprite(SDL_Renderer* renderer){
-  renderer_ = renderer;
+  sRenderer_ = renderer;
 }
 
 Sprite::~Sprite(){

@@ -52,5 +52,8 @@ float cl_Type::Attacking(cl_Type defender) {
 float cl_Type::Defending(cl_Type attacker) {
     return attacker.GetEffectivenessAgainst(*this);
 }
+void cl_Type::InitWithEnum(en_Types typeEnum){
+    type = typeEnum;
+}
 
 #endif //_TYPES_CC_

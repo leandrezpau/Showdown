@@ -36,7 +36,7 @@ public:
 
 	Uint64 last = 0;
 
-	SDL_Renderer* renderer_; //Same renderer as window
+	SDL_Renderer* sRenderer_; //Same renderer as window
 	
 
 	void SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID);
@@ -74,7 +74,7 @@ public:
 
 	Uint64 last = 0;
 
-	SDL_Renderer* renderer_; //Same renderer as window
+	SDL_Renderer* sRenderer_; //Same renderer as window
 	
 	void SelectSpriteFromRoute(const char* route);
 

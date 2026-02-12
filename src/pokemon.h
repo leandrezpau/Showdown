@@ -7,9 +7,13 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <fstream>
+#include <string>
+#include <algorithm>
 
 #include "types.h"
 #include "movements.h"
+#include "sprites.h"
 
 struct Stats {
   float Atk;
@@ -21,7 +25,7 @@ struct Stats {
   float maxHP;
 };
 
-class Pokemon {
+class Pokemon : public PokeSprite{
 public:
   int id;
   int level;
@@ -42,14 +46,8 @@ public:
   std::vector<cl_Movement> moves;
   std::vector<cl_Movement> movement;
 
-  Pokemon(int _id, std::string _name, cl_Type _t1, cl_Type _t2, Stats _stats, int _level, float _weight, int _gender, int _generation, int _stage,
-    bool _fully_evolved, bool _shiny)
-    : id(_id), name(_name), type1(_t1), type2(_t2), baseStats(_stats), currentStats(_stats), level(50), weight(_weight), gender(_gender),
-    generation(_generation), stage(_stage), fully_evolved(_fully_evolved), shiny(_shiny)
-  {
-    for (int i = 0; i < 6; i++) statStages[i] = 0;
-    currentStats.maxHP = _stats.HP; 
-  }
+  Pokemon(int _id, en_Types _t1, en_Types _t2, Stats _stats, int _level, float _weight, int _gender, int _stage,
+    bool _fully_evolved, bool _shiny, SDL_Renderer* renderer_, en_SpriteType spriteType_);
 
   float CalculateIncomingDamageMult(cl_Type attackType);
   void UseMove(Pokemon& target, cl_Movement move);
