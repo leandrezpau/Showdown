@@ -44,8 +44,8 @@ int main(int argc, char* argv[]){
   
   bool running = true;
 
-  Sprite poke1{renderer};
-  Sprite poke2{renderer};
+  PokeSprite poke1{renderer};
+  PokeSprite poke2{renderer};
   Sprite background{renderer};
  
   while (running) {
@@ -59,12 +59,12 @@ int main(int argc, char* argv[]){
 
         poke1.SelectPokemonSprite(true, Sprite::en_SpriteType::type_Attacker, 652);
         poke1.InitSpriteSrc();
-        poke1.InitPokemonSpriteDst(100, 200, 3);
+        poke1.InitPokemonSpriteDst(160, 350, 3);
         
 
-        poke2.SelectPokemonSprite(true, Sprite::en_SpriteType::type_Defender, 555);
+        poke2.SelectPokemonSprite(true, en_SpriteType::type_Defender, 555);
         poke2.InitSpriteSrc();
-        poke2.InitPokemonSpriteDst(400, 60, 2);
+        poke2.InitPokemonSpriteDst(480, 200, 2);
         
         background.SelectSpriteFromRoute("../assets/background_Sprites/lava_battle.png");
         background.InitSpriteSrc(false);

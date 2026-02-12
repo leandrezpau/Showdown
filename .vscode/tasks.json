@@ -2,22 +2,14 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "compilar",
+      "label": "Abrir SLN en VS2022",
       "type": "shell",
-      "command": "cl",
+      "command": "&",
       "args": [
-        "${workspaceFolder}/src/test.cc",
-        "/I", "${workspaceFolder}/include",
-        "/link",
-        "/LIBPATH:${workspaceFolder}/lib/x64",
-        "SDL3.lib",
-        "/OUT:${workspaceFolder}/bin/test.exe"
+        "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/devenv.exe",
+        "${workspaceFolder}/build/ShowDown.sln"
       ],
-      "problemMatcher": ["$msCompile"],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
+      "problemMatcher": []
     }
   ]
 }
