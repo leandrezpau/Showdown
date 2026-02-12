@@ -29,7 +29,7 @@ public:
   int gender;     //0 masc, 1 fem, 2 genderless
   int generation; //para que cuando los clasifiquemos en un futuro se pueda filtrar por generaci�n y tipo...
   int stage;
-  bool fully_evolved;  //est� en su �ltima fase?
+  bool fully_evolved;  //esta en su ultima fase?
   bool shiny;
 
   Stats baseStats;
