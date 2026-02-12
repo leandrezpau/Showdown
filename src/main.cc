@@ -57,7 +57,7 @@ int main(int argc, char* argv[]){
     switch(sceneManager){
       case en_SceneManager::kSceneInit:{  //CURRENT SCENE
 
-        poke1.SelectPokemonSprite(true, en_SpriteType::type_Attacker, 988);
+        poke1.SelectPokemonSprite(false, en_SpriteType::type_Attacker, 988);
         poke1.InitSpriteSrc();
         poke1.InitPokemonSpriteDst(160, 350, 3);
         

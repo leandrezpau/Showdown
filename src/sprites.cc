@@ -1,6 +1,17 @@
 #include "sprites.h"
 #include "packer/unpackThis.cc"
 
+#pragma region PokeSprite
+/*
+    ______     _        _____            _ _       
+    | ___ \   | |      /  ___|          (_) |      
+    | |_/ /__ | | _____\ `--. _ __  _ __ _| |_ ___ 
+    |  __/ _ \| |/ / _ \`--. \ '_ \| '__| | __/ _ \
+    | | | (_) |   <  __/\__/ / |_) | |  | | ||  __/
+    \_|  \___/|_|\_\___\____/| .__/|_|  |_|\__\___|
+                            | |                   
+                            |_|                   
+*/
 void PokeSprite::SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID){
   //Find Pokemon Name
   std::ifstream file("../assets/SpritesAnimated/pokedex.txt");
@@ -24,7 +35,7 @@ void PokeSprite::SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID)
 
   if (!found) return;
 
-  std::string isShiny = shiny ? "" : " shiny";
+  std::string isShiny = shiny ? " shiny" : "";
   std::string whichType;
 
   switch(type){
@@ -42,13 +53,13 @@ void PokeSprite::SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID)
     }
   }
 
-  char filesprite[50];
-  char filedatabase[50];
-  char fileindex[50];
+  char filesprite[75];
+  char filedatabase[75];
+  char fileindex[75];
 
-  snprintf(filesprite, 50, "../assets/SpritesAnimated/%s%s/%s.png", whichType.c_str(), isShiny.c_str(), nombre.c_str());
-  snprintf(filedatabase, 50, "../assets/SpritesAnimated/%s%s/_sprites.dat", whichType.c_str(), isShiny.c_str());
-  snprintf(fileindex, 50, "../assets/SpritesAnimated/%s%s/_index.txt", whichType.c_str(), isShiny.c_str());
+  snprintf(filesprite, 75, "../assets/SpritesAnimated/%s%s/%s.png", whichType.c_str(), isShiny.c_str(), nombre.c_str());
+  snprintf(filedatabase, 75, "../assets/SpritesAnimated/%s%s/_sprites.dat", whichType.c_str(), isShiny.c_str());
+  snprintf(fileindex, 75, "../assets/SpritesAnimated/%s%s/_index.txt", whichType.c_str(), isShiny.c_str());
 
   UnpackSprite(nombre.c_str(), fileindex, filedatabase);
   
@@ -153,6 +164,18 @@ PokeSprite::PokeSprite(SDL_Renderer* renderer){
 PokeSprite::~PokeSprite(){
   DestroySprite();
 }
+
+#pragma region Sprite
+/*
+   _____            _ _       
+  /  ___|          (_) |      
+  \ `--. _ __  _ __ _| |_ ___ 
+   `--. \ '_ \| '__| | __/ _ \
+  /\__/ / |_) | |  | | ||  __/
+  \____/| .__/|_|  |_|\__\___|
+        | |                   
+        |_|                   
+*/
 
 void Sprite::SelectSpriteFromRoute(const char* route){
   sprite = IMG_LoadTexture(renderer_, route);
