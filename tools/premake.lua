@@ -15,7 +15,11 @@ project "ShowDown"
     objdir "../build/obj"
 
     -- Archivos del proyecto
-    files { "../src/*.cc", "../src/*.h" }
+    files { "../src/*.cc", 
+            "../src/*.h", 
+            "../src/sqlfuncs/*.cc",
+            "../src/sqlfuncs/*.h",
+            "../include/sqlite/sqlite3.c" }
 
   includedirs {
     "../include",

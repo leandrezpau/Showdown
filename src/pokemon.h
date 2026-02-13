@@ -10,19 +10,21 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
-#include <sqlite/sqlite3.h>
+#include <iostream>
+
+#include "sqlfuncs/returnPokeData.h"
 
 #include "types.h"
 #include "movements.h"
 #include "sprites.h"
 
 struct Stats {
+  float HP;
   float Atk;
   float Def;
   float spcAtk;
   float spcDef;
   float Vel;
-  float HP;
   float maxHP;
 };
 
@@ -47,14 +49,13 @@ public:
   std::vector<cl_Movement> moves;
   std::vector<cl_Movement> movement;
 
-  Pokemon(int _id, en_Types _t1, en_Types _t2, Stats _stats, int _level, float _weight, int _gender, int _stage,
-    bool _fully_evolved, bool _shiny, SDL_Renderer* renderer_, en_SpriteType spriteType_);
-
   float CalculateIncomingDamageMult(cl_Type attackType);
   void UseMove(Pokemon& target, cl_Movement move);
 
   void ModifyStat(StatID stat, int amount);
 
+  Pokemon(int _id, int _level, float _weight, int _gender, bool _shiny, 
+     SDL_Renderer* renderer_, en_SpriteType spriteType_);
 private:
   void RecalculateStats();
 };

@@ -80,48 +80,34 @@ void Pokemon::UseMove(Pokemon& target, cl_Movement move) {
     else if (typeMult < 1.0f) SDL_Log("No es muy efectivo...");
   }
 }
-
-Pokemon::Pokemon(int _id, en_Types _t1, en_Types _t2, Stats _stats, int _level, float _weight, int _gender, int _stage,
-    bool _fully_evolved, bool _shiny, SDL_Renderer* renderer_, en_SpriteType spriteType_)
-    : id(_id), type1(_t1), type2(_t2), baseStats(_stats), currentStats(_stats), level(50), weight(_weight), gender(_gender),
-     stage(_stage), fully_evolved(_fully_evolved), shiny(_shiny), PokeSprite(renderer_)
+Pokemon::Pokemon(int _id, int _level, float _weight, int _gender, bool _shiny, 
+     SDL_Renderer* renderer_, en_SpriteType spriteType_)
+    : id(_id), level(50), weight(_weight), gender(_gender),
+    shiny(_shiny), PokeSprite(renderer_)
   {
-    for (int i = 0; i < 6; i++) statStages[i] = 0;
-    currentStats.maxHP = _stats.HP; 
-
-    type1.InitWithEnum(_t1);
-    type2.InitWithEnum(_t2);
     
-    //Find Pokemon NAME
-    std::ifstream file("../assets/SpritesAnimated/pokedex.txt");
-    if (!file.is_open()) return;
+    sqlite3* db;
+    sqlite3_open("../assets/Database/PokemonDB.db", &db);
 
-    std::string nombre;
-    int i = 1;
-    bool found = false;
+    PokemonData pokemon_ = getPokemonById(db, 25);
 
-    while (std::getline(file, nombre)) {
-      if (i == _id) {
-        found = true;
-        break;
-      }
-      i++;
-    }
+    sqlite3_close(db);
 
-    file.close();
-    name = nombre; //<-- Selecting name without putting it into constructor
+    //Name in UpperCase
+    name = pokemon_.name;
+    std::transform(name.begin(), name.end(), name.begin(), ::toupper);
+
+    //Pokemon Types
+    type1.InitWithString(pokemon_.type1);
+    type2.InitWithString(pokemon_.type2);
+
+    //Stats
+    Stats stats_ = {pokemon_.hp, pokemon_.attack, pokemon_.defense, pokemon_.specialAttack, pokemon_.specialDefense, pokemon_.speed, pokemon_.maxhp};
+    baseStats = stats_;
+    currentStats = stats_;
 
     // GENERATION
-    if (_id >= 1   && _id <= 151)  generation = 1;
-    else if (_id <= 251)           generation = 2;
-    else if (_id <= 386)           generation = 3;
-    else if (_id <= 493)           generation = 4;
-    else if (_id <= 649)           generation = 5;
-    else if (_id <= 721)           generation = 6;
-    else if (_id <= 809)           generation = 7;
-    else if (_id <= 905)           generation = 8;
-    else if (_id <= 1025)          generation = 9;
-
+    generation = pokemon_.generation;
 
     //Sprite Things
     typeSprite = spriteType_;

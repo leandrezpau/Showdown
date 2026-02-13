@@ -44,11 +44,9 @@ int main(int argc, char* argv[]){
 
   
   bool running = true;
-  Stats stats1 = {100, 100, 100, 100, 100, 100};
-  Pokemon poke1{988, en_Types::TYPE_BUG, en_Types::TYPE_DARK, stats1, 100, 100.0, 0, 3, true, true, renderer, en_SpriteType::type_Attacker};
-
-  Stats stats2 = {100, 100, 100, 100, 100, 100};
-  Pokemon poke2{900, en_Types::TYPE_BUG, en_Types::TYPE_DARK, stats1, 100, 100.0, 0, 3, true, false, renderer, en_SpriteType::type_Defender};
+  //ID, Level, Weight, Gender, Shiny, Renderer, TypeSprite
+  Pokemon poke1{988, 50, 100, 0, true, renderer, en_SpriteType::type_Attacker};
+  Pokemon poke2{900, 50, 100, 0, false, renderer, en_SpriteType::type_Defender};
 
   Sprite background{renderer};
  

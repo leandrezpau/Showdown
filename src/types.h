@@ -4,6 +4,7 @@
 #define _TYPES_H
 
 #include <string>
+#include <algorithm>
 
 constexpr float IMM = 0.0f; // Inmune (Immune)
 constexpr float NVE = 0.5f; // No muy efectivo (Not Very Effective)
@@ -46,6 +47,7 @@ public:
   float Defending(cl_Type attacker);
 
   void InitWithEnum(en_Types typeEnum);
+  void InitWithString(std::string typeString);
   cl_Type(en_Types t = TYPE_NORMAL) : type(t) {}
 };
 
