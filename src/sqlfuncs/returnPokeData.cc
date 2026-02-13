@@ -7,7 +7,7 @@ PokemonData getPokemonById(sqlite3* db, int pokemon_id) {
   const char* sql =
     "SELECT name, primary_type, secondary_type, "
     "attack, defense, special_attack, special_defense, speed, hp, generation "
-    "FROM pokemon WHERE pokemon_id = ?;";
+    "FROM pokemon WHERE id = ?;";
 
   sqlite3_stmt* stmt;
   int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);

@@ -45,8 +45,8 @@ int main(int argc, char* argv[]){
   
   bool running = true;
   //ID, Level, Weight, Gender, Shiny, Renderer, TypeSprite
-  Pokemon poke1{988, 50, 100, 0, true, renderer, en_SpriteType::type_Attacker};
-  Pokemon poke2{900, 50, 100, 0, false, renderer, en_SpriteType::type_Defender};
+  Pokemon poke1{392, 50, 100, 0, false, renderer, en_SpriteType::type_Attacker};
+  Pokemon poke2{718, 50, 100, 0, false, renderer, en_SpriteType::type_Defender};
 
   Sprite background{renderer};
  

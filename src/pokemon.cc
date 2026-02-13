@@ -82,14 +82,13 @@ void Pokemon::UseMove(Pokemon& target, cl_Movement move) {
 }
 Pokemon::Pokemon(int _id, int _level, float _weight, int _gender, bool _shiny, 
      SDL_Renderer* renderer_, en_SpriteType spriteType_)
-    : id(_id), level(50), weight(_weight), gender(_gender),
-    shiny(_shiny), PokeSprite(renderer_)
+    : id(_id), level(50), weight(_weight), gender(_gender), shiny(_shiny), PokeSprite(renderer_)
   {
     
     sqlite3* db;
     sqlite3_open("../assets/Database/PokemonDB.db", &db);
 
-    PokemonData pokemon_ = getPokemonById(db, 25);
+    PokemonData pokemon_ = getPokemonById(db, _id);
 
     sqlite3_close(db);
 

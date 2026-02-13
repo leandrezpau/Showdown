@@ -32,6 +32,7 @@ void PokeSprite::SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID)
   file.close();
   //Removing spaces ' '
   nombre.erase(std::remove(nombre.begin(), nombre.end(), ' '), nombre.end());
+  nombre.erase(std::remove(nombre.begin(), nombre.end(), '-'), nombre.end());
 
   if (!found) return;
 
