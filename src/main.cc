@@ -35,6 +35,7 @@ en_SceneManager sceneManager = en_SceneManager::kSceneInit;
 */
 int main(int argc, char* argv[]){
   system("cls");
+  printf("\n\n");
   SDL_Init(SDL_INIT_VIDEO);
 
   SDL_Window* window = SDL_CreateWindow("Pokemon Showdown", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
@@ -47,7 +48,7 @@ int main(int argc, char* argv[]){
   Pokemon poke1{988, en_Types::TYPE_BUG, en_Types::TYPE_DARK, stats1, 100, 100.0, 0, 3, true, true, renderer, en_SpriteType::type_Attacker};
 
   Stats stats2 = {100, 100, 100, 100, 100, 100};
-  Pokemon poke2{532, en_Types::TYPE_BUG, en_Types::TYPE_DARK, stats1, 100, 100.0, 0, 3, true, true, renderer, en_SpriteType::type_Defender};
+  Pokemon poke2{900, en_Types::TYPE_BUG, en_Types::TYPE_DARK, stats1, 100, 100.0, 0, 3, true, false, renderer, en_SpriteType::type_Defender};
 
   Sprite background{renderer};
  

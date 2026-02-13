@@ -1,7 +1,7 @@
 #ifndef _BATTLEAI_CC_
 #define _BATTLEAI_CC_
 
-#include "ai.h"
+#include "battleai.h"
 #include <iostream>
 
 int BattleAI::ChooseBestMove(Pokemon* aiPoke, Pokemon* playerPoke) {
@@ -42,10 +42,10 @@ int BattleAI::ChooseBestMove(Pokemon* aiPoke, Pokemon* playerPoke) {
           score = 30.0f;
         }
       }
-      // WIP (falta añadir los estados alterados a los pokémon)
+      // WIP (falta aï¿½adir los estados alterados a los pokï¿½mon)
     }
 
-    SDL_Log("Evalunado %s: Daño estimado %.2f -> Score Final %.2f", move.moveName.c_str(), predictedDamage, score);
+    SDL_Log("Evalunado %s: Daï¿½o estimado %.2f -> Score Final %.2f", move.moveName.c_str(), predictedDamage, score);
 
     if (score > maxScore) {
       maxScore = score;

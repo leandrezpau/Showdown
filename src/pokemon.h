@@ -10,6 +10,7 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <sqlite/sqlite3.h>
 
 #include "types.h"
 #include "movements.h"

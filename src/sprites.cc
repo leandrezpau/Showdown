@@ -66,12 +66,11 @@ void PokeSprite::SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID)
   sprite = IMG_LoadTexture(sRenderer_, filesprite);
   SDL_SetTextureScaleMode(sprite, SDL_SCALEMODE_NEAREST);
 
-  std::cout << "\nSprite Lodaded";
-  std::cout << "\n" << nombre;
-  std::cout << "\n" << filesprite;
+  std::cout << "\nPokemon -->" << nombre;
+  std::cout << "\nSprite Lodaded -->" << filesprite;
 
   remove(filesprite);
-  std::cout << "\nFile Ended";
+  std::cout << "\n.png File Erased";
 
   return;
 }

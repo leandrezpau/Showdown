@@ -48,7 +48,7 @@ int UnpackSprite(const char* objetivo,
         strcpy(salida, name);
       }
 
-      printf("guardando en: %s\n", salida);
+      printf("\nUnpacked .png file --> %s", salida);
       // ===============================
 
       FILE* out = fopen(salida,"wb");

@@ -20,7 +20,8 @@ project "ShowDown"
   includedirs {
     "../include",
     "../include/SDL3",
-    "../include/SDL3_image"
+    "../include/SDL3_image",
+    "../include/sqlite/**",
   }
 
   filter "system:macosx"
