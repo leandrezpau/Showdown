@@ -54,7 +54,7 @@ public:
 
   void ModifyStat(StatID stat, int amount);
 
-  Pokemon(int _id, int _level, float _weight, int _gender, bool _shiny, 
+  Pokemon(int _id, int _level, int _gender, bool _shiny, 
      SDL_Renderer* renderer_, en_SpriteType spriteType_);
 private:
   void RecalculateStats();

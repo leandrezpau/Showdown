@@ -59,25 +59,36 @@ void cl_Type::InitWithString(std::string typeString){
     // Pasar a mayúsculas para evitar problemas
     std::transform(typeString.begin(), typeString.end(), typeString.begin(), ::toupper);
 
-    if (typeString == "NORMAL")    type =  en_Types::TYPE_NORMAL;
-    if (typeString == "FIRE")      type =  en_Types::TYPE_FIRE;
-    if (typeString == "WATER")     type =  en_Types::TYPE_WATER;
-    if (typeString == "ELECTRIC")  type =  en_Types::TYPE_ELECTRIC;
-    if (typeString == "GRASS")     type =  en_Types::TYPE_GRASS;
-    if (typeString == "ICE")       type =  en_Types::TYPE_ICE;
-    if (typeString == "FIGHTING")  type =  en_Types::TYPE_FIGHTING;
-    if (typeString == "POISON")    type =  en_Types::TYPE_POISON;
-    if (typeString == "GROUND")    type =  en_Types::TYPE_GROUND;
-    if (typeString == "FLYING")    type =  en_Types::TYPE_FLYING;
-    if (typeString == "PSYCHIC")   type =  en_Types::TYPE_PSYCHIC;
-    if (typeString == "BUG")       type =  en_Types::TYPE_BUG;
-    if (typeString == "ROCK")      type =  en_Types::TYPE_ROCK;
-    if (typeString == "GHOST")     type =  en_Types::TYPE_GHOST;
-    if (typeString == "DRAGON")    type =  en_Types::TYPE_DRAGON;
-    if (typeString == "DARK")      type =  en_Types::TYPE_DARK;
-    if (typeString == "STEEL")     type =  en_Types::TYPE_STEEL;
-    if (typeString == "FAIRY")     type =  en_Types::TYPE_FAIRY;
+    static const std::unordered_map<std::string, en_Types> typeMap = {
+        {"NORMAL",   en_Types::TYPE_NORMAL},
+        {"FIRE",     en_Types::TYPE_FIRE},
+        {"WATER",    en_Types::TYPE_WATER},
+        {"ELECTRIC", en_Types::TYPE_ELECTRIC},
+        {"GRASS",    en_Types::TYPE_GRASS},
+        {"ICE",      en_Types::TYPE_ICE},
+        {"FIGHTING", en_Types::TYPE_FIGHTING},
+        {"POISON",   en_Types::TYPE_POISON},
+        {"GROUND",   en_Types::TYPE_GROUND},
+        {"FLYING",   en_Types::TYPE_FLYING},
+        {"PSYCHIC",  en_Types::TYPE_PSYCHIC},
+        {"BUG",      en_Types::TYPE_BUG},
+        {"ROCK",     en_Types::TYPE_ROCK},
+        {"GHOST",    en_Types::TYPE_GHOST},
+        {"DRAGON",   en_Types::TYPE_DRAGON},
+        {"DARK",     en_Types::TYPE_DARK},
+        {"STEEL",    en_Types::TYPE_STEEL},
+        {"FAIRY",    en_Types::TYPE_FAIRY}
+    };
 
-    type = en_Types::TYPE_NONE;
+    auto it = typeMap.find(typeString);
+    if (it != typeMap.end()) {
+        type = it->second;
+        typeName = typeString;
+    } else {
+        type = en_Types::TYPE_NONE;
+        typeName = "NONE";
+    }
+}
+void cl_Type::SetStringName(){
 }
 #endif //_TYPES_CC_

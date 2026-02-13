@@ -6,7 +6,7 @@ PokemonData getPokemonById(sqlite3* db, int pokemon_id) {
 
   const char* sql =
     "SELECT name, primary_type, secondary_type, "
-    "attack, defense, special_attack, special_defense, speed, hp, generation "
+    "attack, defense, special_attack, special_defense, speed, hp, generation, weight, evo_phase, last_evo_phase "
     "FROM pokemon WHERE id = ?;";
 
   sqlite3_stmt* stmt;
@@ -36,6 +36,9 @@ PokemonData getPokemonById(sqlite3* db, int pokemon_id) {
 
     p.maxhp = p.hp;  // Base HP como máximo inicial
     p.generation = sqlite3_column_int(stmt, 9);
+    p.weight = sqlite3_column_int(stmt, 10);
+    p.evo_phase = sqlite3_column_int(stmt, 11);
+    p.last_evo_phase = (bool) sqlite3_column_int(stmt, 12);
   }
   else {
     sqlite3_finalize(stmt);

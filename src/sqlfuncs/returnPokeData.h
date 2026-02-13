@@ -21,6 +21,9 @@ struct PokemonData {
   int hp;
   int maxhp;
   int generation;
+  float weight;
+  int evo_phase;
+  bool last_evo_phase;
 };
 
 PokemonData getPokemonById(sqlite3* db, int pokemon_id);

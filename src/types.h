@@ -5,6 +5,7 @@
 
 #include <string>
 #include <algorithm>
+#include <unordered_map>
 
 constexpr float IMM = 0.0f; // Inmune (Immune)
 constexpr float NVE = 0.5f; // No muy efectivo (Not Very Effective)
@@ -39,7 +40,7 @@ enum en_Types{
 class cl_Type {
 public:
   en_Types type;
-
+  std::string typeName;
   float GetEffectivenessAgainst(cl_Type defender1, cl_Type defender2);
   float GetEffectivenessAgainst(cl_Type defender);
   
@@ -48,6 +49,7 @@ public:
 
   void InitWithEnum(en_Types typeEnum);
   void InitWithString(std::string typeString);
+  void SetStringName();
   cl_Type(en_Types t = TYPE_NORMAL) : type(t) {}
 };
 

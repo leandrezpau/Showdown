@@ -80,9 +80,9 @@ void Pokemon::UseMove(Pokemon& target, cl_Movement move) {
     else if (typeMult < 1.0f) SDL_Log("No es muy efectivo...");
   }
 }
-Pokemon::Pokemon(int _id, int _level, float _weight, int _gender, bool _shiny, 
+Pokemon::Pokemon(int _id, int _level, int _gender, bool _shiny, 
      SDL_Renderer* renderer_, en_SpriteType spriteType_)
-    : id(_id), level(50), weight(_weight), gender(_gender), shiny(_shiny), PokeSprite(renderer_)
+    : id(_id), level(50), gender(_gender), shiny(_shiny), PokeSprite(renderer_)
   {
     
     sqlite3* db;
@@ -105,6 +105,13 @@ Pokemon::Pokemon(int _id, int _level, float _weight, int _gender, bool _shiny,
     baseStats = stats_;
     currentStats = stats_;
 
+    //Weight
+    weight = pokemon_.weight;
+    
+    //Stages
+    stage = pokemon_.evo_phase;
+    fully_evolved = pokemon_.last_evo_phase;
+
     // GENERATION
     generation = pokemon_.generation;
 
@@ -118,5 +125,18 @@ Pokemon::Pokemon(int _id, int _level, float _weight, int _gender, bool _shiny,
       case en_SpriteType::type_Defender: InitPokemonSpriteDst(480, 200, 2); break;
       case en_SpriteType::type_Icon:     InitPokemonSpriteDst(400, 400, 2); break;
     }
+
+    std::cout << "\nName: " << name;
+    std::cout << "\nType 1: " << type1.typeName;
+    std::cout << "\nType 2: " << type2.typeName;
+    std::cout << "\nWheight: " << weight;
+    std::cout << "\nStage: " << stage;
+    std::cout << "\nIs Fully Evolved? ";
+    if(fully_evolved){
+      std::cout <<"Yes";
+    }else{
+      std::cout <<"No";
+    }
+    std::cout << "\nGeneration: " << generation;
   }
 #endif
