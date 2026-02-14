@@ -98,17 +98,6 @@ void PokeSprite::InitSpriteSrc(bool tile){
   }
 }
 
-void PokeSprite::InitSpriteDst(float x, float y, float scale){
-  if(sprite){
-    dst.x = x;
-    dst.y = y;
-
-    SDL_GetTextureSize(sprite, &dst.w, &dst.h);
-    dst.h *= scale;
-    dst.w *= scale;
-  }
-}
-
 void PokeSprite::InitPokemonSpriteDst(float x, float y, float scale){
   if(sprite){
     dst.x = x - (src.w / 2 * scale);;
@@ -119,7 +108,7 @@ void PokeSprite::InitPokemonSpriteDst(float x, float y, float scale){
   }
 }
 
-void PokeSprite::UpdateSpriteDst(float x, float y, float scale){
+void PokeSprite::UpdatePokemonSpriteDst(float x, float y, float scale){
   if(sprite){
     dst.x = x - (src.w / 2 * scale);
     dst.y = y - (src.h * scale);

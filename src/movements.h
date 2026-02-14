@@ -32,24 +32,21 @@ enum en_Movement {
 
 class cl_Movement {
 public:
-    std::string moveName;
-    cl_Type moveType;
-    int power;
-    int accuracy;
-    int pp;
-    bool isState;
-    bool isSpecial;
+  std::string moveName;   // Name of this move
+  cl_Type moveType;       // Type of the move (e.g., Fire, Water, etc.)
+  int power;              // Base damage power of the move
+  int accuracy;           // Hit chance percentage (0–100)
+  int pp;                 // Maximum number of times the move can be used
+  int currentPP;          // Remaining uses available
+  bool isState;           // True if the move does not deal damage (status move)
+  bool isSpecial;         // True if the move uses special attack/defense instead of physical stats
 
-    StatID affectedStat;
-    int stageChange;
+  StatID affectedStat;    // Stat modified by the move (if it changes stats)
+  int stageChange;        // Amount of stat stages increased or decreased
 
-    cl_Movement(std::string n, cl_Type t, int p, int acc, int _pp, bool state, bool special,
-      StatID stat = STAT_NONE, int stages = 0)
-      : moveName(n), moveType(t), power(p), accuracy(acc), pp(_pp),
-      isState(state), isSpecial(special),
-      affectedStat(stat), stageChange(stages)
-    {
-    }
+  cl_Movement();          // Default constructor with no data
+  cl_Movement(std::string n, en_Types t, int p, int acc, int _pp, bool state, bool special,
+    StatID stat = STAT_NONE, int stages = 0);
 };
 
 

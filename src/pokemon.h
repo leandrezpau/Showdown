@@ -11,6 +11,7 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include <array>
 
 #include "sqlfuncs/returnPokeData.h"
 
@@ -30,24 +31,24 @@ struct Stats {
 
 class Pokemon : public PokeSprite{
 public:
-  int id;
-  int level;
-  float weight;
-  int gender;     //0 masc, 1 fem, 2 genderless
-  int generation; //para que cuando los clasifiquemos en un futuro se pueda filtrar por generaci�n y tipo...
-  int stage;
-  bool fully_evolved;  //esta en su ultima fase?
-  bool shiny;
+  int id;             // Pokedex num of that pokemon
+  int level;          // Level of the poke                
+  float weight;       // Wheight of that pokemon
+  int gender;         // 0 male, 1 fem, 2 genderless
+  int generation;     // pokemon generation
+  int stage;          // Stage in which he is
+  bool fully_evolved; // He is in his last stage?
+  bool shiny;         // Shiny?
 
-  Stats baseStats;
-  Stats currentStats;
-  std::string name;
-  cl_Type type1; 
-  cl_Type type2;
-  int statStages[8];
+  Stats baseStats;    // Base stats
+  Stats currentStats; // Stats now he is leveled up
+  std::string name;   // Name of the pokemon
+  cl_Type type1;      // First type
+  cl_Type type2;      // Secondary type
+  int statStages[8];  // Which stage he is in
 
-  std::vector<cl_Movement> moves;
-  std::vector<cl_Movement> movement;
+  std::vector<cl_Movement> moves;       // ??Comentar
+  std::array<cl_Movement, 4> movement;  // Movements he knows
 
   float CalculateIncomingDamageMult(cl_Type attackType);
   void UseMove(Pokemon& target, cl_Movement move);
@@ -58,6 +59,7 @@ public:
 
   Pokemon(int _id, int _level, int _gender, bool _shiny, 
      SDL_Renderer* renderer_, en_SpriteType spriteType_);
+
 private:
   void RecalculateStats();
 };

@@ -24,26 +24,26 @@ class PokeSprite {
 public: 
 	static const int kNPokes = 721;
 
-	en_SpriteType typeSprite;
+	en_SpriteType typeSprite;		// Type of sprite is been used -> Back, Front or Icon
 
-	SDL_Texture* sprite; //Where to load sprite
-	SDL_FRect dst; // x, y, w (width), h (height)
-	SDL_FRect src; // x, y, w (width), h (height)
+	SDL_Texture* sprite; 				// Where to load sprite
+	SDL_FRect dst; 							// x, y, w, h (of the sprite)
+	SDL_FRect src; 							// x, y, w, h (of the tile used in sprite)
 
-	short int numTiles;
-	short int currentTile = 0;
-	short int tileSize;
+	short int numTiles;					// Num of tiles sprite has
+	short int currentTile = 0;	// Current Tile is been used
+	short int tileSize;					// As sprites are rectangular (a lot of square tiles)
+	                            // And every tile is a square, used as pixel size of it
 
-	Uint64 last = 0;
+	Uint64 last = 0;						// Timer for selecting next tile
 
-	SDL_Renderer* sRenderer_; //Same renderer as window
+	SDL_Renderer* sRenderer_; 	// Renderer of the window (getted by constructor directly from main.cc)
 	
 
 	void SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID);
 
-	void InitSpriteDst(float x, float y, float scale);
 	void InitPokemonSpriteDst(float x, float y, float scale);
-	void UpdateSpriteDst(float x, float y, float scale);
+	void UpdatePokemonSpriteDst(float x, float y, float scale);
 	
 	void InitSpriteSrc(bool tile = true);
 	
@@ -62,19 +62,20 @@ class Sprite {
 public: 
 	static const int kNPokes = 721;
 
-	en_SpriteType typeSprite;
+	en_SpriteType typeSprite;		// Type of sprite is been used -> Back, Front or Icon
 
-	SDL_Texture* sprite; //Where to load sprite
-	SDL_FRect dst; // x, y, w (width), h (height)
-	SDL_FRect src; // x, y, w (width), h (height)
+	SDL_Texture* sprite; 				// Where to load sprite
+	SDL_FRect dst; 							// x, y, w, h (of the sprite)
+	SDL_FRect src; 							// x, y, w, h (of the tile used in sprite)
 
-	short int numTiles;
-	short int currentTile = 0;
-	short int tileSize;
+	short int numTiles;					// Num of tiles sprite has
+	short int currentTile = 0;	// Current Tile is been used
+	short int tileSize;					// As sprites are rectangular (a lot of square tiles)
+	                            // And every tile is a square, used as pixel size of it
 
-	Uint64 last = 0;
+	Uint64 last = 0;						// Timer for selecting next tile
 
-	SDL_Renderer* sRenderer_; //Same renderer as window
+	SDL_Renderer* sRenderer_; 	// Renderer of the window (getted by constructor directly from main.cc)
 	
 	void SelectSpriteFromRoute(const char* route);
 

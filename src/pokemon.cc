@@ -138,8 +138,7 @@ void Pokemon::SetNewPokemon(int _id, int _level, int _gender, bool _shiny, en_Sp
 
 Pokemon::Pokemon(int _id, int _level, int _gender, bool _shiny, 
      SDL_Renderer* renderer_, en_SpriteType spriteType_)
-    : id(_id), level(50), gender(_gender), shiny(_shiny), PokeSprite(renderer_)
-  {
+    : id(_id), level(50), gender(_gender), shiny(_shiny), PokeSprite(renderer_){
     
     sqlite3* db;
     sqlite3_open("../assets/Database/PokemonDB.db", &db);
@@ -160,7 +159,11 @@ Pokemon::Pokemon(int _id, int _level, int _gender, bool _shiny,
     Stats stats_ = {pokemon_.hp, pokemon_.attack, pokemon_.defense, pokemon_.specialAttack, pokemon_.specialDefense, pokemon_.speed, pokemon_.maxhp};
     baseStats = stats_;
     currentStats = stats_;
-
+    
+    //Movements
+    for(int i = 0; i < 4; i++){
+      //movement[i]
+    }
     //Weight
     weight = pokemon_.weight;
     
