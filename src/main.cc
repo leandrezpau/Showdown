@@ -42,7 +42,8 @@ int main(int argc, char* argv[]){
   SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
   SDL_SetRenderVSync(renderer, 1);
 
-  
+  int currentPokemon = 1;
+  int contador = 0;
   bool running = true;
   //ID, Level, Weight, Gender, Shiny, Renderer, TypeSprite
   Pokemon poke1{392, 50, 0, false, renderer, en_SpriteType::type_Attacker};
@@ -71,6 +72,8 @@ int main(int argc, char* argv[]){
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
         SDL_RenderClear(renderer);
 
+        //if(contador % 60 == 0) poke1.SetNewPokemon(++currentPokemon, 50, 0, true, poke1.typeSprite);
+
         background.DrawSprite();
         poke1.DrawSprite();
         poke2.DrawSprite();
@@ -78,7 +81,7 @@ int main(int argc, char* argv[]){
 
         //DRAW CLEAR
         SDL_RenderPresent(renderer);
-
+        contador++;
         //sceneManager = en_SceneManager::kSceneChoseTeam;
         break;
       }

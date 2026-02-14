@@ -80,6 +80,62 @@ void Pokemon::UseMove(Pokemon& target, cl_Movement move) {
     else if (typeMult < 1.0f) SDL_Log("No es muy efectivo...");
   }
 }
+
+void Pokemon::SetNewPokemon(int _id, int _level, int _gender, bool _shiny, en_SpriteType spriteType_){
+  sqlite3* db;
+  sqlite3_open("../assets/Database/PokemonDB.db", &db);
+
+  PokemonData pokemon_ = getPokemonById(db, _id);
+
+  sqlite3_close(db);
+
+  //Name in UpperCase
+  name = pokemon_.name;
+  std::transform(name.begin(), name.end(), name.begin(), ::toupper);
+
+  //Pokemon Types
+  type1.InitWithString(pokemon_.type1);
+  type2.InitWithString(pokemon_.type2);
+
+  //Stats
+  Stats stats_ = {pokemon_.hp, pokemon_.attack, pokemon_.defense, pokemon_.specialAttack, pokemon_.specialDefense, pokemon_.speed, pokemon_.maxhp};
+  baseStats = stats_;
+  currentStats = stats_;
+
+  //Weight
+  weight = pokemon_.weight;
+  
+  //Stages
+  stage = pokemon_.evo_phase;
+  fully_evolved = pokemon_.last_evo_phase;
+
+  // GENERATION
+  generation = pokemon_.generation;
+
+  //Sprite Things
+  typeSprite = spriteType_;
+  SelectPokemonSprite(_shiny, spriteType_, _id);
+  InitSpriteSrc();
+  switch(typeSprite){
+    case en_SpriteType::type_Attacker: InitPokemonSpriteDst(160, 350, 3); break;
+    case en_SpriteType::type_Defender: InitPokemonSpriteDst(480, 200, 2); break;
+    case en_SpriteType::type_Icon:     InitPokemonSpriteDst(400, 400, 2); break;
+  }
+
+  std::cout << "\nName: " << name;
+  std::cout << "\nType 1: " << type1.typeName;
+  std::cout << "\nType 2: " << type2.typeName;
+  std::cout << "\nWheight: " << weight;
+  std::cout << "\nStage: " << stage;
+  std::cout << "\nIs Fully Evolved? ";
+  if(fully_evolved){
+    std::cout <<"Yes";
+  }else{
+    std::cout <<"No";
+  }
+  std::cout << "\nGeneration: " << generation;
+}
+
 Pokemon::Pokemon(int _id, int _level, int _gender, bool _shiny, 
      SDL_Renderer* renderer_, en_SpriteType spriteType_)
     : id(_id), level(50), gender(_gender), shiny(_shiny), PokeSprite(renderer_)
