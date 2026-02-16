@@ -21,8 +21,6 @@
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 380
 
-en_SceneManager sceneManager = en_SceneManager::kSceneInit;
-
 #pragma region Main
 /*
     .___  ___.      ___       __  .__   __. 
@@ -42,6 +40,8 @@ int main(int argc, char* argv[]){
   SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
   SDL_SetRenderVSync(renderer, 1);
 
+  Game game;
+
   int currentPokemon = 1;
   int contador = 0;
   bool running = true;
@@ -57,14 +57,14 @@ int main(int argc, char* argv[]){
       if (event.type == SDL_EVENT_QUIT) running = false;
     }
 
-    switch(sceneManager){
+    switch(game.sceneManager){
       case en_SceneManager::kSceneInit:{  //CURRENT SCENE
         
         background.SelectSpriteFromRoute("../assets/background_Sprites/lava_battle.png");
         background.InitSpriteSrc(false);
         background.InitSpriteDst(0, 0, 1);
 
-        sceneManager = en_SceneManager::kSceneGameMode;
+        game.sceneManager = en_SceneManager::kSceneGameMode;
         break;
       }
       case en_SceneManager::kSceneGameMode:{  //CURRENT SCENE
@@ -113,17 +113,17 @@ int main(int argc, char* argv[]){
         //DRAW CLEAR
         SDL_RenderPresent(renderer);
         
-        sceneManager = en_SceneManager::kSceneFight;
+        game.sceneManager = en_SceneManager::kSceneFight;
         break;
       }
       case en_SceneManager::kSceneFight:{     //CURRENT SCENE
 
-        sceneManager = en_SceneManager::kSceneAfterFight;
+        game.sceneManager = en_SceneManager::kSceneAfterFight;
         break;
       }
       case en_SceneManager::kSceneAfterFight:{ //CURRENT SCENE
 
-        sceneManager = en_SceneManager::kSceneEnd;
+        game.sceneManager = en_SceneManager::kSceneEnd;
         break;
       }
       case en_SceneManager::kSceneEnd:{       //CURRENT SCENE

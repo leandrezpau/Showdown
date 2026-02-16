@@ -171,6 +171,9 @@ Pokemon::Pokemon(int _id, int _level, int _gender, bool _shiny,
     stage = pokemon_.evo_phase;
     fully_evolved = pokemon_.last_evo_phase;
 
+    //State
+    state = PokeState::kStateAlive;
+
     // GENERATION
     generation = pokemon_.generation;
 

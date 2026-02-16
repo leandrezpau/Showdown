@@ -29,6 +29,18 @@ struct Stats {
   float maxHP;
 };
 
+enum PokeState {
+  kStateAlive = 0,
+  kStateFainted,
+  kStateBurn,
+  kStatePoison,
+  kStateBadPoison,
+  kStateParalysis,
+  kStateSleep,
+  kStateFreeze,
+  kStateNone
+};
+
 class Pokemon : public PokeSprite{
 public:
   int id;             // Pokedex num of that pokemon
@@ -46,6 +58,8 @@ public:
   cl_Type type1;      // First type
   cl_Type type2;      // Secondary type
   int statStages[8];  // Which stage he is in
+
+  PokeState state;
 
   std::vector<cl_Movement> moves;       // ??Comentar
   std::array<cl_Movement, 4> movement;  // Movements he knows

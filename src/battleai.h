@@ -8,7 +8,7 @@
 
 class BattleAI {
 public:
-  enum Difficulty { EASY, MEDIUM, HARD };
+  enum Difficulty { EASY = 0, MEDIUM, HARD };
 
   static int ChooseBestMove(Pokemon* aiPokemon, Pokemon* playerPokemon);
 
