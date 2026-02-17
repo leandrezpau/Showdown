@@ -4,11 +4,11 @@
 #include "movements.h"
 
 /*
-void cl_Movement::ChangeStats() {
+void Movement::ChangeStats() {
 
 }
 */
-cl_Movement::cl_Movement()
+Movement::Movement()
   : moveName("NULL"),
     power(0),
     accuracy(0),
@@ -21,7 +21,7 @@ cl_Movement::cl_Movement()
 {
   moveType.InitWithEnum(en_Types::TYPE_NONE);
 }
-cl_Movement::cl_Movement(std::string n, en_Types t, int p, int acc, 
+Movement::Movement(std::string n, en_Types t, int p, int acc, 
                   int _pp, bool state, bool special, StatID stat, int stages)
   : moveName(n), power(p), accuracy(acc), pp(_pp), currentPP(_pp), isState(state), 
   isSpecial(special),affectedStat(stat), stageChange(stages)

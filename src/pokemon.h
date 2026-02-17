@@ -61,16 +61,18 @@ public:
 
   PokeState state;
 
-  std::vector<cl_Movement> moves;       // ??Comentar
-  std::array<cl_Movement, 4> movement;  // Movements he knows
+  std::vector<Movement> moves;       // ��Nose para que es esto??
+  std::array<Movement, 4> movement;  // Movements he knows
 
   float CalculateIncomingDamageMult(cl_Type attackType);
-  void UseMove(Pokemon& target, cl_Movement move);
+  void UseMove(Pokemon& target, Movement move);
 
   void ModifyStat(StatID stat, int amount);
 
   void SetNewPokemon(int _id, int _level, int _gender, bool _shiny, en_SpriteType spriteType_);
 
+  void PrintPokemon();
+  void InitSprites();
   Pokemon(int _id, int _level, int _gender, bool _shiny, 
      SDL_Renderer* renderer_, en_SpriteType spriteType_);
 

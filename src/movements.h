@@ -4,7 +4,6 @@
 #define _MOVEMENTS_H_
 
 #include "types.h"
-#include "pokemon.h"
 #include <string>
 
 enum StatID {
@@ -30,7 +29,7 @@ enum en_Movement {
   mv_NULL
 };
 
-class cl_Movement {
+class Movement {
 public:
   std::string moveName;   // Name of this move
   cl_Type moveType;       // Type of the move (e.g., Fire, Water, etc.)
@@ -44,8 +43,8 @@ public:
   StatID affectedStat;    // Stat modified by the move (if it changes stats)
   int stageChange;        // Amount of stat stages increased or decreased
 
-  cl_Movement();          // Default constructor with no data
-  cl_Movement(std::string n, en_Types t, int p, int acc, int _pp, bool state, bool special,
+  Movement();          // Default constructor with no data
+  Movement(std::string n, en_Types t, int p, int acc, int _pp, bool state, bool special,
     StatID stat = STAT_NONE, int stages = 0);
 };
 

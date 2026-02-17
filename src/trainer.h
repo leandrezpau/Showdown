@@ -13,10 +13,10 @@ public:
 	int currentPokemonIndex = 0;
 	bool isAI;
 
-	Trainer(std::string n, bool ai) : name(n), isAI(ai) {}
-
   void AddPokemon(Pokemon p);
   Pokemon* GetActivePokemon();
   bool HasAvailablePokemon();
+
+	Trainer(std::string n, bool ai);
 };
 #endif //_TRAINER_H
