@@ -45,11 +45,14 @@ int main(int argc, char* argv[]){
   int currentPokemon = 1;
   int contador = 0;
   bool running = true;
-  //ID, Level, Weight, Gender, Shiny, Renderer, TypeSprite
-  Pokemon poke1{392, 50, 0, false, renderer, en_SpriteType::type_Attacker};
-  Pokemon poke2{718, 50, 0, false, renderer, en_SpriteType::type_Defender};
 
-  Sprite background{renderer};
+  BaseSprite::SetSpritesRenderer(renderer);
+
+  //ID, Level, Weight, Gender, Shiny, Renderer, TypeSprite
+  Pokemon poke1{392, 50, 0, true, en_SpriteType::type_Attacker};
+  Pokemon poke2{6, 50, 0, true, en_SpriteType::type_Defender};
+
+  Sprite background;
  
   while (running) {
     SDL_Event event;

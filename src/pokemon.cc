@@ -104,9 +104,9 @@ void Pokemon::InitSprites(){
   SelectPokemonSprite(shiny, typeSprite, id);
   InitSpriteSrc();
   switch(typeSprite){
-    case en_SpriteType::type_Attacker: InitPokemonSpriteDst(160, 350, 3); break;
-    case en_SpriteType::type_Defender: InitPokemonSpriteDst(480, 200, 2); break;
-    case en_SpriteType::type_Icon:     InitPokemonSpriteDst(400, 400, 2); break;
+    case en_SpriteType::type_Attacker: InitSpriteDst(160, 220, 3, true); break;
+    case en_SpriteType::type_Defender: InitSpriteDst(480, 110, 2, true); break;
+    case en_SpriteType::type_Icon:     InitSpriteDst(400, 320, 2, true); break;
   }
 }
 
@@ -160,9 +160,8 @@ void Pokemon::SetNewPokemon(int _id, int _level, int _gender, bool _shiny, en_Sp
   PrintPokemon();
 }
 
-Pokemon::Pokemon(int _id, int _level, int _gender, bool _shiny, 
-     SDL_Renderer* renderer_, en_SpriteType spriteType_)
-    : id(_id), level(50), gender(_gender), shiny(_shiny), PokeSprite(renderer_){
+Pokemon::Pokemon(int _id, int _level, int _gender, bool _shiny, en_SpriteType spriteType_)
+    : id(_id), level(50), gender(_gender), shiny(_shiny){
     
   sqlite3* db;
   sqlite3_open("../assets/Database/PokemonDB.db", &db);
@@ -212,7 +211,6 @@ Pokemon::Pokemon(int _id, int _level, int _gender, bool _shiny,
 
   //Sprite Things
   typeSprite = spriteType_;
-  sRenderer_ = renderer_;
   InitSprites();
 
   PrintPokemon();

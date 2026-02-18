@@ -73,8 +73,7 @@ public:
 
   void PrintPokemon();
   void InitSprites();
-  Pokemon(int _id, int _level, int _gender, bool _shiny, 
-     SDL_Renderer* renderer_, en_SpriteType spriteType_);
+  Pokemon(int _id, int _level, int _gender, bool _shiny, en_SpriteType spriteType_);
 
 private:
   void RecalculateStats();

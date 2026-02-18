@@ -20,79 +20,46 @@ enum en_SpriteType{
 	type_Icon,
 };
 
-class PokeSprite {
-public: 
+class BaseSprite {
+protected:
 	static const int kNPokes = 721;
 
 	en_SpriteType typeSprite;		// Type of sprite is been used -> Back, Front or Icon
 
-	SDL_Texture* sprite; 				// Where to load sprite
-	SDL_FRect dst; 							// x, y, w, h (of the sprite)
-	SDL_FRect src; 							// x, y, w, h (of the tile used in sprite)
+  SDL_Texture* sprite = nullptr;
+  SDL_FRect dst{};
+  SDL_FRect src{};
 
-	short int numTiles;					// Num of tiles sprite has
-	short int currentTile = 0;	// Current Tile is been used
-	short int tileSize;					// As sprites are rectangular (a lot of square tiles)
-	                            // And every tile is a square, used as pixel size of it
+  short int numTiles = 1;
+  short int currentTile = 0;
+  short int tileSize = 0;
 
-	Uint64 last = 0;						// Timer for selecting next tile
+  Uint64 last = 0;
 
-	SDL_Renderer* sRenderer_; 	// Renderer of the window (getted by constructor directly from main.cc)
-	
+  static SDL_Renderer* sRenderer_;
 
-	void SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID);
+public:
+  static void SetSpritesRenderer(SDL_Renderer* renderer);
 
-	void InitPokemonSpriteDst(float x, float y, float scale);
-	void UpdatePokemonSpriteDst(float x, float y, float scale);
-	
-	void InitSpriteSrc(bool tile = true);
-	
-	void DecideNextFrame();
+  void InitSpriteSrc(bool tile = true);
+  void InitSpriteDst(float x, float y, float scale, bool centered = false);
+  void UpdateSpriteDst(float x, float y, float scale, bool centered = false);
 
-	void DrawSprite();
-	void ApplyFilter(float r, float g, float b);
+  void DrawSprite(int frameDelay = 150);
+  void ApplyFilter(float r, float g, float b);
+  void DestroySprite();
 
-	void DestroySprite();
-
-	PokeSprite(SDL_Renderer* renderer);
-	~PokeSprite();
+  virtual ~BaseSprite();
 };
 
-class Sprite {
-public: 
-	static const int kNPokes = 721;
+class Sprite : public BaseSprite {
+public:
+  void SelectSpriteFromRoute(const char* route);
+};
 
-	en_SpriteType typeSprite;		// Type of sprite is been used -> Back, Front or Icon
-
-	SDL_Texture* sprite; 				// Where to load sprite
-	SDL_FRect dst; 							// x, y, w, h (of the sprite)
-	SDL_FRect src; 							// x, y, w, h (of the tile used in sprite)
-
-	short int numTiles;					// Num of tiles sprite has
-	short int currentTile = 0;	// Current Tile is been used
-	short int tileSize;					// As sprites are rectangular (a lot of square tiles)
-	                            // And every tile is a square, used as pixel size of it
-
-	Uint64 last = 0;						// Timer for selecting next tile
-
-	SDL_Renderer* sRenderer_; 	// Renderer of the window (getted by constructor directly from main.cc)
-	
-	void SelectSpriteFromRoute(const char* route);
-
-	void InitSpriteDst(float x, float y, float scale);
-	void UpdateSpriteDst(float x, float y, float scale);
-	
-	void InitSpriteSrc(bool tile = true);
-	
-	void DecideNextFrame();
-
-	void DrawSprite();
-	void ApplyFilter(float r, float g, float b);
-
-	void DestroySprite();
-
-	Sprite(SDL_Renderer* renderer);
-	~Sprite();
+class PokeSprite : public BaseSprite {
+public:
+  void SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID);
 };
 
 #endif //_SPRITES_H_
