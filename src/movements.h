@@ -31,6 +31,7 @@ enum en_Movement {
 
 class Movement {
 public:
+  en_Movement index;      // Movement which indeed is
   std::string moveName;   // Name of this move
   cl_Type moveType;       // Type of the move (e.g., Fire, Water, etc.)
   int power;              // Base damage power of the move

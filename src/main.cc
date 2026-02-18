@@ -44,7 +44,7 @@ int main(int argc, char* argv[]){
 
   int currentPokemon = 1;
   int contador = 0;
-  bool running = true;
+  
 
   BaseSprite::SetSpritesRenderer(renderer);
 
@@ -54,10 +54,10 @@ int main(int argc, char* argv[]){
 
   Sprite background;
  
-  while (running) {
+  while (game.running) {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-      if (event.type == SDL_EVENT_QUIT) running = false;
+      if (event.type == SDL_EVENT_QUIT) game.running = false;
     }
 
     switch(game.sceneManager){
@@ -131,7 +131,7 @@ int main(int argc, char* argv[]){
       }
       case en_SceneManager::kSceneEnd:{       //CURRENT SCENE
 
-        running = false;
+        game.running = false;
         break;
       }
     }

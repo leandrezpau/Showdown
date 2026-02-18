@@ -8,8 +8,8 @@ int BattleAI::ChooseBestMove(Pokemon* aiPoke, Pokemon* playerPoke) {
   int bestMoveIndex = -1;
   float maxScore = -9999.0f;
 
-  for (int i = 0; i < aiPoke->moves.size(); i++) {
-    Movement& move = aiPoke->moves[i];
+  for (int i = 0; i < aiPoke->movement.size(); i++) {
+    Movement& move = aiPoke->movement[i];
     float score = 0.0f;
 
     float predictedDamage = 0;

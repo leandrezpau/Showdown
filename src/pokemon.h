@@ -61,8 +61,7 @@ public:
 
   PokeState state;
 
-  std::vector<Movement> moves;       // ��Nose para que es esto??
-  std::array<Movement, 4> movement;  // Movements he knows
+  std::vector<Movement> movement;  // Movements he can use
 
   float CalculateIncomingDamageMult(cl_Type attackType);
   void UseMove(Pokemon& target, Movement move);

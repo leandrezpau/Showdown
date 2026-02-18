@@ -20,5 +20,7 @@ bool Trainer::HasAvailablePokemon() {
   }
   return false;
 }
-
+Pokemon Trainer::GetCurrentPokemon(){
+  return team[currentPokemonIndex];
+}
 #endif //_TRAINER_CC_

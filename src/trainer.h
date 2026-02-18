@@ -16,7 +16,8 @@ public:
   void AddPokemon(Pokemon p);
   Pokemon* GetActivePokemon();
   bool HasAvailablePokemon();
-
+	Pokemon GetCurrentPokemon();
+	
 	Trainer(std::string n, bool ai);
 };
 #endif //_TRAINER_H
