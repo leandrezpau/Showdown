@@ -57,23 +57,24 @@ void Game::DecideActions() {
       playerActions.playerIndex[1] = aiDecision.playerIndex[0];
       playerActions.decided[1] = true;
     }
-    
-    SDL_Event event;
 
+    // Poll event to get player input (which action he wants to)
+    SDL_Event event;
     while (SDL_PollEvent(&event)) {
       if (event.type == SDL_EVENT_QUIT) {
         running = false;
         return;
       }
-
+      
       if (event.type == SDL_EVENT_KEY_DOWN && event.key.repeat == 0) {
         int key = event.key.scancode;
 
-        //CHOOSE TYPE OF ACTION
+        // CHOOSE TYPE OF ACTION (Attack or Change)
         if (playerActions.playerAction[0] == kActionNULL) {
-
+          // Key 1 Attack
           if (key == SDL_SCANCODE_1) {
             playerActions.playerAction[0] = kActionAttack;
+            // Printing pokemon movements
             std::cout << "\nAttacking, Now choose movement to use";
             int kMoves = trainer1->GetCurrentPokemon().movement.size();
             for(int i = 0; i < 4; i++){
@@ -84,7 +85,7 @@ void Game::DecideActions() {
               }
             }
           }
-
+          // Key 2 Change
           else if (key == SDL_SCANCODE_2) {
             playerActions.playerAction[0] = kActionChangePoke;
             std::cout << "\nChanging pokemon, Now choose which pokemon to use";
