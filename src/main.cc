@@ -50,7 +50,7 @@ int main(int argc, char* argv[]){
 
   //ID, Level, Weight, Gender, Shiny, Renderer, TypeSprite
   Trainer train1{"Goldi", false};
-  Trainer train2{"Goldi", true};
+  Trainer train2{"IA Trainer", true};
   
   Pokemon poke1{392, 50, 0, true, en_SpriteType::type_Attacker};
   Pokemon poke2{6, 50, 0, true, en_SpriteType::type_Defender};

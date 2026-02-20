@@ -43,7 +43,21 @@ void Game::HealPlayer(Trainer* healedTrainer) {
 // Fase de Seleccion: Pide la accion al Jugador 1 y consulta a la IA para el Jugador 2
 void Game::DecideActions() {
   if (running) {
+    // === TURNO JUGADOR 2 (IA) === 
+    // Entra solo la primera vez q se llama la funcion
+    if (running && trainer2->isAI && playerActions.decided[1] == false) {
+      std::cout << "\n" << trainer2->name << " (IA) esta decidiendo su jugada...\n";
 
+      // Llamamos a la IA pas�ndole el entrenador rival y el Pok�mon activo del jugador
+      // Usamos GetActivePokemon() que devuelve un puntero, tal como lo definiste en trainer.h
+      PlayerActions aiDecision = BattleAI::GetBestAction(trainer2, trainer1->GetActivePokemon());
+
+      // Guardamos la decisi�n de la IA en el �ndice 1 (correspondiente al Jugador 2)
+      playerActions.playerAction[1] = aiDecision.playerAction[0];
+      playerActions.playerIndex[1] = aiDecision.playerIndex[0];
+      playerActions.decided[1] = true;
+    }
+    
     SDL_Event event;
 
     while (SDL_PollEvent(&event)) {
