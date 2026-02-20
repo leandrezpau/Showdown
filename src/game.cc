@@ -3,7 +3,9 @@
 #include "game.h"
 #include "battleai.h"
 #include <iostream>
-void Game::InitBattle(Trainer* _trainer1, Trainer* _trainer2){
+
+// Configura los entrenadores al inicio del combate y cura a sus equipos
+void Game::InitBattle(Trainer* _trainer1, Trainer* _trainer2) {
   std::cout << "\n" << _trainer1->name << "you are being challenged by " << _trainer2->name;
 
   trainer1 = _trainer1;
@@ -13,40 +15,41 @@ void Game::InitBattle(Trainer* _trainer1, Trainer* _trainer2){
   HealPlayer(trainer2);
 }
 
-int Game::EndedBattle(Trainer* _trainer1, Trainer* _trainer2){
-  if(_trainer1->HasAvailablePokemon()) return 1;
-  if(_trainer2->HasAvailablePokemon()) return 2;
+// Comprueba si la batalla ha terminado verificando si a algun entrenador no le quedan Pokemon vivos
+// Devuelve: 0 -> Combate activo | 1 -> Gana Entrenador 1 | 2 -> Gana Entrenador 2
+int Game::EndedBattle(Trainer* _trainer1, Trainer* _trainer2) {
+  if (_trainer1->HasAvailablePokemon()) return 1;
+  if (_trainer2->HasAvailablePokemon()) return 2;
   return 0;
 }
 
-void Game::HealPlayer(Trainer* healedTrainer){
-  for(int i = 0; i < healedTrainer->team.size(); i++){
-    if(true){ // Sanity check if pokemon exists
+// Restaura HP, PP y estados alterados de todo el equipo de un entrenador
+void Game::HealPlayer(Trainer* healedTrainer) {
+  for (int i = 0; i < healedTrainer->team.size(); i++) {
+    if (true) { // Sanity check if pokemon exists
       Pokemon* poke = &healedTrainer->team[i];
 
-      //Movement PP
-      for(int e = 0; e < 4; e++){
+      for (int e = 0; e < 4; e++) {
         poke->movement[e].currentPP = poke->movement[e].pp;
       }
-      //Current Stats to Base Stats
       poke->currentStats = poke->baseStats;
-
-      //Giving him alive again
       poke->state = PokeState::kStateAlive;
     }
   }
 }
 
+// Fase de Seleccion: Pide la accion al Jugador 1 y consulta a la IA para el Jugador 2
 PlayerActions Game::DecideActions(PlayerActions* act) {
   bool choosing = true;
 
-  // Limpiamos las acciones por si acaso (evita basura de turnos anteriores)
+  // Limpiamos las acciones para no arrastrar basura del turno anterior
   act->playerAction[0] = kActionNULL;
   act->playerAction[1] = kActionNULL;
 
   std::cout << "\nPress 1 to attack\nPress 2 to change pokemon";
 
   // === TURNO JUGADOR 1 (HUMANO) ===
+  // Bucle de eventos SDL para registrar la eleccion del usuario
   while (choosing && running) {
     SDL_Event event;
 
@@ -59,7 +62,7 @@ PlayerActions Game::DecideActions(PlayerActions* act) {
       if (event.type == SDL_EVENT_KEY_DOWN && event.key.repeat == 0) {
         int key = event.key.scancode;
 
-        // Choose type of action
+        // Primero elige el tipo de accion (Atacar o Cambiar)
         if (act->playerAction[0] == kActionNULL) {
           if (key == SDL_SCANCODE_1) {
             act->playerAction[0] = kActionAttack;
@@ -70,35 +73,33 @@ PlayerActions Game::DecideActions(PlayerActions* act) {
             std::cout << "\nChanging pokemon, Now choose which pokemon to use";
           }
         }
-        // Choose index in action
+        // Luego elige el indice especifico (que ataque o que Pokemon)
         else {
           if (key >= SDL_SCANCODE_1 && key <= SDL_SCANCODE_6) {
             int index = key - SDL_SCANCODE_1;
 
-            // If changing pokemon
             if (act->playerAction[0] == kActionChangePoke && index <= trainer1->team.size() - 1) {
               act->playerIndex[0] = index;
               if (ValidateAction(*act)) {
-                choosing = false; // <-- CAMBIO AQUÍ: Rompemos el bucle en lugar de retornar
+                choosing = false;
                 break;
               }
               else {
                 act->playerIndex[0] = 0;
-                act->playerAction[0] = kActionNULL; // Reseteamos si es inválido
+                act->playerAction[0] = kActionNULL; // Reset si la accion es invalida
               }
             }
 
-            // If attacking
             Pokemon poke = trainer1->team[trainer1->currentPokemonIndex];
             if (act->playerAction[0] == kActionAttack && index <= poke.movement.size() - 1) {
               act->playerIndex[0] = index;
               if (ValidateAction(*act)) {
-                choosing = false; // <-- CAMBIO AQUÍ: Rompemos el bucle en lugar de retornar
+                choosing = false;
                 break;
               }
               else {
                 act->playerIndex[0] = 0;
-                act->playerAction[0] = kActionNULL; // Reseteamos si es inválido
+                act->playerAction[0] = kActionNULL; // Reset si la accion es invalida
               }
             }
           }
@@ -110,12 +111,9 @@ PlayerActions Game::DecideActions(PlayerActions* act) {
   // === TURNO JUGADOR 2 (IA) ===
   if (running && trainer2->isAI) {
     std::cout << "\n" << trainer2->name << " (IA) esta decidiendo su jugada...\n";
-
-    // Llamamos a la IA pasándole el entrenador rival y el Pokémon activo del jugador
-    // Usamos GetActivePokemon() que devuelve un puntero, tal como lo definiste en trainer.h
     PlayerActions aiDecision = BattleAI::GetBestAction(trainer2, trainer1->GetActivePokemon());
 
-    // Guardamos la decisión de la IA en el índice 1 (correspondiente al Jugador 2)
+    // Almacenamos la decision de la IA en el espacio del Jugador 2 (Indice 1)
     act->playerAction[1] = aiDecision.playerAction[0];
     act->playerIndex[1] = aiDecision.playerIndex[0];
   }
@@ -123,93 +121,89 @@ PlayerActions Game::DecideActions(PlayerActions* act) {
   return *act;
 }
 
-bool Game::ValidateAction(PlayerActions act){
+// Filtro de seguridad: Evita que se usen ataques sin PP, ranuras vacias o Pokemon desmayados
+bool Game::ValidateAction(PlayerActions act) {
   bool isValid = true;
-  switch(act.playerAction[0]){
-    case kActionAttack:{
-      Pokemon poke = trainer1->GetCurrentPokemon();
-      if(poke.movement[act.playerIndex[0]].currentPP <= 0){
+  switch (act.playerAction[0]) {
+  case kActionAttack: {
+    Pokemon poke = trainer1->GetCurrentPokemon();
+    if (poke.movement[act.playerIndex[0]].currentPP <= 0) {
+      isValid = false;
+      std::cout << "\nThat Movement doesn't have PP";
+      break;
+    }
+    if (poke.movement[act.playerIndex[0]].index == mv_NULL) {
+      isValid = false;
+      std::cout << "\nThat not a valid move";
+      break;
+    }
+  }
+  case kActionChangePoke: {
+    if (trainer1->team.size() < act.playerIndex[0]) {
+      isValid = false;
+      std::cout << "\nYou don't have pokemon in that slot";
+    }
+    else {
+      if (trainer1->team[act.playerIndex[0]].currentStats.HP <= 0) {
         isValid = false;
-        std::cout << "\nThat Movement doesn't have PP";
-        break;
-      } 
-      if(poke.movement[act.playerIndex[0]].index == mv_NULL){
-        isValid = false;
-        std::cout << "\nThat not a valid move";
-        break;
+        std::cout << "\nThat poke is fainted";
       }
     }
-    case kActionChangePoke:{
-      if(trainer1->team.size() < act.playerIndex[0]){
-        isValid = false;
-        std::cout << "\nYou don't have pokemon in that slot";
-      }else{
-        if(trainer1->team[act.playerIndex[0]].currentStats.HP <= 0){
-          isValid = false;
-          std::cout << "\nThat poke is fainted";
-        }
-      }
-    }
-    case kActionNULL:{
-      std::cout << "\nNo action played";
-    }
+  }
+  case kActionNULL: {
+    std::cout << "\nNo action played";
+  }
   }
   return isValid;
 }
-//Se realiza accion
+
+// Motor de Ejecucion: Procesa las acciones elegidas respetando el sistema de prioridades de Pokemon
 void Game::PlayActions() {
   std::cout << "\n--- COMIENZA EL TURNO ---";
 
-  // Punteros rápidos a los Pokémon activos actuales
   Pokemon* p1 = &trainer1->team[trainer1->currentPokemonIndex];
   Pokemon* p2 = &trainer2->team[trainer2->currentPokemonIndex];
 
-  // === 1. FASE DE CAMBIOS (PRIORIDAD ALTA) ===
-  // Si el Jugador 1 cambia de Pokémon
+  // === PRIORIDAD 1: CAMBIOS DE POKEMON ===
+  // Los cambios siempre ocurren antes que cualquier ataque
   if (playerActions.playerAction[0] == kActionChangePoke) {
     trainer1->currentPokemonIndex = playerActions.playerIndex[0];
     p1 = &trainer1->team[trainer1->currentPokemonIndex];
     std::cout << "\n" << trainer1->name << " retiro a su Pokemon y envio a " << p1->name << "!";
   }
 
-  // Si el Jugador 2 (IA o Humano) cambia de Pokémon
   if (playerActions.playerAction[1] == kActionChangePoke) {
     trainer2->currentPokemonIndex = playerActions.playerIndex[1];
     p2 = &trainer2->team[trainer2->currentPokemonIndex];
     std::cout << "\n" << trainer2->name << " retiro a su Pokemon y envio a " << p2->name << "!";
   }
 
-  // === 2. FASE DE ATAQUES (RESOLUCIÓN POR VELOCIDAD) ===
+  // === PRIORIDAD 2: ATAQUES (Resolucion por Velocidad) ===
   bool p1Attacks = (playerActions.playerAction[0] == kActionAttack);
   bool p2Attacks = (playerActions.playerAction[1] == kActionAttack);
 
-  // Determinar quién ataca primero si ambos decidieron atacar
   bool p1GoesFirst = true;
   if (p1Attacks && p2Attacks) {
     if (p2->currentStats.Vel > p1->currentStats.Vel) {
       p1GoesFirst = false;
     }
     else if (p2->currentStats.Vel == p1->currentStats.Vel) {
-      // Speed Tie: Empate de velocidad, se decide con una moneda al aire
+      // Speed Tie (Empate de velocidad): Se decide a cara o cruz
       p1GoesFirst = (rand() % 2 == 0);
     }
   }
 
-  // Función lambda auxiliar para no repetir el código de atacar dos veces
+  // Lambda auxiliar para ejecutar ataques comprobando antes si ambos siguen vivos
   auto executeAttack = [](Pokemon* attacker, Pokemon* defender, int moveIndex) {
-    // Solo atacamos si AMBOS siguen vivos (para evitar golpear al aire si uno ya murió)
+    // Si el atacante o el defensor murieron antes en este mismo turno, el ataque no ocurre
     if (attacker->currentStats.HP > 0 && defender->currentStats.HP > 0) {
       Movement& move = attacker->movement[moveIndex];
-
-      // Restar 1 PP al movimiento usado
       if (move.currentPP > 0) move.currentPP--;
-
-      // Llamamos a tu función de daño!
       attacker->UseMove(*defender, move);
     }
     };
 
-  // Ejecutamos los ataques en el orden calculado
+  // Ejecutamos en el orden calculado
   if (p1GoesFirst) {
     if (p1Attacks) executeAttack(p1, p2, playerActions.playerIndex[0]);
     if (p2Attacks) executeAttack(p2, p1, playerActions.playerIndex[1]);
@@ -219,26 +213,25 @@ void Game::PlayActions() {
     if (p1Attacks) executeAttack(p1, p2, playerActions.playerIndex[0]);
   }
 }
-//Ocurren sucesos
+
+// Fase Final del Turno: Revisa caidos y fuerza la entrada de nuevos Pokemon al campo
 void Game::ResultFromActions() {
   std::cout << "\n--- RESOLUCION DEL TURNO ---";
 
-  // Obtenemos los Pokémon que acaban de combatir
   Pokemon* p1 = &trainer1->team[trainer1->currentPokemonIndex];
   Pokemon* p2 = &trainer2->team[trainer2->currentPokemonIndex];
 
-  // === 1. COMPROBAR SI EL POKÉMON DEL JUGADOR 1 CAYÓ ===
+  // Comprueba si el Pokemon del JUGADOR 1 se ha desmayado
   if (p1->currentStats.HP <= 0 && p1->state != kStateFainted) {
-    p1->currentStats.HP = 0; // Aseguramos que no queden números negativos
+    p1->currentStats.HP = 0;
     p1->state = kStateFainted;
     std::cout << "\n!" << p1->name << " de " << trainer1->name << " se ha debilitado!";
 
-    // Si al jugador 1 le quedan Pokémon, le pedimos que saque otro
+    // Si le quedan Pokemon vivos, forzamos un cambio via consola/SDL
     if (trainer1->HasAvailablePokemon()) {
       bool choosing = true;
       std::cout << "\nElige a tu proximo Pokemon (1 - " << trainer1->team.size() << "): ";
 
-      // Bucle rápido para forzar el cambio antes del siguiente turno
       while (choosing && running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -250,7 +243,6 @@ void Game::ResultFromActions() {
             int key = event.key.scancode;
             if (key >= SDL_SCANCODE_1 && key <= SDL_SCANCODE_6) {
               int index = key - SDL_SCANCODE_1;
-              // Verificamos que el índice exista y el Pokémon esté vivo
               if (index < trainer1->team.size() && trainer1->team[index].currentStats.HP > 0) {
                 trainer1->currentPokemonIndex = index;
                 std::cout << "\n" << trainer1->name << " envia a " << trainer1->team[index].name << "!";
@@ -266,6 +258,7 @@ void Game::ResultFromActions() {
     }
   }
 
+  // Comprueba si el Pokemon del JUGADOR 2 (IA) se ha desmayado
   if (p2->currentStats.HP <= 0 && p2->state != kStateFainted) {
     p2->currentStats.HP = 0;
     p2->state = kStateFainted;
@@ -273,6 +266,7 @@ void Game::ResultFromActions() {
 
     if (trainer2->HasAvailablePokemon()) {
       if (trainer2->isAI) {
+        // La IA elige automaticamente a su mejor opcion de reserva
         Pokemon* currentP1 = &trainer1->team[trainer1->currentPokemonIndex];
         std::pair<int, float> aiSwitch = BattleAI::ChooseSwitch(trainer2, currentP1);
 
@@ -285,35 +279,30 @@ void Game::ResultFromActions() {
   }
 }
 
-void Game::PlayBattle(){
-  switch(EndedBattle(trainer1, trainer2)){
+// Bucle principal de la Escena de Combate
+void Game::PlayBattle() {
+  switch (EndedBattle(trainer1, trainer2)) {
+  case 1:
+  case 2:
+    sceneManager = kSceneAfterFight;
+    break; // Añadido un break preventivo
+
+  case 0:
+    // 1. Ambos eligen que hacer
+    playerActions = DecideActions(&playerActions);
+    // 2. Se realizan las acciones por orden de prioridad/velocidad
+    PlayActions();
+    // 3. Se resuelven los desmayos y se limpia el turno
+    ResultFromActions();
+
+    // Comprobamos si la partida termino en este turno
+    winner = EndedBattle(trainer1, trainer2);
+    switch (winner) {
+    case 0: break;
     case 1:
-    case 2:{
-      sceneManager = kSceneAfterFight;
+    case 2: sceneManager = kSceneAfterFight; break;
     }
-    case 0:{
-      //Lanzan primer pokemon
-
-      //__
-      //Ambos eligen que hacer
-      playerActions = DecideActions(&playerActions);
-      //Se realiza accion
-      PlayActions();
-      //Ocurren sucesos
-      ResultFromActions();
-      //__
-
-      //Finaliza combate
-      // 0 -> Not ended | 1 -> Trainer 1 won | 2 -> Trainer 2 won
-      winner = EndedBattle(trainer1, trainer2);
-      switch(winner){
-        case 0: break;
-
-        case 1:
-        case 2: sceneManager = kSceneAfterFight; break;
-      }
-      
-    }
+    break; // Añadido un break preventivo
   }
 }
 
