@@ -10,22 +10,24 @@ void BaseSprite::SetSpritesRenderer(SDL_Renderer* renderer){
 }
 
 void BaseSprite::InitSpriteSrc(bool tile){
+  if(TextureManager::Get(textureID) == nullptr) return;
   float w, h;
-  SDL_GetTextureSize(sprite, &w, &h);
+  SDL_GetTextureSize(TextureManager::Get(textureID), &w, &h);
+  if(TextureManager::Get(textureID) != nullptr){
+    if(tile){
+      tileSize = (short int) h;
+      numTiles = (short int) w / tileSize;
 
-  if(tile){
-    tileSize = (short int) h;
-    numTiles = (short int) w / tileSize;
-
-    src = {0, 0, (float)tileSize, (float)tileSize};
-  }else{
-    numTiles = 1;
-    src = {0, 0, w, h};
+      src = {0, 0, (float)tileSize, (float)tileSize};
+    }else{
+      numTiles = 1;
+      src = {0, 0, w, h};
+    }
   }
 }
 
 void BaseSprite::InitSpriteDst(float x, float y, float scale, bool centered){
-  if(!sprite) return;
+  if(TextureManager::Get(textureID) == nullptr) return;
 
   if(centered){
     dst.x = x - (src.w / 2 * scale);
@@ -44,9 +46,9 @@ void BaseSprite::UpdateSpriteDst(float x, float y, float scale, bool centered){
 }
 
 void BaseSprite::DrawSprite(int frameDelay){
-  if(!sprite) return;
+  if(TextureManager::Get(textureID) == nullptr) return;
 
-  SDL_RenderTexture(sRenderer_, sprite, &src, &dst);
+  SDL_RenderTexture(sRenderer_, TextureManager::Get(textureID), &src, &dst);
 
   if(numTiles > 1){
     Uint64 now = SDL_GetTicks();
@@ -63,25 +65,19 @@ void BaseSprite::DrawSprite(int frameDelay){
 }
 
 void BaseSprite::ApplyFilter(float r, float g, float b){
-  if(sprite) SDL_SetTextureColorMod(sprite, (Uint8) r, (Uint8) g, (Uint8) b);
+  if(TextureManager::Get(textureID) != nullptr) SDL_SetTextureColorMod(TextureManager::Get(textureID), (Uint8) r, (Uint8) g, (Uint8) b);
 }
-
-void BaseSprite::DestroySprite(){
-  if(sprite){
-    SDL_DestroyTexture(sprite);
-    sprite = nullptr;
-  }
+void BaseSprite::SetTextureID(const std::string& id)
+{
+  textureID = id;
 }
-
 BaseSprite::~BaseSprite(){
-  DestroySprite();
 }
 
 #pragma region Sprite
 // SPRITE
 void Sprite::SelectSpriteFromRoute(const char* route){
-  sprite = IMG_LoadTexture(sRenderer_, route);
-  SDL_SetTextureScaleMode(sprite, SDL_SCALEMODE_NEAREST);
+  TextureManager::Load(sRenderer_, textureID, route);
 }
 
 
@@ -120,9 +116,7 @@ void PokeSprite::SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID)
   snprintf(fileindex, 128, "../assets/SpritesAnimated/%s%s/_index.txt", whichType.c_str(), isShiny.c_str());
 
   UnpackSprite(nombre.c_str(), fileindex, filedatabase);
-
-  sprite = IMG_LoadTexture(sRenderer_, filesprite);
-  SDL_SetTextureScaleMode(sprite, SDL_SCALEMODE_NEAREST);
+  TextureManager::Load(sRenderer_, textureID, filesprite);
 
   remove(filesprite);
 }

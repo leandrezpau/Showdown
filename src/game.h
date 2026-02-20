@@ -36,6 +36,8 @@ struct PlayerActions {
   // If player attacks, 0 - 3 (which attack) If player changes 0 - 5 (which poke)
   // If player chooses attacks & plays 5 it is filtered later (no problem about that)
   int playerIndex[2];
+
+  bool decided[2];
 };
 
 class Game {
@@ -46,7 +48,7 @@ public:
   Trainer* trainer1;  // Trainer 1 in fight
   Trainer* trainer2;  // Trainer 2 in fight
 
-  PlayerActions playerActions;
+  PlayerActions act;
 
   int winner = 0;
   bool running = true;
@@ -63,9 +65,9 @@ public:
 
   //__
   //Ambos eligen que hacer
-  PlayerActions DecideActions(PlayerActions* act);
+  void DecideActions();
   //Some actions may not perform, so we check them here, if not return to DecideActions();
-  bool ValidateAction(PlayerActions act);
+  bool ValidateAction(PlayerActions act_);
   //Se realiza accion
   void PlayActions();
   //Ocurren sucesos
@@ -77,12 +79,8 @@ public:
   int EndedBattle(Trainer* _trainer1, Trainer* _trainer2);
   //Ganador / Perdedor
   //
-
-
-
-
-
-  
+  void ProcessInput();
+  void ResetAction();
 };
 
 #endif //_GAME_H_

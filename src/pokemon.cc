@@ -101,6 +101,7 @@ void Pokemon::PrintPokemon(){
 }
 
 void Pokemon::InitSprites(){
+  textureID = name;
   SelectPokemonSprite(shiny, typeSprite, id);
   InitSpriteSrc();
   switch(typeSprite){

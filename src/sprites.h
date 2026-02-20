@@ -14,6 +14,8 @@
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 
+#include "textureManager.h"
+
 enum en_SpriteType{
 	type_Attacker = 0,
 	type_Defender,
@@ -26,7 +28,7 @@ protected:
 
 	en_SpriteType typeSprite;		// Type of sprite is been used -> Back, Front or Icon
 
-  SDL_Texture* sprite = nullptr;
+  std::string textureID;
   SDL_FRect dst{};
   SDL_FRect src{};
 
@@ -47,7 +49,7 @@ public:
 
   void DrawSprite(int frameDelay = 150);
   void ApplyFilter(float r, float g, float b);
-  void DestroySprite();
+  void SetTextureID(const std::string& id);
 
   virtual ~BaseSprite();
 };

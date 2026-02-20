@@ -49,23 +49,26 @@ int main(int argc, char* argv[]){
   BaseSprite::SetSpritesRenderer(renderer);
 
   //ID, Level, Weight, Gender, Shiny, Renderer, TypeSprite
+  Trainer train1{"Goldi", false};
+  Trainer train2{"Goldi", true};
+  
   Pokemon poke1{392, 50, 0, true, en_SpriteType::type_Attacker};
   Pokemon poke2{6, 50, 0, true, en_SpriteType::type_Defender};
+
+  train1.AddPokemon(poke1);
+  train2.AddPokemon(poke2);
 
   Sprite background;
  
   while (game.running) {
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-      if (event.type == SDL_EVENT_QUIT) game.running = false;
-    }
-
     switch(game.sceneManager){
       case en_SceneManager::kSceneInit:{  //CURRENT SCENE
-        
+        background.SetTextureID("BACKGROUND");
         background.SelectSpriteFromRoute("../assets/background_Sprites/lava_battle.png");
         background.InitSpriteSrc(false);
         background.InitSpriteDst(0, 0, 1);
+
+        game.InitBattle(&train1, &train2);
 
         game.sceneManager = en_SceneManager::kSceneGameMode;
         break;
@@ -75,11 +78,13 @@ int main(int argc, char* argv[]){
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
         SDL_RenderClear(renderer);
 
+        game.PlayBattle();
         //if(contador % 60 == 0) poke1.SetNewPokemon(++currentPokemon, 50, 0, true, poke1.typeSprite);
 
         background.DrawSprite();
-        poke1.DrawSprite();
-        poke2.DrawSprite();
+        train1.team[0].DrawSprite();
+        train2.team[0].DrawSprite();
+
         
 
         //DRAW CLEAR

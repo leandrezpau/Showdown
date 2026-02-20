@@ -23,4 +23,9 @@ bool Trainer::HasAvailablePokemon() {
 Pokemon Trainer::GetCurrentPokemon(){
   return team[currentPokemonIndex];
 }
+// Changes the current pokemon player is using
+void Trainer::ChangePokemon(int newPokemonIndex){
+  currentPokemonIndex = newPokemonIndex;
+}
+
 #endif //_TRAINER_CC_
