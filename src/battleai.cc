@@ -3,105 +3,181 @@
 
 #include "battleai.h"
 #include <iostream>
+#include <algorithm>
 
-int BattleAI::ChooseBestMove(Pokemon* aiPoke, Pokemon* playerPoke) {
-  int bestMoveIndex = -1;
-  float maxScore = -9999.0f;
+// Calcula el dano esperado de un movimiento considerando STAB, efectividad de tipos y precision.
+// NOTA: Se ejecuta en un entorno simulado, no afecta al combate real.
+float BattleAI::PredictDamage(Pokemon* attacker, Pokemon* defender, Movement& move) {
+  if (move.isState) return 0.0f; // TODO: Implementar logica para movimientos de estado
 
+  float atk = move.isSpecial ? attacker->currentStats.spcAtk : attacker->currentStats.Atk;
+  float def = move.isSpecial ? defender->currentStats.spcDef : defender->currentStats.Def;
+
+  // Multiplicadores
+  float typeMult = defender->CalculateIncomingDamageMult(move.moveType);
+  float stab = (move.moveType.type == attacker->type1.type || move.moveType.type == attacker->type2.type) ? 1.5f : 1.0f;
+
+  // Formula estandar de dano
+  float damage = ((float)move.power * (atk / def) * stab * typeMult) + 2.0f;
+
+  // Ajuste por precision (Valor Esperado)
+  damage *= ((float)move.accuracy / 100.0f);
+
+  return damage;
+}
+
+// Analiza el estado del combate y devuelve una puntuacion. Mayor puntuacion = Mejor para la IA.
+float BattleAI::EvaluateBoardState(float aiSimHp, float aiMaxHp, float playerSimHp, float playerMaxHp, bool aiIsFaster) {
+  // Comparamos el % de HP restante para que sea justo sin importar el nivel maximo del Pokemon
+  float aiHpRatio = std::max(0.0f, aiSimHp) / aiMaxHp;
+  float playerHpRatio = std::max(0.0f, playerSimHp) / playerMaxHp;
+
+  float score = (aiHpRatio - playerHpRatio) * 1000.0f;
+
+  // Bonificacion tactica: ser mas rapido da el control del turno
+  if (aiIsFaster) score += 50.0f;
+
+  // Bonificaciones criticas: Castigamos o premiamos fuertemente los KO (debilitamientos)
+  if (playerSimHp <= 0) score += 5000.0f;
+  if (aiSimHp <= 0) score -= 5000.0f;
+
+  return score;
+}
+
+// Implementacion de Algoritmo Minimax (Profundidad 1) para elegir ataque
+std::pair<int, float> BattleAI::ChooseBestMove(Pokemon* aiPoke, Pokemon* playerPoke) {
+  int bestMoveIndex = 0;
+  float bestGuaranteedScore = -99999.0f;
+
+  bool aiIsFaster = aiPoke->currentStats.Vel > playerPoke->currentStats.Vel;
+
+  // Iteramos sobre nuestros movimientos (Capa MAX - IA busca la mayor puntuacion)
   for (int i = 0; i < aiPoke->movement.size(); i++) {
-    Movement& move = aiPoke->movement[i];
-    float score = 0.0f;
+    Movement& myMove = aiPoke->movement[i];
+    if (myMove.index == mv_NULL || myMove.currentPP <= 0) continue; // Ignoramos movimientos invalidos
 
-    float predictedDamage = 0;
-    if (!move.isState) {
-      float atk = move.isSpecial ? aiPoke->currentStats.spcAtk : aiPoke->currentStats.Atk;
-      float def = move.isSpecial ? playerPoke->currentStats.spcDef : playerPoke->currentStats.Def;
-      float typeMult = playerPoke->CalculateIncomingDamageMult(move.moveType);
-      float stab = (move.moveType.type == aiPoke->type1.type || move.moveType.type == aiPoke->type2.type) ? 1.5f : 1.0f;
+    float minScoreForThisMove = 99999.0f;
 
-      predictedDamage = ((float)move.power * (atk / def) * stab * typeMult) + 2.0f;
-    }
+    // Iteramos sobre los movimientos del rival (Capa MIN - Asumimos que el jugador hara su mejor jugada)
+    for (int j = 0; j < playerPoke->movement.size(); j++) {
+      Movement& enemyMove = playerPoke->movement[j];
+      if (enemyMove.index == mv_NULL || enemyMove.currentPP <= 0) continue;
 
+      // Simulamos ambos ataques
+      float damageToEnemy = PredictDamage(aiPoke, playerPoke, myMove);
+      float damageToMe = PredictDamage(playerPoke, aiPoke, enemyMove);
 
-    if (predictedDamage >= playerPoke->currentStats.HP) {
-      score += 500.0f; 
-      score += move.accuracy;
-    }
-    else {
-      score += predictedDamage;
-    }
+      float simAiHp = aiPoke->currentStats.HP;
+      float simPlayerHp = playerPoke->currentStats.HP;
 
-    score *= ((float)move.accuracy / 100.0f);
-
-    if (move.isState) {
-      if (move.affectedStat == STAT_ATK && move.stageChange > 0) {
-        if (aiPoke->statStages[STAT_ATK] >= 6) {
-          score = -100.0f;
-        }
-        else {
-          score = 30.0f;
-        }
+      // Resolvemos el orden de los ataques en la simulacion segun la velocidad
+      if (aiIsFaster) {
+        simPlayerHp -= damageToEnemy;
+        if (simPlayerHp > 0) simAiHp -= damageToMe; // El jugador ataca solo si sobrevive
       }
-      // WIP (falta a�adir los estados alterados a los pok�mon)
+      else {
+        simAiHp -= damageToMe;
+        if (simAiHp > 0) simPlayerHp -= damageToEnemy; // Nosotros atacamos solo si sobrevivimos
+      }
+
+      // Evaluamos como queda el tablero despues del cruce de ataques
+      float boardScore = EvaluateBoardState(simAiHp, aiPoke->baseStats.maxHP, simPlayerHp, playerPoke->baseStats.maxHP, aiIsFaster);
+
+      // El jugador elegira lo que mas nos perjudique
+      if (boardScore < minScoreForThisMove) {
+        minScoreForThisMove = boardScore;
+      }
     }
 
-    SDL_Log("Evalunado %s: Da�o estimado %.2f -> Score Final %.2f", move.moveName.c_str(), predictedDamage, score);
-
-    if (score > maxScore) {
-      maxScore = score;
+    // Nosotros elegimos el movimiento cuyo peor escenario sea el mejor posible
+    if (minScoreForThisMove > bestGuaranteedScore) {
+      bestGuaranteedScore = minScoreForThisMove;
       bestMoveIndex = i;
     }
   }
 
-  if (bestMoveIndex == -1) bestMoveIndex = 0;
-
-  return bestMoveIndex;
+  return { bestMoveIndex, bestGuaranteedScore };
 }
 
-int BattleAI::ChooseSwitch(Trainer* aiTrainer, Pokemon* playerPokemon) {
+// Evalua si vale la pena cambiar de Pokemon, asumiendo que el rival nos atacara mientras cambiamos.
+std::pair<int, float> BattleAI::ChooseSwitch(Trainer* aiTrainer, Pokemon* playerPokemon) {
   int bestPokemonIndex = -1;
-  float bestScore = -1000.0f;
+  float bestGuaranteedScore = -99999.0f;
 
   int currentIdx = aiTrainer->currentPokemonIndex;
 
   for (int i = 0; i < aiTrainer->team.size(); i++) {
     if (i == currentIdx) continue;
-    if (aiTrainer->team[i].currentStats.HP <= 0) continue;
+    if (aiTrainer->team[i].currentStats.HP <= 0) continue; // No sacar Pokes debilitados
 
     Pokemon& candidate = aiTrainer->team[i];
-    float score = 0.0f;
+    float minScoreForThisSwitch = 99999.0f;
 
-    float defensiveMult1 = candidate.CalculateIncomingDamageMult(playerPokemon->type1);
-    float defensiveMult2 = (playerPokemon->type2.type != TYPE_NONE) ?
-      candidate.CalculateIncomingDamageMult(playerPokemon->type2) : 1.0f;
+    // Simulamos que sacamos a este Pokemon y el jugador nos ataca gratis ese turno
+    for (int j = 0; j < playerPokemon->movement.size(); j++) {
+      Movement& enemyMove = playerPokemon->movement[j];
+      if (enemyMove.index == mv_NULL || enemyMove.currentPP <= 0) continue;
 
-    float maxIncoming = std::max(defensiveMult1, defensiveMult2);
-    if (maxIncoming > 1.5f) score -= 50.0f;
-    if (maxIncoming < 0.8f) score += 40.0f;
+      float damageToMe = PredictDamage(playerPokemon, &candidate, enemyMove);
 
-    float offensiveMult1 = playerPokemon->CalculateIncomingDamageMult(candidate.type1);
-    float offensiveMult2 = (candidate.type2.type != TYPE_NONE) ?
-      playerPokemon->CalculateIncomingDamageMult(candidate.type2) : 1.0f;
+      float simAiHp = candidate.currentStats.HP - damageToMe;
+      float simPlayerHp = playerPokemon->currentStats.HP;
 
-    float maxOutgoing = std::max(offensiveMult1, offensiveMult2);
-    if (maxOutgoing > 1.2f) score += 60.0f;
-    if (maxOutgoing < 0.8f) score -= 30.0f;
+      // Evaluamos el tablero TRAS recibir el golpe. 
+      // Asumimos velocidad en el proximo turno para la heuristica.
+      bool candidateIsFaster = candidate.currentStats.Vel > playerPokemon->currentStats.Vel;
 
-    if (candidate.currentStats.Vel > playerPokemon->currentStats.Vel) {
-      score += 10.0f;
+      float boardScore = EvaluateBoardState(simAiHp, candidate.baseStats.maxHP, simPlayerHp, playerPokemon->baseStats.maxHP, candidateIsFaster);
+
+      // Penalizacion heuristica: Perder un turno al cambiar duele, restamos puntos para evitar cambios constantes ("Switch Stalling")
+      boardScore -= 100.0f;
+
+      if (boardScore < minScoreForThisSwitch) {
+        minScoreForThisSwitch = boardScore;
+      }
     }
 
-    if (score > bestScore) {
-      bestScore = score;
+    if (minScoreForThisSwitch > bestGuaranteedScore) {
+      bestGuaranteedScore = minScoreForThisSwitch;
       bestPokemonIndex = i;
     }
   }
 
-  if (bestScore > 20.0f) {
-    SDL_Log("AI decide cambiar al pokemon indice %d con puntuacion %.2f", bestPokemonIndex, bestScore);
-    return bestPokemonIndex;
+  return { bestPokemonIndex, bestGuaranteedScore };
+}
+
+// Junta todo: decide si es mejor atacar o cambiar basandose en las puntuaciones obtenidas.
+PlayerActions BattleAI::GetBestAction(Trainer* aiTrainer, Pokemon* playerPokemon) {
+  PlayerActions actionToTake;
+  actionToTake.playerAction[0] = kActionNULL;
+  actionToTake.playerIndex[0] = 0;
+
+  Pokemon* activePoke = &aiTrainer->team[aiTrainer->currentPokemonIndex];
+
+  // Calculamos puntuaciones para ambas opciones
+  std::pair<int, float> attackOption = ChooseBestMove(activePoke, playerPokemon);
+  std::pair<int, float> switchOption = ChooseSwitch(aiTrainer, playerPokemon);
+
+  // Regla de oro: Si nuestro Pokemon actual esta muerto, estamos OBLIGADOS a cambiar
+  if (activePoke->currentStats.HP <= 0) {
+    actionToTake.playerAction[0] = kActionChangePoke;
+    actionToTake.playerIndex[0] = switchOption.first;
+    return actionToTake;
   }
 
-  return -1;
+  // Comparamos puntuaciones (Ataque vs Cambio)
+  if (switchOption.second > attackOption.second && switchOption.first != -1) {
+    SDL_Log("IA decide CAMBIAR de Pokemon. Score Cambio: %.2f vs Score Ataque: %.2f", switchOption.second, attackOption.second);
+    actionToTake.playerAction[0] = kActionChangePoke;
+    actionToTake.playerIndex[0] = switchOption.first;
+  }
+  else {
+    SDL_Log("IA decide ATACAR. Score Ataque: %.2f vs Score Cambio: %.2f", attackOption.second, switchOption.second);
+    actionToTake.playerAction[0] = kActionAttack;
+    actionToTake.playerIndex[0] = attackOption.first;
+  }
+
+  return actionToTake;
 }
+
 #endif //_BATTLEAI_CC_
