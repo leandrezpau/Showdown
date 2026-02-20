@@ -40,7 +40,6 @@ void Game::HealPlayer(Trainer* healedTrainer){
 }
 
 void Game::DecideActions() {
-  std::cout << "\nPress 1 to attack\nPress 2 to change pokemon";
   if (running) {
 
     SDL_Event event;
@@ -62,17 +61,30 @@ void Game::DecideActions() {
           if (key == SDL_SCANCODE_1) {
             act.playerAction[0] = kActionAttack;
             std::cout << "\nAttacking, Now choose movement to use";
+            int kMoves = trainer1->GetCurrentPokemon().movement.size();
+            for(int i = 0; i < 4; i++){
+              if(i < kMoves){
+                std::cout << "\n" << i + 1 << ": "<< trainer1->GetCurrentPokemon().movement[i].moveName;
+              }else{
+                std::cout << "\n" << i + 1 << ": NullMove";
+              }
+            }
           }
 
           else if (key == SDL_SCANCODE_2) {
             act.playerAction[0] = kActionChangePoke;
             std::cout << "\nChanging pokemon, Now choose which pokemon to use";
+            int kPokes = trainer1->team.size();
+            for(int i = 0; i < 6; i++){
+              if(i < kPokes){
+                std::cout << "\n" << i + 1 << ": "<< trainer1->team[i].name;
+              }else{
+                std::cout << "\n" << i + 1 << ": NoPoke";
+              }
+            }
           }
-        }
-
-        //CHOOSE INDEX
-        else {
-
+        } else {
+          //CHOOSING INDEX
           if (key >= SDL_SCANCODE_1 && key <= SDL_SCANCODE_6) {
 
             int index = key - SDL_SCANCODE_1;
@@ -91,12 +103,15 @@ void Game::DecideActions() {
             Pokemon poke = trainer1->team[trainer1->currentPokemonIndex];
             if (act.playerAction[0] == kActionAttack) {
               act.playerIndex[0] = index;
-              if(ValidateAction(act)){
+              if (ValidateAction(act)) {
                 return;
-              }else{
+              } else {
                 act.playerIndex[0] = 0;
               }
             }
+          }
+          if(key = SDL_SCANCODE_ESCAPE){
+            ResetAction();
           }
         }
       }
@@ -224,6 +239,8 @@ void Game::ResetAction(){
     act.playerIndex[i] = 0;
     act.decided[i] = false;
   }
+
+  std::cout << "\nPress 1 to attack\nPress 2 to change pokemon";
 }
 
 void Game::ProcessInput(){
