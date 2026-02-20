@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef _POKEMON_CC_ 
 #define _POKEMON_CC_
 
@@ -101,7 +99,7 @@ void Pokemon::PrintPokemon(){
 }
 
 void Pokemon::InitSprites(){
-  textureID = name;
+  textureID = BaseSprite::spriteIndexer++;
   SelectPokemonSprite(shiny, typeSprite, id);
   InitSpriteSrc();
   switch(typeSprite){

@@ -5,7 +5,7 @@
 
 // Static member initialization for the SDL renderer
 SDL_Renderer* BaseSprite::sRenderer_ = nullptr;
-
+short int BaseSprite::spriteIndexer = 0;
 /**
  * Sets the global renderer to be used by all sprite instances.
  */
@@ -96,7 +96,7 @@ void BaseSprite::ApplyFilter(float r, float g, float b){
     SDL_SetTextureColorMod(TextureManager::Get(textureID), (Uint8) r, (Uint8) g, (Uint8) b);
 }
 
-void BaseSprite::SetTextureID(const std::string& id){
+void BaseSprite::SetTextureID(int id){
   textureID = id;
 }
 

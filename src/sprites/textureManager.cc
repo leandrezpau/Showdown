@@ -1,8 +1,8 @@
-#include "TextureManager.h"
+#include "textureManager.h"
 
-std::unordered_map<std::string, SDL_Texture*> TextureManager::textures;
+std::unordered_map<int, SDL_Texture*> TextureManager::textures;
 
-bool TextureManager::Load(SDL_Renderer* renderer, const std::string& id, const std::string& path){ 
+bool TextureManager::Load(SDL_Renderer* renderer, int id, const std::string& path){ 
 
   SDL_Texture* tex = IMG_LoadTexture(renderer, path.c_str());
   SDL_SetTextureScaleMode(tex, SDL_SCALEMODE_NEAREST);
@@ -13,7 +13,7 @@ bool TextureManager::Load(SDL_Renderer* renderer, const std::string& id, const s
   return true;
 }
 
-SDL_Texture* TextureManager::Get(const std::string& id){
+SDL_Texture* TextureManager::Get(int id){
   return textures[id];
 }
 

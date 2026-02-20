@@ -51,21 +51,19 @@ int main(int argc, char* argv[]){
   //ID, Level, Weight, Gender, Shiny, Renderer, TypeSprite
   Trainer train1{"Goldi", false};
   Trainer train2{"IA Trainer", true};
-  
-  Pokemon poke1{392, 50, 0, true, en_SpriteType::type_Attacker};
-  Pokemon poke2{6, 50, 0, true, en_SpriteType::type_Defender};
-  Pokemon poke3{646, 50, 0, true, en_SpriteType::type_Attacker};
 
-  train1.AddPokemon(poke1);
-  train2.AddPokemon(poke2);
-  train1.AddPokemon(poke3);
+  train1.AddPokemon(Pokemon{6, 50, 0, true, en_SpriteType::type_Attacker});
+  train1.AddPokemon(Pokemon{646, 50, 0, true, en_SpriteType::type_Attacker});
+  train1.AddPokemon(Pokemon{6, 50, 0, true, en_SpriteType::type_Attacker});
+
+  train2.AddPokemon(Pokemon{6, 50, 0, true, en_SpriteType::type_Defender});
 
   Sprite background;
  
   while (game.running) {
     switch(game.sceneManager){
       case en_SceneManager::kSceneInit:{  //CURRENT SCENE
-        background.SetTextureID("BACKGROUND");
+        background.SetTextureID(1000);
         background.SelectSpriteFromRoute("../assets/background_Sprites/lava_battle.png");
         background.InitSpriteSrc(false);
         background.InitSpriteDst(0, 0, 1);

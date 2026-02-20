@@ -28,10 +28,11 @@ protected:
 
 	en_SpriteType typeSprite;		// Type of sprite is been used -> Back, Front or Icon
 
-  std::string textureID;
+  int textureID;
   SDL_FRect dst{};
   SDL_FRect src{};
 
+  static short int spriteIndexer;
   short int numTiles = 1;
   short int currentTile = 0;
   short int tileSize = 0;
@@ -49,7 +50,7 @@ public:
 
   void DrawSprite(int frameDelay = 150);
   void ApplyFilter(float r, float g, float b);
-  void SetTextureID(const std::string& id);
+  void SetTextureID(int id);
 
   virtual ~BaseSprite();
 };

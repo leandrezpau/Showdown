@@ -7,10 +7,10 @@
 class TextureManager
 {
 public:
-  static bool Load(SDL_Renderer* renderer, const std::string& id, const std::string& path);
-  static SDL_Texture* Get(const std::string& id);
+  static bool Load(SDL_Renderer* renderer, int id, const std::string& path);
+  static SDL_Texture* Get(int id);
   static void Clear();
 
 private:
-  static std::unordered_map<std::string, SDL_Texture*> textures;
+  static std::unordered_map<int, SDL_Texture*> textures;
 };

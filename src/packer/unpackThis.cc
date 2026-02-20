@@ -17,7 +17,7 @@ int UnpackSprite(const char* objetivo,
 
   // ---- añadir .png al nombre buscado ----
   char objetivoPNG[256];
-  sprintf(objetivoPNG, "%s.png", objetivo);
+  snprintf(objetivoPNG, 256, "%s.png", objetivo);
   // ---------------------------------------
 
   char name[256];

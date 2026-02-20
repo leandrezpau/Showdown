@@ -123,7 +123,7 @@ void Game::DecideActions() {
               }
             }
           }
-          if(key = SDL_SCANCODE_ESCAPE){
+          if(key == SDL_SCANCODE_ESCAPE){
             ResetAction();
           }
         }
@@ -137,7 +137,7 @@ bool Game::ValidateAction(PlayerActions act_){
   switch(act_.playerAction[0]){
     //IF PLAYER WANTS TO ATTACK
     case kActionAttack:{
-      Pokemon& poke = trainer1->GetCurrentPokemon();
+      Pokemon poke = trainer1->GetCurrentPokemon();
       if(poke.movement.size() < act_.playerIndex[0] + 1){
         isValid = false;
         std::cout << "\nYour poke does't have a move in that slot";
