@@ -4,6 +4,7 @@
 #define _MOVEMENTS_H_
 
 #include "types.h"
+#include "..\include\sqlite\sqlite3.h"
 #include <string>
 
 enum StatID {
