@@ -17,7 +17,7 @@
 
 #include "types.h"
 #include "movements.h"
-#include "sprites.h"
+#include "sprites/sprites.h"
 
 struct Stats {
   float HP;

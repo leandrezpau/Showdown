@@ -9,7 +9,7 @@
 
 
 #include "pokemon.h"
-#include "sprites.h"
+#include "sprites/sprites.h"
 #include "game.h"
 
 #include <SDL3/SDL.h>
@@ -50,13 +50,15 @@ int main(int argc, char* argv[]){
 
   //ID, Level, Weight, Gender, Shiny, Renderer, TypeSprite
   Trainer train1{"Goldi", false};
-  Trainer train2{"Goldi", true};
+  Trainer train2{"IA Trainer", true};
   
   Pokemon poke1{392, 50, 0, true, en_SpriteType::type_Attacker};
   Pokemon poke2{6, 50, 0, true, en_SpriteType::type_Defender};
+  Pokemon poke3{646, 50, 0, true, en_SpriteType::type_Attacker};
 
   train1.AddPokemon(poke1);
   train2.AddPokemon(poke2);
+  train1.AddPokemon(poke3);
 
   Sprite background;
  
@@ -82,10 +84,8 @@ int main(int argc, char* argv[]){
         //if(contador % 60 == 0) poke1.SetNewPokemon(++currentPokemon, 50, 0, true, poke1.typeSprite);
 
         background.DrawSprite();
-        train1.team[0].DrawSprite();
-        train2.team[0].DrawSprite();
-
-        
+        train1.team[train1.currentPokemonIndex].DrawSprite();
+        train2.team[train2.currentPokemonIndex].DrawSprite();
 
         //DRAW CLEAR
         SDL_RenderPresent(renderer);

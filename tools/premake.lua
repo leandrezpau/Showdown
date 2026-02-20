@@ -19,6 +19,8 @@ project "ShowDown"
             "../src/*.h", 
             "../src/sqlfuncs/*.cc",
             "../src/sqlfuncs/*.h",
+            "../src/sprites/*.cc",
+            "../src/sprites/*.h",
             "../include/sqlite/sqlite3.c" }
 
   includedirs {
