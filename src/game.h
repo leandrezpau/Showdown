@@ -48,7 +48,7 @@ public:
   Trainer* trainer1;  // Trainer 1 in fight
   Trainer* trainer2;  // Trainer 2 in fight
 
-  PlayerActions act;
+  PlayerActions playerActions;
 
   int winner = 0;
   bool running = true;
