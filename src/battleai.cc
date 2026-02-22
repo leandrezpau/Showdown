@@ -63,14 +63,14 @@ std::pair<int, float> BattleAI::ChooseBestMove(Pokemon* aiPoke, Pokemon* playerP
   // Iteramos sobre nuestros movimientos (Capa MAX - IA busca la mayor puntuacion)
   for (int i = 0; i < aiPoke->movement.size(); i++) {
     Movement& myMove = aiPoke->movement[i];
-    //if (myMove.index == mv_NULL || myMove.currentPP <= 0) continue; // Ignoramos movimientos invalidos
+    if (myMove.currentPP <= 0) continue; // Ignoramos movimientos invalidos
 
     float minScoreForThisMove = 99999.0f;
 
     // Iteramos sobre los movimientos del rival (Capa MIN - Asumimos que el jugador hara su mejor jugada)
     for (int j = 0; j < playerPoke->movement.size(); j++) {
       Movement& enemyMove = playerPoke->movement[j];
-      //if (enemyMove.index == mv_NULL || enemyMove.currentPP <= 0) continue;
+      if (enemyMove.currentPP <= 0) continue;
 
       // Simulamos ambos ataques
       float damageToEnemy = PredictDamage(aiPoke, playerPoke, myMove);
@@ -125,7 +125,7 @@ std::pair<int, float> BattleAI::ChooseSwitch(Trainer* aiTrainer, Pokemon* player
     // Simulamos que sacamos a este Pokemon y el jugador nos ataca gratis ese turno
     for (int j = 0; j < playerPokemon->movement.size(); j++) {
       Movement& enemyMove = playerPokemon->movement[j];
-      //if (enemyMove.index == mv_NULL || enemyMove.currentPP <= 0) continue;
+      if (enemyMove.currentPP <= 0) continue;
 
       float damageToMe = PredictDamage(playerPokemon, &candidate, enemyMove);
 
@@ -176,12 +176,12 @@ PlayerActions BattleAI::GetBestAction(Trainer* aiTrainer, Pokemon* playerPokemon
 
   // Comparamos puntuaciones (Ataque vs Cambio)
   if (switchOption.second > attackOption.second && switchOption.first != -1) {
-    SDL_Log("IA decide CAMBIAR de Pokemon. Score Cambio: %.2f vs Score Ataque: %.2f", switchOption.second, attackOption.second);
+    std::cout << "IA decide CAMBIAR de Pokemon. Score Cambio: " << switchOption.second << "vs Score Ataque: " << attackOption.second; 
     actionToTake.playerAction[0] = kActionChangePoke;
     actionToTake.playerIndex[0] = switchOption.first;
   }
   else {
-    SDL_Log("IA decide ATACAR. Score Ataque: %.2f vs Score Cambio: %.2f", attackOption.second, switchOption.second);
+    std::cout << "IA decide ATACAR. Score Ataque: " << attackOption.second << " vs Score Cambio: " << switchOption.second;
     actionToTake.playerAction[0] = kActionAttack;
     actionToTake.playerIndex[0] = attackOption.first;
   }

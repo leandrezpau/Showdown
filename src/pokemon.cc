@@ -21,7 +21,7 @@ void Pokemon::ModifyStat(StatID stat, int amount) {
   if (*stage > 6) *stage = 6;
   if (*stage < -6) *stage = -6;
 
-  SDL_Log("%s: cambio de estadistica %d a nivel %d", name.c_str(), stat, *stage);
+  std::cout << name.c_str() << ": cambio de estadistica " << (int) stat <<" a nivel " << *stage;
 
   RecalculateStats();
 }
@@ -44,11 +44,11 @@ float Pokemon::CalculateIncomingDamageMult(cl_Type attackType) {
 }
 
 void Pokemon::UseMove(Pokemon& target, Movement move) {
-  SDL_Log("%s usa %s!", this->name.c_str(), move.moveName.c_str());
+ std::cout << "\n" << this->name.c_str() << " usa " << move.moveName.c_str() <<"!";
 
   int chance = rand() % 100;
   if (chance > move.accuracy) {
-    SDL_Log("Pero fallo!");
+    std::cout << "Pero fallo!";
     return;
   }
 
