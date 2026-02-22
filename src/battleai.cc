@@ -8,17 +8,26 @@
 // Calcula el dano esperado de un movimiento considerando STAB, efectividad de tipos y precision.
 // NOTA: Se ejecuta en un entorno simulado, no afecta al combate real.
 float BattleAI::PredictDamage(Pokemon* attacker, Pokemon* defender, Movement& move) {
-  if (move.isState) return 0.0f; // TODO: Implementar logica para movimientos de estado
+  if (move.moveClass == kClassStatus) return 0.0f; // TODO: Implementar logica para movimientos de estado
 
-  float atk = move.isSpecial ? attacker->currentStats.spcAtk : attacker->currentStats.Atk;
-  float def = move.isSpecial ? defender->currentStats.spcDef : defender->currentStats.Def;
+  float attackStat = 0.0f;
+  float defenseStat = 0.0f;
+
+  if (move.moveClass == kClassPhysical) {
+    attackStat = attacker->currentStats.Atk;
+    defenseStat = defender->currentStats.Def;
+  }
+  else if (move.moveClass == kClassSpecial) {
+    attackStat = attacker->currentStats.spcAtk;
+    defenseStat = defender->currentStats.spcDef;
+  }
 
   // Multiplicadores
   float typeMult = defender->CalculateIncomingDamageMult(move.moveType);
   float stab = (move.moveType.type == attacker->type1.type || move.moveType.type == attacker->type2.type) ? 1.5f : 1.0f;
 
   // Formula estandar de dano
-  float damage = ((float)move.power * (atk / def) * stab * typeMult) + 2.0f;
+  float damage = ((float)move.power * (attackStat / defenseStat) * stab * typeMult) + 2.0f;
 
   // Ajuste por precision (Valor Esperado)
   damage *= ((float)move.accuracy / 100.0f);
@@ -54,14 +63,14 @@ std::pair<int, float> BattleAI::ChooseBestMove(Pokemon* aiPoke, Pokemon* playerP
   // Iteramos sobre nuestros movimientos (Capa MAX - IA busca la mayor puntuacion)
   for (int i = 0; i < aiPoke->movement.size(); i++) {
     Movement& myMove = aiPoke->movement[i];
-    if (myMove.index == mv_NULL || myMove.currentPP <= 0) continue; // Ignoramos movimientos invalidos
+    //if (myMove.index == mv_NULL || myMove.currentPP <= 0) continue; // Ignoramos movimientos invalidos
 
     float minScoreForThisMove = 99999.0f;
 
     // Iteramos sobre los movimientos del rival (Capa MIN - Asumimos que el jugador hara su mejor jugada)
     for (int j = 0; j < playerPoke->movement.size(); j++) {
       Movement& enemyMove = playerPoke->movement[j];
-      if (enemyMove.index == mv_NULL || enemyMove.currentPP <= 0) continue;
+      //if (enemyMove.index == mv_NULL || enemyMove.currentPP <= 0) continue;
 
       // Simulamos ambos ataques
       float damageToEnemy = PredictDamage(aiPoke, playerPoke, myMove);
@@ -116,7 +125,7 @@ std::pair<int, float> BattleAI::ChooseSwitch(Trainer* aiTrainer, Pokemon* player
     // Simulamos que sacamos a este Pokemon y el jugador nos ataca gratis ese turno
     for (int j = 0; j < playerPokemon->movement.size(); j++) {
       Movement& enemyMove = playerPokemon->movement[j];
-      if (enemyMove.index == mv_NULL || enemyMove.currentPP <= 0) continue;
+      //if (enemyMove.index == mv_NULL || enemyMove.currentPP <= 0) continue;
 
       float damageToMe = PredictDamage(playerPokemon, &candidate, enemyMove);
 

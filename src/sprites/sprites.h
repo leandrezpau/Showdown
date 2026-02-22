@@ -52,6 +52,11 @@ public:
   void ApplyFilter(float r, float g, float b);
   void SetTextureID(int id);
 
+  //Getters
+
+
+  //Setters
+
   virtual ~BaseSprite();
 };
 

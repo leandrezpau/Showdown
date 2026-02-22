@@ -4,6 +4,8 @@
 #define _POKEMON_H_
 
 #include <SDL3/SDL.h> 
+#include <sqlite/sqlite3.h>
+
 #include <vector>
 #include <string>
 #include <cmath>
@@ -69,6 +71,8 @@ public:
   void ModifyStat(StatID stat, int amount);
 
   void SetNewPokemon(int _id, int _level, int _gender, bool _shiny, en_SpriteType spriteType_);
+
+  void SetMovement(std::string moveName);
 
   void PrintPokemon();
   void InitSprites();

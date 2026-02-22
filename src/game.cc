@@ -147,10 +147,6 @@ bool Game::ValidateAction(PlayerActions act_){
           isValid = false;
           std::cout << "\nThat Movement doesn't have PP";
           break;
-        }else if(poke.movement[act_.playerIndex[0]].index == mv_NULL){
-          isValid = false;
-          std::cout << "\nThat not a valid move";
-          break;
         }
       }
     }

@@ -52,9 +52,18 @@ void Pokemon::UseMove(Pokemon& target, Movement move) {
     return;
   }
 
-  if (move.isState != true) {
-    float attackStat = move.isSpecial ? this->currentStats.spcAtk : this->currentStats.Atk;
-    float defenseStat = move.isSpecial ? target.currentStats.spcDef : target.currentStats.Def;
+  if (move.moveClass != kClassStatus) {
+    float attackStat = 0.0f;
+    float defenseStat = 0.0f;
+
+    if (move.moveClass == kClassPhysical) {
+      attackStat = this->currentStats.Atk;
+      defenseStat = target.currentStats.Def;
+    }
+    else if (move.moveClass == kClassSpecial) {
+      attackStat = this->currentStats.spcAtk;
+      defenseStat = target.currentStats.spcDef;
+    }
 
     float damage = (((2.0f * (float)this->level / 5.0f + 2.0f) * (float)move.power * (attackStat / defenseStat)) / 50.0f) + 2.0f;
     
@@ -158,7 +167,11 @@ void Pokemon::SetNewPokemon(int _id, int _level, int _gender, bool _shiny, en_Sp
 
   PrintPokemon();
 }
-
+void Pokemon::SetMovement(std::string moveName){
+  if(movement.size() < 4){
+    movement.push_back(Movement{moveName});
+  }
+}
 Pokemon::Pokemon(int _id, int _level, int _gender, bool _shiny, en_SpriteType spriteType_)
     : id(_id), level(50), gender(_gender), shiny(_shiny){
     
