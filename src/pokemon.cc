@@ -2,6 +2,7 @@
 #define _POKEMON_CC_
 
 #include "pokemon.h"
+using namespace std;
 
 void Pokemon::ModifyStat(StatID stat, int amount) {
   if (stat == STAT_NONE) return;
@@ -9,11 +10,11 @@ void Pokemon::ModifyStat(StatID stat, int amount) {
   int* stage = &statStages[stat];
 
   if (*stage == 6 && amount > 0) {
-    SDL_Log("%s no puede subir mas esa estadistica!", name.c_str());
+    cout << name.c_str() << " no puede subir mas esa estadistica!";
     return;
   }
   if (*stage == -6 && amount < 0) {
-    SDL_Log("%s no puede bajar mas esa estadistica!", name.c_str());
+    cout << name.c_str() << " no puede bajar mas esa estadistica!";
     return;
   }
 
@@ -21,7 +22,7 @@ void Pokemon::ModifyStat(StatID stat, int amount) {
   if (*stage > 6) *stage = 6;
   if (*stage < -6) *stage = -6;
 
-  std::cout << name.c_str() << ": cambio de estadistica " << (int) stat <<" a nivel " << *stage;
+  cout << name.c_str() << ": cambio de estadistica " << (int) stat <<" a nivel " << *stage;
 
   RecalculateStats();
 }
@@ -44,11 +45,11 @@ float Pokemon::CalculateIncomingDamageMult(cl_Type attackType) {
 }
 
 void Pokemon::UseMove(Pokemon& target, Movement move) {
- std::cout << "\n" << this->name.c_str() << " usa " << move.moveName.c_str() <<"!";
+ cout << "\n" << this->name.c_str() << " usa " << move.moveName.c_str() <<"!";
 
   int chance = rand() % 100;
   if (chance > move.accuracy) {
-    std::cout << "Pero fallo!";
+    cout << "Pero fallo!";
     return;
   }
 
@@ -80,31 +81,31 @@ void Pokemon::UseMove(Pokemon& target, Movement move) {
     target.currentStats.HP -= damage;
     if (target.currentStats.HP < 0) target.currentStats.HP = 0;
 
-    SDL_Log("Danyo infligido: %.0f (HP restante: %.0f)", damage, target.currentStats.HP);
+    cout << "Danyo infligido: " << damage << "(HP restante: " << target.currentStats.HP << ")";
 
-    if (typeMult > 1.0f) SDL_Log("!Es super efectivo!");
-    else if (typeMult == 0.0f) SDL_Log("No afecta a %s...", target.name.c_str());
-    else if (typeMult < 1.0f) SDL_Log("No es muy efectivo...");
+    if (typeMult > 1.0f) cout << "!Es super efectivo!";
+    else if (typeMult == 0.0f) cout << "No afecta a " << target.name.c_str() << "...";
+    else if (typeMult < 1.0f) cout << "No es muy efectivo...";
   }
 }
 
 void Pokemon::PrintPokemon(){
-  std::cout << "\nName: " << name;
-  std::cout << "\nType 1: " << type1.typeName;
-  std::cout << "\nType 2: " << type2.typeName;
-  std::cout << "\nWheight: " << weight << " Kg";
-  std::cout << "\nStats: \nHp: " << currentStats.HP << "\nAtk: " << currentStats.Atk << "\nDef: " << currentStats.Def 
+  cout << "\nName: " << name;
+  cout << "\nType 1: " << type1.typeName;
+  cout << "\nType 2: " << type2.typeName;
+  cout << "\nWheight: " << weight << " Kg";
+  cout << "\nStats: \nHp: " << currentStats.HP << "\nAtk: " << currentStats.Atk << "\nDef: " << currentStats.Def 
     << "\nSpAtk: " << currentStats.spcAtk << "\nSpDef: " << currentStats.spcDef << "\nSpd: " << currentStats.Vel;
-  std::cout << "\nStage: " << stage;
+  cout << "\nStage: " << stage;
 
-  std::cout << "\nIs Fully Evolved? ";
+  cout << "\nIs Fully Evolved? ";
   if(fully_evolved){
-    std::cout <<"Yes";
+    cout <<"Yes";
   }else{
-    std::cout <<"No";
+    cout <<"No";
   }
 
-  std::cout << "\nGeneration: " << generation;
+  cout << "\nGeneration: " << generation;
 }
 
 void Pokemon::InitSprites(){

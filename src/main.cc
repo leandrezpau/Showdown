@@ -52,9 +52,9 @@ int main(int argc, char* argv[]){
   Trainer train1{"Goldi", false};
   Trainer train2{"IA Trainer", true};
 
-  train1.AddPokemon(Pokemon{6, 50, 0, true, en_SpriteType::type_Attacker});
+  train1.AddPokemon(Pokemon{256, 50, 0, true, en_SpriteType::type_Attacker});
   train1.AddPokemon(Pokemon{646, 50, 0, true, en_SpriteType::type_Attacker});
-  train1.AddPokemon(Pokemon{6, 50, 0, true, en_SpriteType::type_Attacker});
+  train1.AddPokemon(Pokemon{888, 50, 0, true, en_SpriteType::type_Attacker});
 
   train1.team[0].SetMovement("Explosion");
 
