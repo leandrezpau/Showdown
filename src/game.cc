@@ -79,7 +79,7 @@ void Game::DecideActions() {
             int kMoves = trainer1->GetCurrentPokemon().movement.size();
             for(int i = 0; i < 4; i++){
               if(i < kMoves){
-                std::cout << "\n" << i + 1 << ": "<< trainer1->GetCurrentPokemon().movement[i].moveName;
+                std::cout << "\n" << i + 1 << ": "<< trainer1->GetCurrentPokemon().movement[i].moveName << " -> " << trainer1->GetCurrentPokemon().movement[i].moveType.typeName;
               }else{
                 std::cout << "\n" << i + 1 << ": NoMove";
               }
@@ -149,6 +149,7 @@ bool Game::ValidateAction(PlayerActions act_){
           break;
         }
       }
+      break;
     }
     //IF PLAYER WANTS TO CHOOSE POKEMON
     case kActionChangePoke:{
@@ -178,7 +179,7 @@ bool Game::ValidateAction(PlayerActions act_){
 // Motor de Ejecucion: Procesa las acciones elegidas respetando el sistema de prioridades de Pokemon
 void Game::PlayActions() {
   if(playerActions.decided[0] == true){
-    std::cout << "\n--- COMIENZA EL TURNO ---";
+    std::cout << "\n\n--- COMIENZA EL TURNO ---";
 
     Pokemon* p1 = &trainer1->team[trainer1->currentPokemonIndex];
     Pokemon* p2 = &trainer2->team[trainer2->currentPokemonIndex];
@@ -237,8 +238,7 @@ void Game::PlayActions() {
 // Fase Final del Turno: Revisa caidos y fuerza la entrada de nuevos Pokemon al campo
 void Game::ResultFromActions() {
   if(playerActions.decided[0] == true){
-    ResetAction();
-    std::cout << "\n--- RESOLUCION DEL TURNO ---";
+    std::cout << "\n\n--- RESOLUCION DEL TURNO ---";
 
     Pokemon* p1 = &trainer1->team[trainer1->currentPokemonIndex];
     Pokemon* p2 = &trainer2->team[trainer2->currentPokemonIndex];
@@ -299,6 +299,7 @@ void Game::ResultFromActions() {
         }
       }
     }
+    ResetAction();
   }
 }
 

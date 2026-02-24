@@ -56,11 +56,23 @@ int main(int argc, char* argv[]){
   train1.AddPokemon(Pokemon{646, 50, 0, true, en_SpriteType::type_Attacker});
   train1.AddPokemon(Pokemon{888, 50, 0, true, en_SpriteType::type_Attacker});
 
-  train1.team[0].SetMovement("Explosion");
-
   train2.AddPokemon(Pokemon{6, 50, 0, true, en_SpriteType::type_Defender});
+  train2.AddPokemon(Pokemon{586, 50, 0, true, en_SpriteType::type_Defender});
+  train2.AddPokemon(Pokemon{326, 50, 0, true, en_SpriteType::type_Defender});
+  train2.AddPokemon(Pokemon{444, 50, 0, true, en_SpriteType::type_Defender});
 
-  train2.team[0].SetMovement("Explosion");
+  for(auto &poke : train1.team){
+    poke.SetMovement("");
+    poke.SetMovement("");
+    poke.SetMovement("");
+    poke.SetMovement("");
+  }
+  for(auto &poke : train2.team){
+    poke.SetMovement("");
+    poke.SetMovement("");
+    poke.SetMovement("");
+    poke.SetMovement("");
+  }
 
   Sprite background;
  

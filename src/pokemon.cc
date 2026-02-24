@@ -81,7 +81,7 @@ void Pokemon::UseMove(Pokemon& target, Movement move) {
     target.currentStats.HP -= damage;
     if (target.currentStats.HP < 0) target.currentStats.HP = 0;
 
-    cout << "Danyo infligido: " << damage << "(HP restante: " << target.currentStats.HP << ")";
+    cout << "\nDanyo infligido: " << damage << "(HP restante: " << target.currentStats.HP << ")";
 
     if (typeMult > 1.0f) cout << "!Es super efectivo!";
     else if (typeMult == 0.0f) cout << "No afecta a " << target.name.c_str() << "...";

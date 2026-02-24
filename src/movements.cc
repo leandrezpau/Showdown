@@ -24,7 +24,7 @@ Movement::Movement(std::string n){
 
   sqlite3_close(db);
 
-  moveName = n;
+  moveName = move_.name;
   moveType.InitWithString(move_.type);
   moveClass = (MoveClass) move_.moveClass;
   power = move_.damage;
