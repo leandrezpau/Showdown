@@ -5,20 +5,13 @@
 #include <iostream>
 
 Game::Game(SDL_Renderer* renderer_, TTF_Font* font_){
-  background.SetTextureID();
-  background.SelectSpriteFromRoute("../assets/HUD/lava_battle.png");
+  background.SetTextureID(1000);
+  background.SelectSpriteFromRoute("../assets/background_Sprites/lava_battle.png");
   background.InitSpriteSrc(false);
   background.InitSpriteDst(0, 0, 1);
 
   renderer = renderer_;
   font = font_;
-
-  typeSprites.SetTextureID();
-  typeSprites.SelectSpriteFromRoute("../assets/HUD/Miscelaneous.png");
-  for(int i = 0; i < cl_Type::kNTypes; i++){
-    typeSprites.InitSpriteSrc(false, 73, 5 + i * 15, 32, 12);
-    typeSprites.InitSpriteDst(73, 5 + i * 15, 2, false, i, 32, 12);
-  }
 }
 // Configura los entrenadores al inicio del combate y cura a sus equipos
 void Game::InitBattle(Trainer* _trainer1, Trainer* _trainer2) {
@@ -351,9 +344,9 @@ void Game::PlayBattle() {
   }
 }
 void Game::DrawGame(){
-  background.DrawSprite(background.GetDst());
-  trainer1->team[trainer1->currentPokemonIndex].DrawSprite(trainer1->team[trainer1->currentPokemonIndex].GetDst());
-  trainer2->team[trainer2->currentPokemonIndex].DrawSprite(trainer2->team[trainer2->currentPokemonIndex].GetDst());
+  background.DrawSprite();
+  trainer1->team[trainer1->currentPokemonIndex].DrawSprite();
+  trainer2->team[trainer2->currentPokemonIndex].DrawSprite();
 
   int nMoves = trainer1->team[trainer1->currentPokemonIndex].movement.size();
   
@@ -377,12 +370,6 @@ void Game::DrawGame(){
         (float)movementTexts[index][1].w,
         (float)movementTexts[index][1].h
       };
-      SDL_FRect dstMoveType = {
-        350.0f + 216.0f * i,
-        420.0f + 78.0f * e,
-        64,
-        24
-      };
       SDL_RenderTexture(renderer,
                         movementTexts[index][0].texture,
                         NULL,
@@ -392,9 +379,7 @@ void Game::DrawGame(){
                         movementTexts[index][1].texture,
                         NULL,
                         &dstPP);
-      
-      typeSprites.DrawSprite(dstMoveType, 150, (int) trainer1->team[trainer1->currentPokemonIndex].movement[index].moveType.type);             
-    }
+    } 
   }
 }
 

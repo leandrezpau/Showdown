@@ -39,8 +39,6 @@ enum en_Types{
 
 class cl_Type {
 public:
-  static const int kNTypes = 18;
-  
   en_Types type;
   std::string typeName;
   float GetEffectivenessAgainst(cl_Type defender1, cl_Type defender2);

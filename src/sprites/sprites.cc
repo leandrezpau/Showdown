@@ -17,29 +17,23 @@ void BaseSprite::SetSpritesRenderer(SDL_Renderer* renderer){
  * Initializes the source rectangle (src) from the loaded texture.
  * If 'tile' is true, it assumes a horizontal spritesheet where each frame is square.
  */
-void BaseSprite::InitSpriteSrc(bool tile, float x, float y, float w, float h){
+void BaseSprite::InitSpriteSrc(bool tile){
   if(TextureManager::Get(textureID) == nullptr) return;
   
-  float w_, h_;
-  SDL_GetTextureSize(TextureManager::Get(textureID), &w_, &h_);
-  SDL_FRect aux;
+  float w, h;
+  SDL_GetTextureSize(TextureManager::Get(textureID), &w, &h);
+  
   if(TextureManager::Get(textureID) != nullptr){
     if(tile){
       // For animated tiles, the height determines the size of the square frame
-      tileSize = (short int) h_;
-      numTiles = (short int) w_ / tileSize;
-      aux = {0, 0, (float)tileSize, (float)tileSize};
+      tileSize = (short int) h;
+      numTiles = (short int) w / tileSize;
+      src = {0, 0, (float)tileSize, (float)tileSize};
     }else{
       // Static sprite: the source is the entire texture
       numTiles = 1;
-      if(x == 0 || y == 0 || w == 0 || h == 0){
-        aux = {0, 0, w_, h_};
-      }else{
-        aux = {x, y, w, h};
-      }
-      
+      src = {0, 0, w, h};
     }
-    src.push_back(aux);
   }
 }
 
@@ -47,54 +41,35 @@ void BaseSprite::InitSpriteSrc(bool tile, float x, float y, float w, float h){
  * Defines the destination rectangle on the screen.
  * Can center the sprite based on the provided x and y coordinates.
  */
-void BaseSprite::InitSpriteDst(float x, float y, float scale, bool centered, int index, float w, float h){
+void BaseSprite::InitSpriteDst(float x, float y, float scale, bool centered){
   if(TextureManager::Get(textureID) == nullptr) return;
 
-  SDL_FRect aux;
-
   if(centered){
-    aux.x = x - (src[index].w / 2 * scale);
-    aux.y = y - (src[index].h / 2 * scale);
+    dst.x = x - (src.w / 2 * scale);
+    dst.y = y - (src.h / 2 * scale);
   }else{
-    aux.x = x;
-    aux.y = y;
+    dst.x = x;
+    dst.y = y;
   }
 
-  if(w == 0 || h == 0){
-    aux.w = src[index].w * scale;
-    aux.h = src[index].h * scale;
-  }else{
-    aux.w = w * scale;
-    aux.h = h * scale;
-  }
-  
-
-  dst.push_back(aux);
+  dst.w = src.w * scale;
+  dst.h = src.h * scale;
 }
 
 /**
  * Wrapper to update the sprite's position and scale on the screen.
  */
-void BaseSprite::UpdateSpriteDst(float x, float y, float scale, bool centered, int index){
-  if(centered){
-    dst[index].x = x - (src[index].w / 2 * scale);
-    dst[index].y = y - (src[index].h / 2 * scale);
-  }else{
-    dst[index].x = x;
-    dst[index].y = y;
-  }
-
-  dst[index].w = src[index].w * scale;
-  dst[index].h = src[index].h * scale;
+void BaseSprite::UpdateSpriteDst(float x, float y, float scale, bool centered){
+  InitSpriteDst(x, y, scale, centered);
 }
 
 /**
  * Renders the sprite to the screen and manages frame animation timing.
  */
-void BaseSprite::DrawSprite(SDL_FRect dst_, int frameDelay, int index){
+void BaseSprite::DrawSprite(int frameDelay){
   if(TextureManager::Get(textureID) == nullptr) return;
 
-  SDL_RenderTexture(sRenderer_, TextureManager::Get(textureID), &src[index], &dst_);
+  SDL_RenderTexture(sRenderer_, TextureManager::Get(textureID), &src, &dst);
 
   // If the sprite is an animation (multiple tiles)
   if(numTiles > 1){
@@ -109,7 +84,7 @@ void BaseSprite::DrawSprite(SDL_FRect dst_, int frameDelay, int index){
     }
 
     // Move the source rectangle to the current frame index
-    src[index].x = src[index].h * (currentTile % numTiles);
+    src.x = src.h * (currentTile % numTiles);
   }
 }
 
@@ -121,15 +96,13 @@ void BaseSprite::ApplyFilter(float r, float g, float b){
     SDL_SetTextureColorMod(TextureManager::Get(textureID), (Uint8) r, (Uint8) g, (Uint8) b);
 }
 
-void BaseSprite::SetTextureID(){
-  textureID = spriteIndexer++;
+void BaseSprite::SetTextureID(int id){
+  textureID = id;
 }
 
 BaseSprite::~BaseSprite(){
 }
-SDL_FRect BaseSprite::GetDst(){
-  return dst[0];
-}
+
 #pragma region Sprite
 
 /**
