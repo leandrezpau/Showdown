@@ -2,7 +2,7 @@
 cls
 
 @echo ---------------------------------------------------
-@echo            Premakeando Todo que locura
+@echo                 Premake ShowDown
 @echo ---------------------------------------------------
 @echo            Proceso por lotes iniciado.
 @echo ---------------------------------------------------
@@ -11,7 +11,7 @@ cls
 
 @echo ---------------------------------------------------
 @echo            Authors: Pau Leandrez
-@echo                     Nicolás Ferrando
+@echo                     Nicolas Ferrando
 @echo                     Sergio Tordera
 @echo ---------------------------------------------------
 

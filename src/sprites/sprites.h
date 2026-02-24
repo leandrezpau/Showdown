@@ -26,11 +26,11 @@ class BaseSprite {
 protected:
 	static const int kNPokes = 721;
 
-	en_SpriteType typeSprite;		// Type of sprite is been used -> Back, Front or Icon
-
   int textureID;
-  SDL_FRect dst{};
-  SDL_FRect src{};
+
+  std::vector<SDL_FRect> src{};
+  std::vector<SDL_FRect> dst{};
+  
 
   static short int spriteIndexer;
   short int numTiles = 1;
@@ -44,16 +44,16 @@ protected:
 public:
   static void SetSpritesRenderer(SDL_Renderer* renderer);
 
-  void InitSpriteSrc(bool tile = true);
-  void InitSpriteDst(float x, float y, float scale, bool centered = false);
-  void UpdateSpriteDst(float x, float y, float scale, bool centered = false);
+  void InitSpriteSrc(bool tile = true, float x = 0, float y = 0, float w = 0, float h = 0);
+  void InitSpriteDst(float x, float y, float scale, bool centered = false, int index = 0, float w = 0, float h = 0);
+  void UpdateSpriteDst(float x, float y, float scale, bool centered = false, int index = 0);
 
-  void DrawSprite(int frameDelay = 150);
+  void DrawSprite(SDL_FRect dst_, int frameDelay = 150, int index = 0);
   void ApplyFilter(float r, float g, float b);
-  void SetTextureID(int id);
+  void SetTextureID();
 
   //Getters
-
+  SDL_FRect GetDst();
 
   //Setters
 
@@ -67,6 +67,7 @@ public:
 
 class PokeSprite : public BaseSprite {
 public:
+  en_SpriteType typeSprite;		// Type of sprite is been used -> Back, Front or Icon
   void SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID);
 };
 

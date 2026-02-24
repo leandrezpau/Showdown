@@ -51,10 +51,12 @@ public:
   en_SceneManager sceneManager = kSceneInit; // Current scene is being played
   en_FightManager fightManager = kFightInit; // Curent part in the fight is being played
 
+  // HUD
   SDL_Renderer* renderer;
   TTF_Font* font;
 
   Text movementTexts[4][2];
+  Sprite typeSprites;
 
   Trainer* trainer1;  // Trainer 1 in fight
   Trainer* trainer2;  // Trainer 2 in fight
@@ -91,8 +93,6 @@ public:
   // 0 -> Not ended | 1 -> Trainer 1 won | 2 -> Trainer 2 won
   int EndedBattle(Trainer* _trainer1, Trainer* _trainer2);
   //Ganador / Perdedor
-  //
-  void ProcessInput();
   void ResetAction();
 
   void SetMovementTexts();
