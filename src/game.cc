@@ -4,6 +4,15 @@
 #include "battleai.h"
 #include <iostream>
 
+Game::Game(SDL_Renderer* renderer_, TTF_Font* font_){
+  background.SetTextureID(1000);
+  background.SelectSpriteFromRoute("../assets/background_Sprites/lava_battle.png");
+  background.InitSpriteSrc(false);
+  background.InitSpriteDst(0, 0, 1);
+
+  renderer = renderer_;
+  font = font_;
+}
 // Configura los entrenadores al inicio del combate y cura a sus equipos
 void Game::InitBattle(Trainer* _trainer1, Trainer* _trainer2) {
   std::cout << "\n" << _trainer1->name << "you are being challenged by " << _trainer2->name;
@@ -13,6 +22,8 @@ void Game::InitBattle(Trainer* _trainer1, Trainer* _trainer2) {
 
   HealPlayer(trainer1);
   HealPlayer(trainer2);
+
+  SetMovementTexts();
 
   ResetAction();
 }
@@ -190,6 +201,7 @@ void Game::PlayActions() {
       trainer1->currentPokemonIndex = playerActions.playerIndex[0];
       p1 = &trainer1->team[trainer1->currentPokemonIndex];
       std::cout << "\n" << trainer1->name << " retiro a su Pokemon y envio a " << p1->name << "!";
+      SetMovementTexts();
     }
 
     if (playerActions.playerAction[1] == kActionChangePoke) {
@@ -232,6 +244,7 @@ void Game::PlayActions() {
       if (p2Attacks) executeAttack(p2, p1, playerActions.playerIndex[1]);
       if (p1Attacks) executeAttack(p1, p2, playerActions.playerIndex[0]);
     }
+    GetNewPP();
   }
 }
 
@@ -269,6 +282,7 @@ void Game::ResultFromActions() {
                   trainer1->currentPokemonIndex = index;
                   std::cout << "\n" << trainer1->name << " envia a " << trainer1->team[index].name << "!";
                   choosing = false;
+                  SetMovementTexts();
                 }
                 else {
                   std::cout << "\nEse Pokemon no es valido o esta debilitado. Elige otro.";
@@ -329,6 +343,45 @@ void Game::PlayBattle() {
     break; // A�adido un break preventivo
   }
 }
+void Game::DrawGame(){
+  background.DrawSprite();
+  trainer1->team[trainer1->currentPokemonIndex].DrawSprite();
+  trainer2->team[trainer2->currentPokemonIndex].DrawSprite();
+
+  int nMoves = trainer1->team[trainer1->currentPokemonIndex].movement.size();
+  
+  // Rectángulo Rojo
+  for(int i = 0; i < 2; i++){
+    for(int e = 0; e < 2; e++){
+      SDL_FRect rect = { 208.0f + 216.0f * i, 380.0f + 78.0f * e, 216.0f, 78.0f };
+      SDL_SetRenderDrawColor(renderer, 250, i * 50, i * 27 + e * 99, 255);
+      SDL_RenderFillRect(renderer, &rect);
+      int index = i + e * 2;
+
+      SDL_FRect dstName = {
+        210.0f + 216.0f * i,
+        382.0f + 78.0f * e,
+        (float)movementTexts[index][0].w,
+        (float)movementTexts[index][0].h
+      };
+      SDL_FRect dstPP = {
+        210.0f + 216.0f * i,
+        420.0f + 78.0f * e,
+        (float)movementTexts[index][1].w,
+        (float)movementTexts[index][1].h
+      };
+      SDL_RenderTexture(renderer,
+                        movementTexts[index][0].texture,
+                        NULL,
+                        &dstName);
+
+      SDL_RenderTexture(renderer,
+                        movementTexts[index][1].texture,
+                        NULL,
+                        &dstPP);
+    } 
+  }
+}
 
 void Game::ResetAction(){
   for(int i = 0; i < 2; i++){
@@ -340,8 +393,51 @@ void Game::ResetAction(){
   std::cout << "\nPress 1 to attack\nPress 2 to change pokemon";
 }
 
-void Game::ProcessInput(){
+Text Game::CreateText(SDL_Renderer* renderer, TTF_Font* font, const std::string& str, SDL_Color color) {
+  Text t;
+  SDL_Surface* surface =
+      TTF_RenderText_Blended(font, str.c_str(), str.size(), color);
 
+  if (!surface) return t;
+
+  t.texture = SDL_CreateTextureFromSurface(renderer, surface);
+  t.w = surface->w;
+  t.h = surface->h;
+
+  SDL_DestroySurface(surface);
+
+  return t;
+}
+void Game::SetMovementTexts(){
+  for (int i = 0; i < trainer1->team[trainer1->currentPokemonIndex].movement.size(); i++) {
+    for(int e = 0; e < 2; e++){
+      char textString[50];
+      if(e == 0){
+        snprintf(textString, 50, "%s", trainer1->team[trainer1->currentPokemonIndex].movement[i].moveName.c_str());
+      }else{
+        snprintf(textString, 50, "%d/%d", trainer1->team[trainer1->currentPokemonIndex].movement[i].currentPP, trainer1->team[trainer1->currentPokemonIndex].movement[i].pp);
+      }
+      
+      movementTexts[i][e] = CreateText(
+        renderer,
+        font,
+        textString,
+        {168, 184, 184, 255}
+      );
+    }
+  }
+}
+void Game::GetNewPP(){
+  for(int i = 0; i < trainer1->team[trainer1->currentPokemonIndex].movement.size(); i++){
+    char textString[50];
+    snprintf(textString, 50, "%d/%d", trainer1->team[trainer1->currentPokemonIndex].movement[i].currentPP, trainer1->team[trainer1->currentPokemonIndex].movement[i].pp);
+    movementTexts[i][1] = CreateText(
+      renderer,
+      font,
+      textString,
+      {168, 184, 184, 255}
+    );
+  }
 }
 
 #endif //_GAME_CC_

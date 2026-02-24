@@ -14,12 +14,13 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <stdio.h>
 
 #include <string>
 
 #define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 380
+#define WINDOW_HEIGHT 560
 
 #pragma region Main
 /*
@@ -38,15 +39,23 @@ int main(int argc, char* argv[]){
 
   SDL_Window* window = SDL_CreateWindow("Pokemon Showdown", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
   SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
+
+  TTF_Init();
+  TTF_Font* font = TTF_OpenFont("../assets/fonts/pokemon.ttf", 32);
+  if (!font) {
+    SDL_Log("Error cargando fuente: %s", SDL_GetError());
+  }
+  
   SDL_SetRenderVSync(renderer, 1);
 
-  Game game;
+  BaseSprite::SetSpritesRenderer(renderer);
+
+  Game game{renderer, font};
 
   int currentPokemon = 1;
   int contador = 0;
   
-
-  BaseSprite::SetSpritesRenderer(renderer);
+  
 
   //ID, Level, Weight, Gender, Shiny, Renderer, TypeSprite
   Trainer train1{"Goldi", false};
@@ -73,17 +82,10 @@ int main(int argc, char* argv[]){
     poke.SetMovement("");
     poke.SetMovement("");
   }
-
-  Sprite background;
  
   while (game.running) {
     switch(game.sceneManager){
       case en_SceneManager::kSceneInit:{  //CURRENT SCENE
-        background.SetTextureID(1000);
-        background.SelectSpriteFromRoute("../assets/background_Sprites/lava_battle.png");
-        background.InitSpriteSrc(false);
-        background.InitSpriteDst(0, 0, 1);
-
         game.InitBattle(&train1, &train2);
 
         game.sceneManager = en_SceneManager::kSceneGameMode;
@@ -95,11 +97,8 @@ int main(int argc, char* argv[]){
         SDL_RenderClear(renderer);
 
         game.PlayBattle();
-        //if(contador % 60 == 0) poke1.SetNewPokemon(++currentPokemon, 50, 0, true, poke1.typeSprite);
 
-        background.DrawSprite();
-        train1.team[train1.currentPokemonIndex].DrawSprite();
-        train2.team[train2.currentPokemonIndex].DrawSprite();
+        game.DrawGame();
 
         //DRAW CLEAR
         SDL_RenderPresent(renderer);

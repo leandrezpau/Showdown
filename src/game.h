@@ -4,6 +4,7 @@
 #define _GAME_H_
 
 #include "trainer.h"
+#include <SDL3_ttf/SDL_ttf.h>
 
 enum en_SceneManager {
   kSceneInit = 0,     // Init of game
@@ -28,6 +29,11 @@ enum en_Actions {
   kActionChangePoke,
   
 };
+struct Text {
+  SDL_Texture* texture = nullptr;
+  int w = 0;
+  int h = 0;
+};
 
 struct PlayerActions {
   // NULL No action, Attack, or ChangePoke
@@ -45,10 +51,17 @@ public:
   en_SceneManager sceneManager = kSceneInit; // Current scene is being played
   en_FightManager fightManager = kFightInit; // Curent part in the fight is being played
 
+  SDL_Renderer* renderer;
+  TTF_Font* font;
+
+  Text movementTexts[4][2];
+
   Trainer* trainer1;  // Trainer 1 in fight
   Trainer* trainer2;  // Trainer 2 in fight
 
   PlayerActions playerActions;
+
+  Sprite background;
 
   int winner = 0;
   bool running = true;
@@ -72,8 +85,8 @@ public:
   void PlayActions();
   //Ocurren sucesos
   void ResultFromActions();
-  //__
-
+  //__ 
+  void DrawGame();
   //Finaliza combate
   // 0 -> Not ended | 1 -> Trainer 1 won | 2 -> Trainer 2 won
   int EndedBattle(Trainer* _trainer1, Trainer* _trainer2);
@@ -81,6 +94,12 @@ public:
   //
   void ProcessInput();
   void ResetAction();
+
+  void SetMovementTexts();
+  void GetNewPP();
+  Text CreateText(SDL_Renderer* renderer, TTF_Font* font, const std::string& str, SDL_Color color);
+
+  Game(SDL_Renderer* renderer_, TTF_Font* font_);
 };
 
 #endif //_GAME_H_

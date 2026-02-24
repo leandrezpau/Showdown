@@ -27,13 +27,14 @@ project "ShowDown"
     "../include",
     "../include/SDL3",
     "../include/SDL3_image",
+    "../include/SDL3_ttf",
     "../include/sqlite/**",
   }
 
   filter "system:macosx"
     architecture "ARM64"
     libdirs { "../lib/x64" }
-    links { "SDL3", "SDL3_image" }
+    links { "SDL3", "SDL3_image", "SDL3_ttf" }
     
     linkoptions { 
       "-Wl,-rpath,@loader_path/../lib/x64" 
@@ -42,7 +43,7 @@ project "ShowDown"
   filter "system:windows"
     architecture "x64"
     libdirs { "../lib/x64" }
-    links { "SDL3.lib", "SDL3_image.lib" }
+    links { "SDL3.lib", "SDL3_image.lib","SDL3_ttf.lib" }
 
   filter "configurations:Debug"
     symbols "On"
