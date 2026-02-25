@@ -12,6 +12,7 @@ if [ $? -eq 0 ]; then
   # Forzamos las rutas locales
   install_name_tool -change "@rpath/SDL3.framework/Versions/A/SDL3" "@rpath/libSDL3.dylib" ../bin/ShowDown
   install_name_tool -change "@rpath/SDL3_image.framework/Versions/A/SDL3_image" "@rpath/libSDL3_image.dylib" ../bin/ShowDown
+  install_name_tool -change "@rpath/SDL3_ttf.framework/Versions/A/SDL3_ttf" "@rpath/libSDL3_ttf.dylib" ../bin/ShowDown
   
   # 3. FIRMA COMPLETA
   # --deep asegura que firme también las dependencias que el binario arrastra

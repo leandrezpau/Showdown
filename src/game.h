@@ -55,7 +55,7 @@ public:
   TTF_Font* font;
 
   Text movementTexts[4][2];
-  Text pokeNameText[6];
+  Text pokeNameText[6][2];
 
   Trainer* trainer1;  // Trainer 1 in fight
   Trainer* trainer2;  // Trainer 2 in fight
