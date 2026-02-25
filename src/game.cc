@@ -6,7 +6,7 @@
 
 Game::Game(SDL_Renderer* renderer_, TTF_Font* font_){
   background.SetTextureID(background.GetTextureID());
-  background.SelectSpriteFromRoute("../assets/HUD/lava_battle.png");
+  background.SelectSpriteFromRoute("../assets/HUD/lava_battle_hud.png");
   background.InitSpriteSrc(false);
   background.InitSpriteDst(0, 0, 1);
 
@@ -385,7 +385,6 @@ void Game::DrawCombatHUD(){
           (float)pokeNameText[i].h
         };
         SDL_RenderTexture(renderer, pokeNameText[i].texture, NULL, &dstName);
-
         SDL_FRect rect = {
           70.0f + row * 190.0f + 74, 
           385.0f + 48 + jump, 
@@ -425,6 +424,21 @@ void Game::DrawCombatHUD(){
       break;
     }
   }
+  // Normal HUD -> Player HP & Enemy HP
+  SDL_FRect dstName = {
+    419,
+    235,
+    (float) pokeNameText[trainer1->currentPokemonIndex].w,
+    (float) pokeNameText[trainer1->currentPokemonIndex].h
+  };
+  SDL_RenderTexture(renderer, pokeNameText[trainer1->currentPokemonIndex].texture, NULL, &dstName);
+  SDL_FRect rect = {
+    512, 
+    262, 
+    (96 * (trainer1->team[trainer1->currentPokemonIndex].currentStats.HP / trainer1->team[trainer1->currentPokemonIndex].currentStats.maxHP)), 
+    4};
+  SDL_SetRenderDrawColor(renderer, 0, 255, 0, 150);
+  SDL_RenderFillRect(renderer, &rect);
 }
 void Game::ResetAction(){
   for(int i = 0; i < 2; i++){
