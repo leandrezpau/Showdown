@@ -25,7 +25,7 @@ static const float TypeChart[TYPE_COUNT][TYPE_COUNT] = {
   /* FAI */ { NEU, NVE, NEU, NEU, NEU, NEU, SUP, NVE, NEU, NEU, NEU, NEU, NEU, NEU, SUP, SUP, NVE, NEU }
 };
 
-float cl_Type::GetEffectivenessAgainst(cl_Type defender) {
+float Type::GetEffectivenessAgainst(Type defender) {
   if (this->type >= TYPE_COUNT || defender.type >= TYPE_COUNT ||
       this->type < 0 || defender.type < 0) {
     return 1.0f;
@@ -33,7 +33,7 @@ float cl_Type::GetEffectivenessAgainst(cl_Type defender) {
   return TypeChart[this->type][defender.type];
 }
 
-float cl_Type::GetEffectivenessAgainst(cl_Type defender1, cl_Type defender2) {
+float Type::GetEffectivenessAgainst(Type defender1, Type defender2) {
   float multiplier1 = GetEffectivenessAgainst(defender1);
 
   float multiplier2 = 1.0f;
@@ -45,19 +45,19 @@ float cl_Type::GetEffectivenessAgainst(cl_Type defender1, cl_Type defender2) {
   return multiplier1 * multiplier2;
 }
 
-float cl_Type::Attacking(cl_Type defender) {
+float Type::Attacking(Type defender) {
   return GetEffectivenessAgainst(defender);
 }
 
-float cl_Type::Defending(cl_Type attacker) {
+float Type::Defending(Type attacker) {
   return attacker.GetEffectivenessAgainst(*this);
 }
 
-void cl_Type::InitWithEnum(en_Types typeEnum) {
+void Type::InitWithEnum(en_Types typeEnum) {
   type = typeEnum;
 }
 
-void cl_Type::InitWithString(std::string typeString) {
+void Type::InitWithString(std::string typeString) {
   // Pasar a mayúsculas para evitar problemas
   std::transform(typeString.begin(), typeString.end(), typeString.begin(), ::toupper);
 
@@ -92,7 +92,7 @@ void cl_Type::InitWithString(std::string typeString) {
   }
 }
 
-void cl_Type::SetStringName() {
+void Type::SetStringName() {
 }
 
 #endif //_TYPES_CC_

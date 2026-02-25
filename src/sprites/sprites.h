@@ -25,14 +25,13 @@ enum en_SpriteType{
 class BaseSprite {
 protected:
 	static const int kNPokes = 721;
+  static int spriteIndexer;
 
-	en_SpriteType typeSprite;		// Type of sprite is been used -> Back, Front or Icon
-
-  int textureID;
+  
   SDL_FRect dst{};
   SDL_FRect src{};
-
-  static short int spriteIndexer;
+  short int textureID;
+  
   short int numTiles = 1;
   short int currentTile = 0;
   short int tileSize = 0;
@@ -50,7 +49,7 @@ public:
 
   void DrawSprite(int frameDelay = 150);
   void ApplyFilter(float r, float g, float b);
-  void SetTextureID(int id);
+  void SetTextureID();
 
   //Getters
 
@@ -62,11 +61,14 @@ public:
 
 class Sprite : public BaseSprite {
 public:
+  
   void SelectSpriteFromRoute(const char* route);
 };
 
 class PokeSprite : public BaseSprite {
 public:
+  en_SpriteType typeSprite;		// Type of sprite is been used -> Back, Front or Icon
+
   void SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID);
 };
 

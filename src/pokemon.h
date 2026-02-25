@@ -57,15 +57,15 @@ public:
   Stats baseStats;    // Base stats
   Stats currentStats; // Stats now he is leveled up
   std::string name;   // Name of the pokemon
-  cl_Type type1;      // First type
-  cl_Type type2;      // Secondary type
+  Type type1;         // First type
+  Type type2;         // Secondary type
   int statStages[8];  // Which stage he is in
 
   PokeState state;
 
   std::vector<Movement> movement;  // Movements he can use
 
-  float CalculateIncomingDamageMult(cl_Type attackType);
+  float CalculateIncomingDamageMult(Type attackType);
   void UseMove(Pokemon& target, Movement move);
 
   void ModifyStat(StatID stat, int amount);

@@ -5,8 +5,8 @@
 #include <iostream>
 
 Game::Game(SDL_Renderer* renderer_, TTF_Font* font_){
-  background.SetTextureID(1000);
-  background.SelectSpriteFromRoute("../assets/background_Sprites/lava_battle.png");
+  background.SetTextureID();
+  background.SelectSpriteFromRoute("../assets/HUD/lava_battle.png");
   background.InitSpriteSrc(false);
   background.InitSpriteDst(0, 0, 1);
 
@@ -349,40 +349,48 @@ void Game::DrawGame(){
   trainer2->team[trainer2->currentPokemonIndex].DrawSprite();
 
   int nMoves = trainer1->team[trainer1->currentPokemonIndex].movement.size();
-  
-  // Rectángulo Rojo
-  for(int i = 0; i < 2; i++){
-    for(int e = 0; e < 2; e++){
-      SDL_FRect rect = { 208.0f + 216.0f * i, 380.0f + 78.0f * e, 216.0f, 78.0f };
-      SDL_SetRenderDrawColor(renderer, 250, i * 50, i * 27 + e * 99, 255);
-      SDL_RenderFillRect(renderer, &rect);
-      int index = i + e * 2;
 
-      SDL_FRect dstName = {
-        210.0f + 216.0f * i,
-        382.0f + 78.0f * e,
-        (float)movementTexts[index][0].w,
-        (float)movementTexts[index][0].h
-      };
-      SDL_FRect dstPP = {
-        210.0f + 216.0f * i,
-        420.0f + 78.0f * e,
-        (float)movementTexts[index][1].w,
-        (float)movementTexts[index][1].h
-      };
-      SDL_RenderTexture(renderer,
-                        movementTexts[index][0].texture,
-                        NULL,
-                        &dstName);
+  DrawCombatHUD();
+}
+void Game::DrawCombatHUD(){
+  switch(playerActions.playerAction[0]){
+    case kActionNULL:{
+      break;
+    }
+    case kActionChangePoke:{
 
-      SDL_RenderTexture(renderer,
-                        movementTexts[index][1].texture,
-                        NULL,
-                        &dstPP);
-    } 
+      break;
+    }
+    case kActionAttack:{
+      // Movements rectangles & text
+      for(int i = 0; i < 2; i++){
+        for(int e = 0; e < 2; e++){
+          SDL_FRect rect = { 208.0f + 216.0f * i, 380.0f + 78.0f * e, 216.0f, 78.0f };
+          SDL_SetRenderDrawColor(renderer, 250, i * 50, i * 27 + e * 99, 255);
+          SDL_RenderFillRect(renderer, &rect);
+          int index = i + e * 2;
+          SDL_FRect dstName = {
+            210.0f + 216.0f * i,
+            382.0f + 78.0f * e,
+            (float)movementTexts[index][0].w,
+            (float)movementTexts[index][0].h
+          };
+          SDL_FRect dstPP = {
+            210.0f + 216.0f * i,
+            420.0f + 78.0f * e,
+            (float)movementTexts[index][1].w,
+            (float)movementTexts[index][1].h
+          };
+          // Movement Name
+          SDL_RenderTexture(renderer, movementTexts[index][0].texture, NULL, &movementTexts[index][0].textDst);
+          // Movement PP
+          SDL_RenderTexture(renderer, movementTexts[index][1].texture, NULL, &movementTexts[index][1].textDst);
+        } 
+      }
+      break;
+    }
   }
 }
-
 void Game::ResetAction(){
   for(int i = 0; i < 2; i++){
     playerActions.playerAction[i] = kActionNULL;

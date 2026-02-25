@@ -37,20 +37,20 @@ enum en_Types{
   //TYPE_STELLAR
 };
 
-class cl_Type {
+class Type {
 public:
   en_Types type;
   std::string typeName;
-  float GetEffectivenessAgainst(cl_Type defender1, cl_Type defender2);
-  float GetEffectivenessAgainst(cl_Type defender);
+  float GetEffectivenessAgainst(Type defender1, Type defender2);
+  float GetEffectivenessAgainst(Type defender);
   
-  float Attacking(cl_Type defender);
-  float Defending(cl_Type attacker);
+  float Attacking(Type defender);
+  float Defending(Type attacker);
 
   void InitWithEnum(en_Types typeEnum);
   void InitWithString(std::string typeString);
   void SetStringName();
-  cl_Type(en_Types t = TYPE_NORMAL) : type(t) {}
+  Type(en_Types t = TYPE_NORMAL) : type(t) {}
 };
 
 

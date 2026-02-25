@@ -5,7 +5,7 @@
 
 // Static member initialization for the SDL renderer
 SDL_Renderer* BaseSprite::sRenderer_ = nullptr;
-short int BaseSprite::spriteIndexer = 0;
+int BaseSprite::spriteIndexer = 0;
 /**
  * Sets the global renderer to be used by all sprite instances.
  */
@@ -20,19 +20,19 @@ void BaseSprite::SetSpritesRenderer(SDL_Renderer* renderer){
 void BaseSprite::InitSpriteSrc(bool tile){
   if(TextureManager::Get(textureID) == nullptr) return;
   
-  float w, h;
-  SDL_GetTextureSize(TextureManager::Get(textureID), &w, &h);
+  float wSize, hSize;
+  SDL_GetTextureSize(TextureManager::Get(textureID), &wSize, &hSize);
   
   if(TextureManager::Get(textureID) != nullptr){
     if(tile){
       // For animated tiles, the height determines the size of the square frame
-      tileSize = (short int) h;
-      numTiles = (short int) w / tileSize;
+      tileSize = (short int) hSize;
+      numTiles = (short int) wSize / tileSize;
       src = {0, 0, (float)tileSize, (float)tileSize};
     }else{
       // Static sprite: the source is the entire texture
       numTiles = 1;
-      src = {0, 0, w, h};
+      src = {0, 0, wSize, hSize};
     }
   }
 }
@@ -60,7 +60,18 @@ void BaseSprite::InitSpriteDst(float x, float y, float scale, bool centered){
  * Wrapper to update the sprite's position and scale on the screen.
  */
 void BaseSprite::UpdateSpriteDst(float x, float y, float scale, bool centered){
-  InitSpriteDst(x, y, scale, centered);
+  if(TextureManager::Get(textureID) == nullptr) return;
+
+  if(centered){
+    dst.x = x - (src.w / 2 * scale);
+    dst.y = y - (src.h / 2 * scale);
+  }else{
+    dst.x = x;
+    dst.y = y;
+  }
+
+  dst.w = src.w * scale;
+  dst.h = src.h * scale;
 }
 
 /**
@@ -96,8 +107,8 @@ void BaseSprite::ApplyFilter(float r, float g, float b){
     SDL_SetTextureColorMod(TextureManager::Get(textureID), (Uint8) r, (Uint8) g, (Uint8) b);
 }
 
-void BaseSprite::SetTextureID(int id){
-  textureID = id;
+void BaseSprite::SetTextureID(){
+  textureID = spriteIndexer++;
 }
 
 BaseSprite::~BaseSprite(){

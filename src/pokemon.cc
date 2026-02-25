@@ -4,6 +4,62 @@
 #include "pokemon.h"
 using namespace std;
 
+Pokemon::Pokemon(int _id, int _level, int _gender, bool _shiny, en_SpriteType spriteType_)
+    : id(_id), level(50), gender(_gender), shiny(_shiny){
+    
+  sqlite3* db;
+  sqlite3_open("../assets/Database/PokemonDB.db", &db);
+
+  PokemonData pokemon_ = getPokemonById(db, _id);
+
+  sqlite3_close(db);
+
+  //Name in UpperCase
+  name = pokemon_.name;
+  std::transform(name.begin(), name.end(), name.begin(), ::toupper);
+
+  //Pokemon Types
+  type1.InitWithString(pokemon_.type1);
+  type2.InitWithString(pokemon_.type2);
+
+  //Stats
+  Stats stats_ = {(float) pokemon_.hp, 
+                  (float) pokemon_.attack, 
+                  (float) pokemon_.defense, 
+                  (float) pokemon_.specialAttack, 
+                  (float) pokemon_.specialDefense, 
+                  (float) pokemon_.speed, 
+                  (float) pokemon_.maxhp };
+
+  baseStats = stats_;
+  currentStats = stats_;
+  
+  //Movements
+  for(int i = 0; i < 4; i++){
+    //movement[i]
+  }
+  //Weight
+  weight = pokemon_.weight;
+  
+  //Stages
+  stage = pokemon_.evo_phase;
+  fully_evolved = pokemon_.last_evo_phase;
+  for (int i = 0; i < 8; ++i)
+    statStages[i] = 0;
+
+  //State
+  state = PokeState::kStateAlive;
+
+  // GENERATION
+  generation = pokemon_.generation;
+
+  //Sprite Things
+  typeSprite = spriteType_;
+  InitSprites();
+
+  PrintPokemon();
+}
+
 void Pokemon::ModifyStat(StatID stat, int amount) {
   if (stat == STAT_NONE) return;
 
@@ -40,7 +96,7 @@ void Pokemon::RecalculateStats() {
   currentStats.Vel = baseStats.Vel * getMult(statStages[STAT_VEL]);
 }
 
-float Pokemon::CalculateIncomingDamageMult(cl_Type attackType) {
+float Pokemon::CalculateIncomingDamageMult(Type attackType) {
   return attackType.GetEffectivenessAgainst(type1, type2);
 }
 
@@ -109,7 +165,7 @@ void Pokemon::PrintPokemon(){
 }
 
 void Pokemon::InitSprites(){
-  textureID = BaseSprite::spriteIndexer++;
+  SetTextureID();
   SelectPokemonSprite(shiny, typeSprite, id);
   InitSpriteSrc();
   switch(typeSprite){
@@ -172,60 +228,5 @@ void Pokemon::SetMovement(std::string moveName){
   if(movement.size() < 4){
     movement.push_back(Movement{moveName});
   }
-}
-Pokemon::Pokemon(int _id, int _level, int _gender, bool _shiny, en_SpriteType spriteType_)
-    : id(_id), level(50), gender(_gender), shiny(_shiny){
-    
-  sqlite3* db;
-  sqlite3_open("../assets/Database/PokemonDB.db", &db);
-
-  PokemonData pokemon_ = getPokemonById(db, _id);
-
-  sqlite3_close(db);
-
-  //Name in UpperCase
-  name = pokemon_.name;
-  std::transform(name.begin(), name.end(), name.begin(), ::toupper);
-
-  //Pokemon Types
-  type1.InitWithString(pokemon_.type1);
-  type2.InitWithString(pokemon_.type2);
-
-  //Stats
-  Stats stats_ = {(float) pokemon_.hp, 
-                  (float) pokemon_.attack, 
-                  (float) pokemon_.defense, 
-                  (float) pokemon_.specialAttack, 
-                  (float) pokemon_.specialDefense, 
-                  (float) pokemon_.speed, 
-                  (float) pokemon_.maxhp };
-
-  baseStats = stats_;
-  currentStats = stats_;
-  
-  //Movements
-  for(int i = 0; i < 4; i++){
-    //movement[i]
-  }
-  //Weight
-  weight = pokemon_.weight;
-  
-  //Stages
-  stage = pokemon_.evo_phase;
-  fully_evolved = pokemon_.last_evo_phase;
-  for (int i = 0; i < 8; ++i)
-    statStages[i] = 0;
-
-  //State
-  state = PokeState::kStateAlive;
-
-  // GENERATION
-  generation = pokemon_.generation;
-
-  //Sprite Things
-  typeSprite = spriteType_;
-  InitSprites();
-
-  PrintPokemon();
 }
 #endif

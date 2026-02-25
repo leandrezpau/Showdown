@@ -31,6 +31,7 @@ enum en_Actions {
 };
 struct Text {
   SDL_Texture* texture = nullptr;
+  SDL_FRect textDst;
   int w = 0;
   int h = 0;
 };
@@ -92,8 +93,8 @@ public:
   int EndedBattle(Trainer* _trainer1, Trainer* _trainer2);
   //Ganador / Perdedor
   //
-  void ProcessInput();
   void ResetAction();
+  void DrawCombatHUD();
 
   void SetMovementTexts();
   void GetNewPP();
