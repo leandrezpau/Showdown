@@ -77,10 +77,12 @@ void BaseSprite::UpdateSpriteDst(float x, float y, float scale, bool centered){
 /**
  * Renders the sprite to the screen and manages frame animation timing.
  */
-void BaseSprite::DrawSprite(int frameDelay){
+void BaseSprite::DrawSprite(int frameDelay, SDL_FRect dst_){
   if(TextureManager::Get(textureID) == nullptr) return;
+  if (dst_.w == 0 && dst_.h == 0)
+    dst_ = dst;
 
-  SDL_RenderTexture(sRenderer_, TextureManager::Get(textureID), &src, &dst);
+  SDL_RenderTexture(sRenderer_, TextureManager::Get(textureID), &src, &dst_);
 
   // If the sprite is an animation (multiple tiles)
   if(numTiles > 1){
@@ -107,10 +109,12 @@ void BaseSprite::ApplyFilter(float r, float g, float b){
     SDL_SetTextureColorMod(TextureManager::Get(textureID), (Uint8) r, (Uint8) g, (Uint8) b);
 }
 
-void BaseSprite::SetTextureID(){
+void BaseSprite::SetTextureID(short int& textureID){
   textureID = spriteIndexer++;
 }
-
+short int& BaseSprite::GetTextureID(){
+  return textureID;
+}
 BaseSprite::~BaseSprite(){
 }
 
@@ -130,7 +134,7 @@ void Sprite::SelectSpriteFromRoute(const char* route){
  * Handles dynamic loading by looking up names in a pokedex file and 
  * unpacking specific assets from a data archive before loading.
  */
-void PokeSprite::SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID){
+void PokeSprite::SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID, short int& textureID){
 
   // Open the pokedex index to find the name associated with the ID
   std::ifstream file("../assets/SpritesAnimated/pokedex.txt");
@@ -172,4 +176,49 @@ void PokeSprite::SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID)
 
   // Clean up the temporary unpacked file
   remove(filesprite);
+}
+void PokeSprite::InitIconSrc(bool tile){
+  if(TextureManager::Get(iconTextureID) == nullptr) return;
+  
+  float wSize, hSize;
+  SDL_GetTextureSize(TextureManager::Get(iconTextureID), &wSize, &hSize);
+  
+  if(TextureManager::Get(iconTextureID) != nullptr){
+    if(tile){
+      // For animated tiles, the height determines the size of the square frame
+      iconSrc = {0, 0, (float) hSize, (float) hSize};
+    }else{
+      // Static sprite: the source is the entire texture
+      numTiles = 1;
+      iconSrc = {0, 0, wSize, hSize};
+    }
+  }
+}
+void PokeSprite::InitIcons(bool shiny, int pokeID){
+  SetTextureID(iconTextureID);
+  SelectPokemonSprite(shiny, en_SpriteType::type_Icon, pokeID, iconTextureID);
+  InitIconSrc(true);
+}
+
+void PokeSprite::DrawIcon(SDL_FRect iconDst){
+  int frameDelay = 500;
+  if(TextureManager::Get(iconTextureID) == nullptr) return;
+
+  SDL_RenderTexture(sRenderer_, TextureManager::Get(iconTextureID), &iconSrc, &iconDst);
+
+  // If the sprite is an animation (multiple tiles)
+  Uint64 now = SDL_GetTicks();
+
+
+  if(iconLast == 0) iconLast = now;
+
+  // Advance to the next frame if the delay time has passed
+  if((now - iconLast) >= frameDelay){
+    currentIconTile++;
+    iconLast = now;
+  }
+
+  // Move the source rectangle to the current frame index
+  currentIconTile = currentIconTile % 2;
+  iconSrc.x = iconSrc.h * currentIconTile;
 }

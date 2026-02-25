@@ -5,10 +5,15 @@
 #include <iostream>
 
 Game::Game(SDL_Renderer* renderer_, TTF_Font* font_){
-  background.SetTextureID();
+  background.SetTextureID(background.GetTextureID());
   background.SelectSpriteFromRoute("../assets/HUD/lava_battle.png");
   background.InitSpriteSrc(false);
   background.InitSpriteDst(0, 0, 1);
+
+  pokebar.SetTextureID(pokebar.GetTextureID());
+  pokebar.SelectSpriteFromRoute("../assets/HUD/pokeBar.png");
+  pokebar.InitSpriteSrc(false);
+  pokebar.InitSpriteDst(0, 0, 1);
 
   renderer = renderer_;
   font = font_;
@@ -23,7 +28,7 @@ void Game::InitBattle(Trainer* _trainer1, Trainer* _trainer2) {
   HealPlayer(trainer1);
   HealPlayer(trainer2);
 
-  SetMovementTexts();
+  SetTexts();
 
   ResetAction();
 }
@@ -201,7 +206,7 @@ void Game::PlayActions() {
       trainer1->currentPokemonIndex = playerActions.playerIndex[0];
       p1 = &trainer1->team[trainer1->currentPokemonIndex];
       std::cout << "\n" << trainer1->name << " retiro a su Pokemon y envio a " << p1->name << "!";
-      SetMovementTexts();
+      SetTexts();
     }
 
     if (playerActions.playerAction[1] == kActionChangePoke) {
@@ -282,7 +287,7 @@ void Game::ResultFromActions() {
                   trainer1->currentPokemonIndex = index;
                   std::cout << "\n" << trainer1->name << " envia a " << trainer1->team[index].name << "!";
                   choosing = false;
-                  SetMovementTexts();
+                  SetTexts();
                 }
                 else {
                   std::cout << "\nEse Pokemon no es valido o esta debilitado. Elige otro.";
@@ -358,7 +363,37 @@ void Game::DrawCombatHUD(){
       break;
     }
     case kActionChangePoke:{
+      for(int i = 0; i < trainer1->team.size(); i++){
+        int jump = (i >= 3) ? 70 : 0;
+        int row = i % 3;
+        SDL_FRect iconDst = {
+          74.0f + row * 190.0f, 
+          395.0f + jump, 
+          50.0f, 50.0f
+        };
+        SDL_FRect barDst = {
+          70.0f + row * 190.0f, 
+          385.0f + jump, 
+          189.0f, 69.0f
+        };
+        pokebar.DrawSprite(150, barDst);
+        trainer1->team[i].DrawIcon(iconDst);
+        SDL_FRect dstName = {
+          70.0f + 190.0f * row + 54,
+          385.0f + 16 + jump,
+          (float)pokeNameText[i].w,
+          (float)pokeNameText[i].h
+        };
+        SDL_RenderTexture(renderer, pokeNameText[i].texture, NULL, &dstName);
 
+        SDL_FRect rect = {
+          70.0f + row * 190.0f + 74, 
+          385.0f + 48 + jump, 
+          (100 * (trainer1->team[i].currentStats.HP / trainer1->team[i].currentStats.maxHP)), 
+          8};
+        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 80);
+        SDL_RenderFillRect(renderer, &rect);
+      }
       break;
     }
     case kActionAttack:{
@@ -382,9 +417,9 @@ void Game::DrawCombatHUD(){
             (float)movementTexts[index][1].h
           };
           // Movement Name
-          SDL_RenderTexture(renderer, movementTexts[index][0].texture, NULL, &movementTexts[index][0].textDst);
+          SDL_RenderTexture(renderer, movementTexts[index][0].texture, NULL, &dstName);
           // Movement PP
-          SDL_RenderTexture(renderer, movementTexts[index][1].texture, NULL, &movementTexts[index][1].textDst);
+          SDL_RenderTexture(renderer, movementTexts[index][1].texture, NULL, &dstPP);
         } 
       }
       break;
@@ -416,7 +451,24 @@ Text Game::CreateText(SDL_Renderer* renderer, TTF_Font* font, const std::string&
 
   return t;
 }
-void Game::SetMovementTexts(){
+void Game::SetTexts(){
+  for (int i = 0; i < trainer1->team.size(); i++) {
+    char textString[50];
+    snprintf(textString, 50, "%s", trainer1->team[i].name.c_str());
+
+    int e = 1;
+    while(textString[e] != '\0'){
+      textString[e] = std::tolower(textString[e]);
+      e++;
+    }
+
+    pokeNameText[i] = CreateText(
+      renderer,
+      font,
+      textString,
+      {168, 184, 184, 255}
+    );
+  }
   for (int i = 0; i < trainer1->team[trainer1->currentPokemonIndex].movement.size(); i++) {
     for(int e = 0; e < 2; e++){
       char textString[50];

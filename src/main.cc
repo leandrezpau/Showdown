@@ -20,7 +20,7 @@
 #include <string>
 
 #define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 560
+#define WINDOW_HEIGHT 536
 
 #pragma region Main
 /*
@@ -47,6 +47,7 @@ int main(int argc, char* argv[]){
   }
   
   SDL_SetRenderVSync(renderer, 1);
+  SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
   BaseSprite::SetSpritesRenderer(renderer);
 
@@ -61,9 +62,10 @@ int main(int argc, char* argv[]){
   Trainer train1{"Goldi", false};
   Trainer train2{"IA Trainer", true};
 
-  train1.AddPokemon(Pokemon{256, 50, 0, true, en_SpriteType::type_Attacker});
+  train1.AddPokemon(Pokemon{700, 50, 0, false, en_SpriteType::type_Attacker});
   train1.AddPokemon(Pokemon{646, 50, 0, true, en_SpriteType::type_Attacker});
   train1.AddPokemon(Pokemon{888, 50, 0, true, en_SpriteType::type_Attacker});
+  train1.AddPokemon(Pokemon{699, 50, 0, true, en_SpriteType::type_Attacker});
 
   train2.AddPokemon(Pokemon{6, 50, 0, true, en_SpriteType::type_Defender});
   train2.AddPokemon(Pokemon{586, 50, 0, true, en_SpriteType::type_Defender});

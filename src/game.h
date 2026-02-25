@@ -31,7 +31,6 @@ enum en_Actions {
 };
 struct Text {
   SDL_Texture* texture = nullptr;
-  SDL_FRect textDst;
   int w = 0;
   int h = 0;
 };
@@ -56,6 +55,7 @@ public:
   TTF_Font* font;
 
   Text movementTexts[4][2];
+  Text pokeNameText[6];
 
   Trainer* trainer1;  // Trainer 1 in fight
   Trainer* trainer2;  // Trainer 2 in fight
@@ -63,12 +63,13 @@ public:
   PlayerActions playerActions;
 
   Sprite background;
+  Sprite pokebar;
 
   int winner = 0;
   bool running = true;
 
-  void HealPlayer(Trainer* healedTrainer);
 
+  void HealPlayer(Trainer* healedTrainer);
 
   void PlayBattle();
   //>>Sistema de Batalla<<
@@ -76,7 +77,6 @@ public:
   //Se eligen entrenadores
   void InitBattle(Trainer* _trainer1, Trainer* _trainer2);
   //Lanzan primer pokemon
-
   //__
   //Ambos eligen que hacer
   void DecideActions();
@@ -96,7 +96,7 @@ public:
   void ResetAction();
   void DrawCombatHUD();
 
-  void SetMovementTexts();
+  void SetTexts();
   void GetNewPP();
   Text CreateText(SDL_Renderer* renderer, TTF_Font* font, const std::string& str, SDL_Color color);
 

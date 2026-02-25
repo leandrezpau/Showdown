@@ -47,14 +47,15 @@ public:
   void InitSpriteDst(float x, float y, float scale, bool centered = false);
   void UpdateSpriteDst(float x, float y, float scale, bool centered = false);
 
-  void DrawSprite(int frameDelay = 150);
+  void DrawSprite(int frameDelay = 150, SDL_FRect dst_ = {});
   void ApplyFilter(float r, float g, float b);
-  void SetTextureID();
-
+  
   //Getters
-
+  short int& GetTextureID();
 
   //Setters
+  void SetTextureID(short int& textureID);
+
 
   virtual ~BaseSprite();
 };
@@ -69,7 +70,16 @@ class PokeSprite : public BaseSprite {
 public:
   en_SpriteType typeSprite;		// Type of sprite is been used -> Back, Front or Icon
 
-  void SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID);
+  SDL_FRect iconSrc{};
+  short int iconTextureID;
+  short int currentIconTile;
+
+  Uint64 iconLast = 0;
+
+  void InitIcons(bool shiny, int pokeID);
+  void InitIconSrc(bool tile = false);
+  void SelectPokemonSprite(bool shiny, en_SpriteType type, int pokeID, short int& textureID);
+  void DrawIcon(SDL_FRect iconDst);
 };
 
 #endif //_SPRITES_H_

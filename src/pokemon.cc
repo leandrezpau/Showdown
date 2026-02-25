@@ -165,14 +165,15 @@ void Pokemon::PrintPokemon(){
 }
 
 void Pokemon::InitSprites(){
-  SetTextureID();
-  SelectPokemonSprite(shiny, typeSprite, id);
-  InitSpriteSrc();
+  SetTextureID(textureID);
+  SelectPokemonSprite(shiny, typeSprite, id, textureID);
+  InitSpriteSrc(true);
   switch(typeSprite){
     case en_SpriteType::type_Attacker: InitSpriteDst(160, 220, 3, true); break;
     case en_SpriteType::type_Defender: InitSpriteDst(480, 110, 2, true); break;
     case en_SpriteType::type_Icon:     InitSpriteDst(400, 320, 2, true); break;
   }
+  InitIcons(shiny, id);
 }
 
 void Pokemon::SetNewPokemon(int _id, int _level, int _gender, bool _shiny, en_SpriteType spriteType_){
@@ -221,7 +222,6 @@ void Pokemon::SetNewPokemon(int _id, int _level, int _gender, bool _shiny, en_Sp
   //Sprite Things
   typeSprite = spriteType_;
   InitSprites();
-
   PrintPokemon();
 }
 void Pokemon::SetMovement(std::string moveName){
