@@ -56,13 +56,15 @@ int main(int argc, char* argv[]){
   int currentPokemon = 1;
   int contador = 0;
   
+  Uint64 last = 0;
+  Uint64 now = SDL_GetTicks();
   
 
   //ID, Level, Weight, Gender, Shiny, Renderer, TypeSprite
   Trainer train1{"Goldi", false};
   Trainer train2{"IA Trainer", true};
 
-  train1.AddPokemon(Pokemon{700, 50, 0, false, en_SpriteType::type_Attacker});
+  train1.AddPokemon(Pokemon{658, 50, 0, true, en_SpriteType::type_Attacker});
   train1.AddPokemon(Pokemon{646, 50, 0, true, en_SpriteType::type_Attacker});
   train1.AddPokemon(Pokemon{888, 50, 0, true, en_SpriteType::type_Attacker});
   train1.AddPokemon(Pokemon{699, 50, 0, true, en_SpriteType::type_Attacker});
@@ -90,6 +92,9 @@ int main(int argc, char* argv[]){
       case en_SceneManager::kSceneInit:{  //CURRENT SCENE
         game.InitBattle(&train1, &train2);
 
+        float segundos = SDL_GetTicks() / 1000.0f;
+        std::cout << "\n\nHan pasado " << segundos << "s desde el principio\n";
+        
         game.sceneManager = en_SceneManager::kSceneGameMode;
         break;
       }
@@ -97,7 +102,6 @@ int main(int argc, char* argv[]){
         //DRAW INIT
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
         SDL_RenderClear(renderer);
-
         game.PlayBattle();
 
         game.DrawGame();

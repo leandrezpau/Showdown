@@ -101,63 +101,79 @@ void Game::DecideActions() {
       
       if (event.type == SDL_EVENT_KEY_DOWN && event.key.repeat == 0) {
         int key = event.key.scancode;
-
-        // CHOOSE TYPE OF ACTION (Attack or Change)
-        if (playerActions.playerAction[0] == kActionNULL) {
-          // Key 1 Attack
-          if (key == SDL_SCANCODE_1) {
-            playerActions.playerAction[0] = kActionAttack;
-            // Printing pokemon movements
-            std::cout << "\nAttacking, Now choose movement to use";
-            int kMoves = trainer1->GetCurrentPokemon().movement.size();
-            for(int i = 0; i < 4; i++){
-              if(i < kMoves){
-                std::cout << "\n" << i + 1 << ": "<< trainer1->GetCurrentPokemon().movement[i].moveName << " -> " << trainer1->GetCurrentPokemon().movement[i].moveType.typeName;
-              }else{
-                std::cout << "\n" << i + 1 << ": NoMove";
+        if (trainer1->GetCurrentPokemon().currentStats.HP <= 0){
+          if (event.type == SDL_EVENT_KEY_DOWN && event.key.repeat == 0) {
+            int key = event.key.scancode;
+            if (key >= SDL_SCANCODE_1 && key <= SDL_SCANCODE_6) {
+              int index = key - SDL_SCANCODE_1;
+              if (index < trainer1->team.size() && trainer1->team[index].currentStats.HP > 0) {
+                trainer1->currentPokemonIndex = index;
+                std::cout << "\n" << trainer1->name << " envia a " << trainer1->team[index].name << "!";
+                SetTexts();
+              }
+              else {
+                std::cout << "\nEse Pokemon no es valido o esta debilitado. Elige otro.";
               }
             }
           }
-          // Key 2 Change
-          else if (key == SDL_SCANCODE_2) {
-            playerActions.playerAction[0] = kActionChangePoke;
-            std::cout << "\nChanging pokemon, Now choose which pokemon to use";
-            int kPokes = trainer1->team.size();
-            for(int i = 0; i < 6; i++){
-              if(i < kPokes){
-                std::cout << "\n" << i + 1 << ": "<< trainer1->team[i].name;
-              }else{
-                std::cout << "\n" << i + 1 << ": NoPoke";
+        }else{
+          // CHOOSE TYPE OF ACTION (Attack or Change)
+          if (playerActions.playerAction[0] == kActionNULL) {
+            // Key 1 Attack
+            if (key == SDL_SCANCODE_1) {
+              playerActions.playerAction[0] = kActionAttack;
+              // Printing pokemon movements
+              std::cout << "\nAttacking, Now choose movement to use";
+              int kMoves = trainer1->GetCurrentPokemon().movement.size();
+              for(int i = 0; i < 4; i++){
+                if(i < kMoves){
+                  std::cout << "\n" << i + 1 << ": "<< trainer1->GetCurrentPokemon().movement[i].moveName << " -> " << trainer1->GetCurrentPokemon().movement[i].moveType.typeName;
+                }else{
+                  std::cout << "\n" << i + 1 << ": NoMove";
+                }
               }
             }
-          }
-        } else {
-          //CHOOSING INDEX
-          if (key >= SDL_SCANCODE_1 && key <= SDL_SCANCODE_6) {
-            int index = key - SDL_SCANCODE_1;
+            // Key 2 Change
+            else if (key == SDL_SCANCODE_2) {
+              playerActions.playerAction[0] = kActionChangePoke;
+              std::cout << "\nChanging pokemon, Now choose which pokemon to use";
+              int kPokes = trainer1->team.size();
+              for(int i = 0; i < 6; i++){
+                if(i < kPokes){
+                  std::cout << "\n" << i + 1 << ": "<< trainer1->team[i].name;
+                }else{
+                  std::cout << "\n" << i + 1 << ": NoPoke";
+                }
+              }
+            }
+          } else {
+            //CHOOSING INDEX
+            if (key >= SDL_SCANCODE_1 && key <= SDL_SCANCODE_6) {
+              int index = key - SDL_SCANCODE_1;
 
-            //If changing pokemon
-            if (playerActions.playerAction[0] == kActionChangePoke) {
-              playerActions.playerIndex[0] = index;
-              if(ValidateAction(playerActions)){
-                return;
-              }else{
-                playerActions.playerIndex[0] = 0;
+              //If changing pokemon
+              if (playerActions.playerAction[0] == kActionChangePoke) {
+                playerActions.playerIndex[0] = index;
+                if(ValidateAction(playerActions)){
+                  return;
+                }else{
+                  playerActions.playerIndex[0] = 0;
+                }
               }
-            }
 
-            Pokemon poke = trainer1->team[trainer1->currentPokemonIndex];
-            if (playerActions.playerAction[0] == kActionAttack) {
-              playerActions.playerIndex[0] = index;
-              if (ValidateAction(playerActions)) {
-                return;
-              } else {
-                playerActions.playerIndex[0] = 0;
+              Pokemon poke = trainer1->team[trainer1->currentPokemonIndex];
+              if (playerActions.playerAction[0] == kActionAttack) {
+                playerActions.playerIndex[0] = index;
+                if (ValidateAction(playerActions)) {
+                  return;
+                } else {
+                  playerActions.playerIndex[0] = 0;
+                }
               }
             }
-          }
-          if(key == SDL_SCANCODE_ESCAPE){
-            ResetAction();
+            if(key == SDL_SCANCODE_ESCAPE){
+              ResetAction();
+            }
           }
         }
       }
@@ -288,31 +304,6 @@ void Game::ResultFromActions() {
       if (trainer1->HasAvailablePokemon()) {
         bool choosing = true;
         std::cout << "\nElige a tu proximo Pokemon (1 - " << trainer1->team.size() << "): ";
-
-        while (choosing && running) {
-          SDL_Event event;
-          while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT) {
-              running = false;
-              return;
-            }
-            if (event.type == SDL_EVENT_KEY_DOWN && event.key.repeat == 0) {
-              int key = event.key.scancode;
-              if (key >= SDL_SCANCODE_1 && key <= SDL_SCANCODE_6) {
-                int index = key - SDL_SCANCODE_1;
-                if (index < trainer1->team.size() && trainer1->team[index].currentStats.HP > 0) {
-                  trainer1->currentPokemonIndex = index;
-                  std::cout << "\n" << trainer1->name << " envia a " << trainer1->team[index].name << "!";
-                  choosing = false;
-                  SetTexts();
-                }
-                else {
-                  std::cout << "\nEse Pokemon no es valido o esta debilitado. Elige otro.";
-                }
-              }
-            }
-          }
-        }
       }
     }
 
@@ -367,6 +358,7 @@ void Game::PlayBattle() {
 }
 void Game::DrawGame(){
   background.DrawSprite();
+  if(trainer1->team[trainer1->currentPokemonIndex].currentStats.HP <= 0) trainer1->team[trainer1->currentPokemonIndex].ApplyFilter(255, 100, 100);
   trainer1->team[trainer1->currentPokemonIndex].DrawSprite();
   trainer2->team[trainer2->currentPokemonIndex].DrawSprite();
 
@@ -377,6 +369,39 @@ void Game::DrawGame(){
 void Game::DrawCombatHUD(){
   switch(playerActions.playerAction[0]){
     case kActionNULL:{
+      if(trainer1->GetCurrentPokemon().currentStats.HP <= 0){
+        for(int i = 0; i < trainer1->team.size(); i++){
+          int jump = (i >= 3) ? 70 : 0;
+          int row = i % 3;
+          SDL_FRect iconDst = {
+            74.0f + row * 190.0f, 
+            395.0f + jump, 
+            50.0f, 50.0f
+          };
+          SDL_FRect barDst = {
+            70.0f + row * 190.0f, 
+            385.0f + jump, 
+            189.0f, 69.0f
+          };
+          pokebar.DrawSprite(150, barDst);
+          trainer1->team[i].DrawIcon(iconDst);
+          SDL_FRect dstName = {
+            70.0f + 190.0f * row + 54,
+            385.0f + 16 + jump,
+            (float)pokeNameText[i][0].w,
+            (float)pokeNameText[i][0].h
+          };
+          SDL_RenderTexture(renderer, pokeNameText[i][0].texture, NULL, &dstName);
+          SDL_FRect rect = {
+            70.0f + row * 190.0f + 74, 
+            385.0f + 48 + jump, 
+            (100 * (trainer1->team[i].currentStats.HP / trainer1->team[i].currentStats.maxHP)), 
+            8};
+          SDL_Color barColor = GetHPBarColor(trainer1->team[i], 80);
+          SDL_SetRenderDrawColor(renderer, barColor.r, barColor.g, barColor.b, barColor.a);
+          SDL_RenderFillRect(renderer, &rect);
+        }
+      }
       break;
     }
     case kActionChangePoke:{
