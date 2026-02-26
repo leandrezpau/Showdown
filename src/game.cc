@@ -381,30 +381,30 @@ void Game::DrawCombatHUD(){
     }
     case kActionChangePoke:{
       for(int i = 0; i < trainer1->team.size(); i++){
-        int jump = (i >= 3) ? 70 : 0;
+        int jump = (i >= 3) ? 74 : 0;
         int row = i % 3;
         SDL_FRect iconDst = {
-          74.0f + row * 190.0f, 
-          395.0f + jump, 
+          73.0f + row * 190.0f, 
+          397.0f + jump, 
           50.0f, 50.0f
         };
         SDL_FRect barDst = {
-          70.0f + row * 190.0f, 
-          385.0f + jump, 
+          69.0f + row * 190.0f, 
+          387.0f + jump, 
           189.0f, 69.0f
         };
         pokebar.DrawSprite(150, barDst);
         trainer1->team[i].DrawIcon(iconDst);
         SDL_FRect dstName = {
-          70.0f + 190.0f * row + 54,
-          385.0f + 16 + jump,
+          69.0f + 190.0f * row + 54,
+          387.0f + 16 + jump,
           (float)pokeNameText[i][0].w,
           (float)pokeNameText[i][0].h
         };
         SDL_RenderTexture(renderer, pokeNameText[i][0].texture, NULL, &dstName);
         SDL_FRect rect = {
-          70.0f + row * 190.0f + 74, 
-          385.0f + 48 + jump, 
+          69.0f + row * 190.0f + 74, 
+          387.0f + 48 + jump, 
           (100 * (trainer1->team[i].currentStats.HP / trainer1->team[i].currentStats.maxHP)), 
           8};
         SDL_Color barColor = GetHPBarColor(trainer1->team[i], 80);
