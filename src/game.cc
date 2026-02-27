@@ -264,8 +264,8 @@ void Game::ResultFromActions() {
   if(playerActions.decided[0] == true){
     std::cout << "\n\n--- RESOLUCION DEL TURNO ---";
 
-    Pokemon* p1 = &trainer1->team[trainer1->currentPokemonIndex];
-    Pokemon* p2 = &trainer2->team[trainer2->currentPokemonIndex];
+    Pokemon* p1 = &trainer1->GetCurrentPokemon();
+    Pokemon* p2 = &trainer2->GetCurrentPokemon();
 
     // Comprueba si el Pokemon del JUGADOR 1 se ha desmayado
     if (p1->currentStats.HP <= 0 && p1->state != kStateFainted) {
@@ -404,8 +404,6 @@ void Game::ResetAction(){
     playerActions.playerIndex[i] = 0;
     playerActions.decided[i] = false;
   }
-
-  std::cout << "\nPress 1 to attack\nPress 2 to change pokemon";
 }
 void Game::DrawText(const std::string& str, float posX, float posY, bool loweredText, float scale, SDL_Color color){
   std::string pokeName = str;
@@ -416,44 +414,37 @@ void Game::DrawText(const std::string& str, float posX, float posY, bool lowered
       pokeName[i] = std::tolower(pokeName[i]);
     }
   }
-  SDL_Color shadowColor = {88, 88, 80, 255};
-  SDL_Surface* surface1 = TTF_RenderText_Blended(font, pokeName.c_str(), pokeName.size(), color);
-  SDL_Surface* surface2 = TTF_RenderText_Blended(font, pokeName.c_str(), pokeName.size(), shadowColor);
+  SDL_Surface* surface = TTF_RenderText_Solid(font, pokeName.c_str(), pokeName.size(), color);
 
-  if (!surface1 || !surface2) return;
+  if (!surface) return;
 
-  SDL_Texture* textToDraw1 = SDL_CreateTextureFromSurface(renderer, surface1);
-  SDL_Texture* textToDraw2 = SDL_CreateTextureFromSurface(renderer, surface2);
+  SDL_Texture* textToDraw = SDL_CreateTextureFromSurface(renderer, surface);
   
-  SDL_FRect dstText1 = { 
+  SDL_FRect dstText = { 
     posX + (2 * scale), 
     posY,
-    (float) surface1->w * scale,
-    (float) surface1->h * scale
+    (float) surface->w * scale,
+    (float) surface->h * scale
   };
-  SDL_FRect dstText2 = { 
-    posX, 
-    posY,
-    (float) surface2->w * scale,
-    (float) surface2->h * scale
-  };
+
 
   // Shadow behind real text
-  SDL_RenderTexture(renderer, textToDraw1, NULL, &dstText1);
-  dstText1.x -= (2 * scale);
-  dstText1.y += (2 * scale);
-  SDL_RenderTexture(renderer, textToDraw1, NULL, &dstText1);
-  dstText1.x += (2 * scale);
-  SDL_RenderTexture(renderer, textToDraw1, NULL, &dstText1);
+  SDL_RenderTexture(renderer, textToDraw, NULL, &dstText);
+  dstText.x -= (2 * scale);
+  dstText.y += (2 * scale);
+  SDL_RenderTexture(renderer, textToDraw, NULL, &dstText);
+  dstText.x += (2 * scale);
+  SDL_RenderTexture(renderer, textToDraw, NULL, &dstText);
 
   // Real Text
-  SDL_RenderTexture(renderer, textToDraw2, NULL, &dstText2);
+  dstText.x -= (2 * scale);
+  dstText.y -= (2 * scale);
+  SDL_SetTextureColorMod(textToDraw, 133, 122, 111);
+  SDL_RenderTexture(renderer, textToDraw, NULL, &dstText);
 
   // Destroying every allocation
-  SDL_DestroySurface(surface1);
-  SDL_DestroySurface(surface2);
-  SDL_DestroyTexture(textToDraw1);
-  SDL_DestroyTexture(textToDraw2);
+  SDL_DestroySurface(surface);
+  SDL_DestroyTexture(textToDraw);
 }
 
 void Game::DrawLifeBar(Stats stats, float posX, float posY, float lenght, float width, unsigned char alpha){
@@ -468,10 +459,12 @@ void Game::DrawLifeBar(Stats stats, float posX, float posY, float lenght, float 
     barColor = {0, 255, 0, alpha};    // Green
   }
   else if (hpPercent > 0.2f) {
-    barColor = {255, 255, 0, 200};  // Yellow
+    if(alpha == 80) alpha == 200;
+    barColor = {255, 255, 0, alpha};  // Yellow
   }
   else {
-    barColor = {255, 0, 0, 200};    // Red
+    if(alpha == 80) alpha == 200;
+    barColor = {255, 0, 0, alpha};    // Red
   }
 
   SDL_SetRenderDrawColor(renderer, barColor.r, barColor.g, barColor.b, barColor.a);
