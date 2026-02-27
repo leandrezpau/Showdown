@@ -123,7 +123,7 @@ void Pokemon::UseMove(Pokemon& target, Movement move) {
     }
 
     //currentStats.HP = (((((2 * Base_HP) + IV + (EV / 4)) * LV) / 100) + LV + 10); //only HP
-    //STAT = (((((2 * Base_STAT) + IV + (EV / 4)) * LV) / 100) + 5); // every otehr stat (except HP)
+    //STAT = (((((2 * Base_STAT) + IV + (EV / 4)) * LV) / 100) + 5); // every other stat (except HP)
 
     float damage = (((2.0f * (float)this->level / 5.0f + 2.0f) * (float)move.power * (attackStat / defenseStat)) / 50.0f) + 2.0f;
     
