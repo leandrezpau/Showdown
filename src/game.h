@@ -29,11 +29,6 @@ enum en_Actions {
   kActionChangePoke,
   
 };
-struct Text {
-  SDL_Texture* texture = nullptr;
-  int w = 0;
-  int h = 0;
-};
 
 struct PlayerActions {
   // NULL No action, Attack, or ChangePoke
@@ -53,9 +48,6 @@ public:
 
   SDL_Renderer* renderer;
   TTF_Font* font;
-
-  Text movementTexts[4][2];
-  Text pokeNameText[6][2];
 
   Trainer* trainer1;  // Trainer 1 in fight
   Trainer* trainer2;  // Trainer 2 in fight
@@ -96,9 +88,8 @@ public:
   void ResetAction();
   void DrawCombatHUD();
 
-  void SetTexts();
-  void GetNewPP();
-  Text CreateText(SDL_Renderer* renderer, TTF_Font* font, const std::string& str, SDL_Color color);
+  void DrawText(const std::string& str, float posX, float posY, SDL_Color color = {168, 184, 184, 255});
+  void DrawLifeBar(Stats stats, float posX, float posY, float lenght, float width, unsigned char alpha);
 
   Game(SDL_Renderer* renderer_, TTF_Font* font_);
 };

@@ -3,23 +3,7 @@
 #include "game.h"
 #include "battleai.h"
 #include <iostream>
-SDL_Color GetHPBarColor(Pokemon poke, unsigned char alpha){
-  float hp = poke.currentStats.HP;
-  float maxHp = poke.currentStats.maxHP;
 
-  float hpPercent = hp / maxHp;
-
-  // Cambiar color según porcentaje
-  if (hpPercent > 0.5f) {
-    return {0, 255, 0, alpha};    // Green
-  }
-  else if (hpPercent > 0.2f) {
-    return {255, 255, 0, alpha};  // Yellow
-  }
-  else {
-    return {255, 0, 0, alpha};    // Red
-  }
-}
 
 Game::Game(SDL_Renderer* renderer_, TTF_Font* font_){
   background.SetTextureID(background.GetTextureID());
@@ -44,8 +28,6 @@ void Game::InitBattle(Trainer* _trainer1, Trainer* _trainer2) {
 
   HealPlayer(trainer1);
   HealPlayer(trainer2);
-
-  SetTexts();
 
   ResetAction();
 }
@@ -109,7 +91,6 @@ void Game::DecideActions() {
               if (index < trainer1->team.size() && trainer1->team[index].currentStats.HP > 0) {
                 trainer1->currentPokemonIndex = index;
                 std::cout << "\n" << trainer1->name << " envia a " << trainer1->team[index].name << "!";
-                SetTexts();
               }
               else {
                 std::cout << "\nEse Pokemon no es valido o esta debilitado. Elige otro.";
@@ -239,7 +220,6 @@ void Game::PlayActions() {
       trainer1->currentPokemonIndex = playerActions.playerIndex[0];
       p1 = &trainer1->team[trainer1->currentPokemonIndex];
       std::cout << "\n" << trainer1->name << " retiro a su Pokemon y envio a " << p1->name << "!";
-      SetTexts();
     }
 
     if (playerActions.playerAction[1] == kActionChangePoke) {
@@ -282,7 +262,6 @@ void Game::PlayActions() {
       if (p2Attacks) executeAttack(p2, p1, playerActions.playerIndex[1]);
       if (p1Attacks) executeAttack(p1, p2, playerActions.playerIndex[0]);
     }
-    GetNewPP();
   }
 }
 
@@ -385,22 +364,16 @@ void Game::DrawCombatHUD(){
           };
           pokebar.DrawSprite(150, barDst);
           trainer1->team[i].DrawIcon(iconDst);
-          SDL_FRect dstName = {
-            70.0f + 190.0f * row + 54,
-            385.0f + 16 + jump,
-            (float)pokeNameText[i][0].w,
-            (float)pokeNameText[i][0].h
-          };
-          SDL_RenderTexture(renderer, pokeNameText[i][0].texture, NULL, &dstName);
-          SDL_FRect rect = {
+
+          DrawText(trainer1->team[i].name, 70.0f + 190.0f * row + 54, 385.0f + 16 + jump);
+          DrawLifeBar(
+            trainer1->team[i].currentStats, 
             70.0f + row * 190.0f + 74, 
             385.0f + 48 + jump, 
-            (100 * (trainer1->team[i].currentStats.HP / trainer1->team[i].currentStats.maxHP)), 
-            8};
-          SDL_Color barColor = GetHPBarColor(trainer1->team[i], 80);
-          SDL_SetRenderDrawColor(renderer, barColor.r, barColor.g, barColor.b, barColor.a);
-          SDL_RenderFillRect(renderer, &rect);
-        }
+            100, 
+            8, 
+            80);
+          }
       }
       break;
     }
@@ -420,21 +393,15 @@ void Game::DrawCombatHUD(){
         };
         pokebar.DrawSprite(150, barDst);
         trainer1->team[i].DrawIcon(iconDst);
-        SDL_FRect dstName = {
-          69.0f + 190.0f * row + 54,
-          387.0f + 16 + jump,
-          (float)pokeNameText[i][0].w,
-          (float)pokeNameText[i][0].h
-        };
-        SDL_RenderTexture(renderer, pokeNameText[i][0].texture, NULL, &dstName);
-        SDL_FRect rect = {
+
+        DrawText(trainer1->team[i].name, 70.0f + 190.0f * row + 54, 385.0f + 16 + jump);
+        DrawLifeBar(
+          trainer1->team[i].currentStats, 
           69.0f + row * 190.0f + 74, 
           387.0f + 48 + jump, 
-          (100 * (trainer1->team[i].currentStats.HP / trainer1->team[i].currentStats.maxHP)), 
-          8};
-        SDL_Color barColor = GetHPBarColor(trainer1->team[i], 80);
-        SDL_SetRenderDrawColor(renderer, barColor.r, barColor.g, barColor.b, barColor.a);
-        SDL_RenderFillRect(renderer, &rect);
+          100, 
+          8, 
+          80);
       }
       break;
     }
@@ -445,51 +412,26 @@ void Game::DrawCombatHUD(){
           SDL_FRect rect = { 208.0f + 216.0f * i, 380.0f + 78.0f * e, 216.0f, 78.0f };
           SDL_SetRenderDrawColor(renderer, 250, i * 50, i * 27 + e * 99, 255);
           SDL_RenderFillRect(renderer, &rect);
+
           int index = i + e * 2;
-          SDL_FRect dstName = {
-            210.0f + 216.0f * i,
-            382.0f + 78.0f * e,
-            (float)movementTexts[index][0].w,
-            (float)movementTexts[index][0].h
-          };
-          SDL_FRect dstPP = {
-            210.0f + 216.0f * i,
-            420.0f + 78.0f * e,
-            (float)movementTexts[index][1].w,
-            (float)movementTexts[index][1].h
-          };
-          // Movement Name
-          SDL_RenderTexture(renderer, movementTexts[index][0].texture, NULL, &dstName);
-          // Movement PP
-          SDL_RenderTexture(renderer, movementTexts[index][1].texture, NULL, &dstPP);
+
+          // Movements text
+          DrawText( trainer2->GetCurrentPokemon().movement[index].moveName, 210.0f + 216.0f * i, 382.0f + 78.0f * e);
+          // Movement PP Text
+          char ppText[10];
+          snprintf(ppText, 10, "%d/%d", trainer2->GetCurrentPokemon().movement[index].currentPP, trainer2->GetCurrentPokemon().movement[index].pp);
+          DrawText(ppText, 210.0f + 216.0f * i, 420.0f + 78.0f * e);
         } 
       }
       break;
     }
   }
   // Normal HUD -> Player HP & Enemy HP
-  SDL_FRect dstName = { 419, 235,
-    (float) pokeNameText[trainer1->currentPokemonIndex][0].w,
-    (float) pokeNameText[trainer1->currentPokemonIndex][0].h
-  };
-  SDL_RenderTexture(renderer, pokeNameText[trainer1->currentPokemonIndex][0].texture, NULL, &dstName);
-  float barLenght = 96 * (trainer1->team[trainer1->currentPokemonIndex].currentStats.HP / trainer1->team[trainer1->currentPokemonIndex].currentStats.maxHP);
-  SDL_FRect rect = { 512, 262, barLenght, 4};
-  SDL_Color barColor = GetHPBarColor(trainer1->team[trainer1->currentPokemonIndex], 200);
-  SDL_SetRenderDrawColor(renderer, barColor.r, barColor.g, barColor.b, barColor.a);
-  SDL_RenderFillRect(renderer, &rect);
+  DrawText(trainer1->GetCurrentPokemon().name, 419, 235);
+  DrawLifeBar(trainer1->GetCurrentPokemon().currentStats, 512, 262, 96, 4, 200);
 
-  SDL_FRect dstNameEnemy = { 60, 32,
-    (float) pokeNameText[trainer2->currentPokemonIndex][1].w,
-    (float) pokeNameText[trainer2->currentPokemonIndex][1].h
-  };
-  SDL_RenderTexture(renderer, pokeNameText[trainer2->currentPokemonIndex][1].texture, NULL, &dstNameEnemy);
-  float barLenght2 = 96 * (trainer2->team[trainer2->currentPokemonIndex].currentStats.HP / trainer2->team[trainer2->currentPokemonIndex].currentStats.maxHP);
-  SDL_FRect rect2 = { 88, 60, barLenght2, 4};
-  barColor = GetHPBarColor(trainer2->team[trainer2->currentPokemonIndex], 200);
-  SDL_SetRenderDrawColor(renderer, barColor.r, barColor.g, barColor.b, barColor.a);
-  SDL_RenderFillRect(renderer, &rect2);
-
+  DrawText(trainer2->GetCurrentPokemon().name, 60, 32);
+  DrawLifeBar(trainer2->GetCurrentPokemon().currentStats, 88, 60, 96, 4, 200);
 }
 void Game::ResetAction(){
   for(int i = 0; i < 2; i++){
@@ -500,77 +442,66 @@ void Game::ResetAction(){
 
   std::cout << "\nPress 1 to attack\nPress 2 to change pokemon";
 }
+void Game::DrawText(const std::string& str, float posX, float posY, SDL_Color color){
+  SDL_Color shadowColor = {88, 88, 80, 255};
+  SDL_Surface* surface1 = TTF_RenderText_Blended(font, str.c_str(), str.size(), color);
+  SDL_Surface* surface2 = TTF_RenderText_Blended(font, str.c_str(), str.size(), shadowColor);
 
-Text Game::CreateText(SDL_Renderer* renderer, TTF_Font* font, const std::string& str, SDL_Color color) {
-  Text t;
-  SDL_Surface* surface =
-      TTF_RenderText_Blended(font, str.c_str(), str.size(), color);
+  if (!surface1 || !surface2) return;
 
-  if (!surface) return t;
+  SDL_Texture* textToDraw1 = SDL_CreateTextureFromSurface(renderer, surface1);
+  SDL_Texture* textToDraw2 = SDL_CreateTextureFromSurface(renderer, surface2);
+  
+  SDL_FRect dstText1 = { 
+    posX + 2, 
+    posY,
+    (float) surface1->w,
+    (float) surface1->h
+  };
+  SDL_FRect dstText2 = { 
+    posX, 
+    posY,
+    (float) surface1->w,
+    (float) surface1->h
+  };
 
-  t.texture = SDL_CreateTextureFromSurface(renderer, surface);
-  t.w = surface->w;
-  t.h = surface->h;
+  // Shadow behind real text
+  SDL_RenderTexture(renderer, textToDraw1, NULL, &dstText1);
+  dstText1.x -= 2;
+  dstText1.y += 2;
+  SDL_RenderTexture(renderer, textToDraw1, NULL, &dstText1);
+  dstText1.x += 2;
+  //SDL_RenderTexture(renderer, textToDraw1, NULL, &dstText1);
 
-  SDL_DestroySurface(surface);
+  // Real Text
+  SDL_RenderTexture(renderer, textToDraw2, NULL, &dstText2);
 
-  return t;
-}
-void Game::SetTexts(){
-  for(int f = 0; f < 2; f++){
-    int kNumPoke = (f == 0) ? trainer1->team.size() : trainer2->team.size();
-    for (int i = 0; i < kNumPoke; i++) {
-      char textString[50];
-      if (f == 0) {
-        snprintf(textString, 50, "%s", trainer1->team[i].name.c_str());
-      } else {
-        snprintf(textString, 50, "%s", trainer2->team[i].name.c_str());
-      }
-      
-
-      int e = 1;
-      while(textString[e] != '\0') {
-        textString[e] = std::tolower(textString[e]);
-        e++;
-      }
-
-      pokeNameText[i][f] = CreateText(
-        renderer,
-        font,
-        textString,
-        {168, 184, 184, 255}
-      );
-    }
-  }
-  for (int i = 0; i < trainer1->team[trainer1->currentPokemonIndex].movement.size(); i++) {
-    for(int e = 0; e < 2; e++){
-      char textString[50];
-      if(e == 0){
-        snprintf(textString, 50, "%s", trainer1->team[trainer1->currentPokemonIndex].movement[i].moveName.c_str());
-      }else{
-        snprintf(textString, 50, "%d/%d", trainer1->team[trainer1->currentPokemonIndex].movement[i].currentPP, trainer1->team[trainer1->currentPokemonIndex].movement[i].pp);
-      }
-      
-      movementTexts[i][e] = CreateText(
-        renderer,
-        font,
-        textString,
-        {168, 184, 184, 255}
-      );
-    }
-  }
-}
-void Game::GetNewPP(){
-  for(int i = 0; i < trainer1->team[trainer1->currentPokemonIndex].movement.size(); i++){
-    char textString[50];
-    snprintf(textString, 50, "%d/%d", trainer1->team[trainer1->currentPokemonIndex].movement[i].currentPP, trainer1->team[trainer1->currentPokemonIndex].movement[i].pp);
-    movementTexts[i][1] = CreateText(
-      renderer,
-      font,
-      textString,
-      {168, 184, 184, 255}
-    );
-  }
+  // Destroying every allocation
+  SDL_DestroySurface(surface1);
+  SDL_DestroySurface(surface2);
+  SDL_DestroyTexture(textToDraw1);
+  SDL_DestroyTexture(textToDraw2);
 }
 
+void Game::DrawLifeBar(Stats stats, float posX, float posY, float lenght, float width, unsigned char alpha){
+  float barLenght = lenght * (stats.HP / stats.maxHP);
+  SDL_FRect rect = { posX, posY, barLenght, width};
+
+  SDL_Color barColor;
+  float hpPercent = stats.HP / stats.maxHP;
+
+  // Color by percentage
+  if (hpPercent > 0.5f) {
+    barColor = {0, 255, 0, alpha};    // Green
+  }
+  else if (hpPercent > 0.2f) {
+    barColor = {255, 255, 0, alpha};  // Yellow
+  }
+  else {
+    barColor = {255, 0, 0, alpha};    // Red
+  }
+
+  SDL_SetRenderDrawColor(renderer, barColor.r, barColor.g, barColor.b, barColor.a);
+  SDL_RenderFillRect(renderer, &rect);
+}
 #endif //_GAME_CC_

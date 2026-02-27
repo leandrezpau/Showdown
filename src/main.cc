@@ -86,7 +86,7 @@ int main(int argc, char* argv[]){
     poke.SetMovement("");
     poke.SetMovement("");
   }
- 
+  
   while (game.running) {
     switch(game.sceneManager){
       case en_SceneManager::kSceneInit:{  //CURRENT SCENE
