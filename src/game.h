@@ -45,7 +45,7 @@ class Game {
 public:
   en_SceneManager sceneManager = kSceneInit; // Current scene is being played
   en_FightManager fightManager = kFightInit; // Curent part in the fight is being played
-  
+
   SDL_Renderer* renderer;
   TTF_Font* font;
 
@@ -56,6 +56,7 @@ public:
 
   Sprite background;
   Sprite pokebar;
+  Sprite typeIcons_s[18];
 
   int winner = 0;
   bool running = true;

@@ -16,6 +16,15 @@ Game::Game(SDL_Renderer* renderer_, TTF_Font* font_){
   pokebar.InitSpriteSrc(false);
   pokebar.InitSpriteDst(0, 0, 1);
 
+  for(int i = 0; i < Type::kNTypes; i++){
+    typeIcons_s[i].SetTextureID(typeIcons_s->GetTextureID());
+    char iconFile[50];
+    snprintf(iconFile, 50, "../assets/HUD/UI/%s_ui.png", Type::NameByType((en_Types) i).c_str());
+    typeIcons_s[i].SelectSpriteFromRoute(iconFile);
+    typeIcons_s[i].InitSpriteSrc(false);
+    typeIcons_s[i].InitSpriteDst(0, 0, 1);
+  }
+
   renderer = renderer_;
   font = font_;
 }
@@ -362,7 +371,10 @@ void Game::DrawCombatHUD(){
           char ppText[10];
           snprintf(ppText, 10, "%d/%d", trainer1->GetCurrentPokemon().movement[index].currentPP, trainer1->GetCurrentPokemon().movement[index].pp);
           DrawText(ppText, 210.0f + 216.0f * i, 420.0f + 78.0f * e, true);
-        } 
+
+          SDL_FRect iconDst = { 285.0f + 216.0f * i, 420.0f + 78.0f * e, 64.0f, 24.0f};
+          typeIcons_s[(int) trainer1->GetCurrentPokemon().movement[index].moveType.type].DrawSprite(150, iconDst);
+        }
       }
       break;
     }

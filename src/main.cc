@@ -35,10 +35,17 @@
 int main(int argc, char* argv[]){
   system("cls");
   printf("\n\n");
-  SDL_Init(SDL_INIT_VIDEO);
 
-  SDL_Window* window = SDL_CreateWindow("Pokemon Showdown", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+  SDL_Init(SDL_INIT_VIDEO);
+  SDL_Window* window = SDL_CreateWindow("Pokemon Showdown", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE);
   SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
+  
+
+  SDL_Surface* icon = IMG_Load("../assets/HUD/icon.png");
+  if (icon) {
+    SDL_SetWindowIcon(window, icon);
+    SDL_DestroySurface(icon);
+  }
 
   TTF_Init();
   TTF_Font* font = TTF_OpenFont("../assets/fonts/pokemon.ttf", 32);

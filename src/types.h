@@ -39,6 +39,8 @@ enum en_Types{
 
 class Type {
 public:
+  static const int kNTypes = 18;
+
   en_Types type;
   std::string typeName;
   float GetEffectivenessAgainst(Type defender1, Type defender2);
@@ -50,6 +52,8 @@ public:
   void InitWithEnum(en_Types typeEnum);
   void InitWithString(std::string typeString);
   void SetStringName();
+
+  static std::string NameByType(en_Types typeEnum);
   Type(en_Types t = TYPE_NORMAL) : type(t) {}
 };
 

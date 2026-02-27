@@ -94,5 +94,28 @@ void Type::InitWithString(std::string typeString) {
 
 void Type::SetStringName() {
 }
-
+std::string Type::NameByType(en_Types typeEnum){
+  switch (typeEnum)
+  {
+    case en_Types::TYPE_NORMAL:   return "normal";
+    case en_Types::TYPE_FIRE:     return "fire";
+    case en_Types::TYPE_WATER:    return "water";
+    case en_Types::TYPE_ELECTRIC: return "electric";
+    case en_Types::TYPE_GRASS:    return "grass";
+    case en_Types::TYPE_ICE:      return "ice";
+    case en_Types::TYPE_FIGHTING: return "fighting";
+    case en_Types::TYPE_POISON:   return "poison";
+    case en_Types::TYPE_GROUND:   return "ground";
+    case en_Types::TYPE_FLYING:   return "flying";
+    case en_Types::TYPE_PSYCHIC:  return "psychic";
+    case en_Types::TYPE_BUG:      return "bug";
+    case en_Types::TYPE_ROCK:     return "rock";
+    case en_Types::TYPE_GHOST:    return "ghost";
+    case en_Types::TYPE_DRAGON:   return "dragon";
+    case en_Types::TYPE_DARK:     return "dark";
+    case en_Types::TYPE_STEEL:    return "steel";
+    case en_Types::TYPE_FAIRY:    return "fairy";
+    default:                      return "none";
+  }
+}
 #endif //_TYPES_CC_
