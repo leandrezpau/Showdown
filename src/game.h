@@ -89,7 +89,7 @@ public:
   void ResetAction();
   void DrawCombatHUD();
 
-  void DrawText(const std::string& str, float posX, float posY, bool loweredText, SDL_Color color = {168, 184, 184, 255});
+  void DrawText(const std::string& str, float posX, float posY, bool loweredText, float scale = 2.0f, SDL_Color color = {168, 184, 184, 255});
   void DrawLifeBar(Stats stats, float posX, float posY, float lenght, float width, unsigned char alpha);
 
   void DrawSelectPokemon();

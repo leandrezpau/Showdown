@@ -384,8 +384,11 @@ void Game::DrawCombatHUD(){
   DrawText(trainer1->GetCurrentPokemon().name, 419, 235, true);
   // Current HP / Max HP un the HUD
   char hpText[10];
-  snprintf(hpText, 10, "%.0f   %.0f", trainer1->GetCurrentPokemon().currentStats.HP, trainer1->GetCurrentPokemon().currentStats.maxHP);
-  DrawText(hpText, 535, 272, true);
+  snprintf(hpText, 10, "%.0f", trainer1->GetCurrentPokemon().currentStats.HP);
+  DrawText(hpText, 537, 272, true, 1.5);
+
+  snprintf(hpText, 10, "%.0f", trainer1->GetCurrentPokemon().currentStats.maxHP);
+  DrawText(hpText, 574, 272, true, 1.5);
   // User Life Green bar
   DrawLifeBar(trainer1->GetCurrentPokemon().currentStats, 512, 262, 96, 4, 200);
 
@@ -404,8 +407,10 @@ void Game::ResetAction(){
 
   std::cout << "\nPress 1 to attack\nPress 2 to change pokemon";
 }
-void Game::DrawText(const std::string& str, float posX, float posY, bool loweredText, SDL_Color color){
+void Game::DrawText(const std::string& str, float posX, float posY, bool loweredText, float scale, SDL_Color color){
   std::string pokeName = str;
+  scale = scale / 2;
+
   if(loweredText && pokeName.size() >= 1){
     for(int i = 1; i < pokeName.size(); i++){
       pokeName[i] = std::tolower(pokeName[i]);
@@ -421,24 +426,24 @@ void Game::DrawText(const std::string& str, float posX, float posY, bool lowered
   SDL_Texture* textToDraw2 = SDL_CreateTextureFromSurface(renderer, surface2);
   
   SDL_FRect dstText1 = { 
-    posX + 2, 
+    posX + (2 * scale), 
     posY,
-    (float) surface1->w,
-    (float) surface1->h
+    (float) surface1->w * scale,
+    (float) surface1->h * scale
   };
   SDL_FRect dstText2 = { 
     posX, 
     posY,
-    (float) surface1->w,
-    (float) surface1->h
+    (float) surface2->w * scale,
+    (float) surface2->h * scale
   };
 
   // Shadow behind real text
   SDL_RenderTexture(renderer, textToDraw1, NULL, &dstText1);
-  dstText1.x -= 2;
-  dstText1.y += 2;
+  dstText1.x -= (2 * scale);
+  dstText1.y += (2 * scale);
   SDL_RenderTexture(renderer, textToDraw1, NULL, &dstText1);
-  dstText1.x += 2;
+  dstText1.x += (2 * scale);
   SDL_RenderTexture(renderer, textToDraw1, NULL, &dstText1);
 
   // Real Text
@@ -463,10 +468,10 @@ void Game::DrawLifeBar(Stats stats, float posX, float posY, float lenght, float 
     barColor = {0, 255, 0, alpha};    // Green
   }
   else if (hpPercent > 0.2f) {
-    barColor = {255, 255, 0, alpha};  // Yellow
+    barColor = {255, 255, 0, 200};  // Yellow
   }
   else {
-    barColor = {255, 0, 0, alpha};    // Red
+    barColor = {255, 0, 0, 200};    // Red
   }
 
   SDL_SetRenderDrawColor(renderer, barColor.r, barColor.g, barColor.b, barColor.a);
