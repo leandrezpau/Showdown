@@ -17,7 +17,7 @@ Game::Game(SDL_Renderer* renderer_, TTF_Font* font_){
   pokebar.InitSpriteDst(0, 0, 1);
 
   for(int i = 0; i < Type::kNTypes; i++){
-    typeIcons_s[i].SetTextureID(typeIcons_s->GetTextureID());
+    typeIcons_s[i].SetTextureID(typeIcons_s[i].GetTextureID());
     char iconFile[50];
     snprintf(iconFile, 50, "../assets/HUD/UI/%s_ui.png", Type::NameByType((en_Types) i).c_str());
     typeIcons_s[i].SelectSpriteFromRoute(iconFile);
