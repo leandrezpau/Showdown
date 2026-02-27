@@ -45,7 +45,7 @@ class Game {
 public:
   en_SceneManager sceneManager = kSceneInit; // Current scene is being played
   en_FightManager fightManager = kFightInit; // Curent part in the fight is being played
-
+  
   SDL_Renderer* renderer;
   TTF_Font* font;
 
@@ -90,6 +90,9 @@ public:
 
   void DrawText(const std::string& str, float posX, float posY, bool loweredText, SDL_Color color = {168, 184, 184, 255});
   void DrawLifeBar(Stats stats, float posX, float posY, float lenght, float width, unsigned char alpha);
+
+  void DrawSelectPokemon();
+  int SelectBattleAction(SDL_Event event_);
 
   Game(SDL_Renderer* renderer_, TTF_Font* font_);
 };
