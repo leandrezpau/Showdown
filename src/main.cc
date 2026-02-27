@@ -42,9 +42,7 @@ int main(int argc, char* argv[]){
 
   TTF_Init();
   TTF_Font* font = TTF_OpenFont("../assets/fonts/pokemon.ttf", 32);
-  if (!font) {
-    SDL_Log("Error cargando fuente: %s", SDL_GetError());
-  }
+  if (!font) SDL_Log("Error cargando fuente: %s", SDL_GetError());
   
   SDL_SetRenderVSync(renderer, 1);
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);

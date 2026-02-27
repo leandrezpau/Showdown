@@ -416,10 +416,10 @@ void Game::DrawCombatHUD(){
           int index = i + e * 2;
 
           // Movements text
-          DrawText( trainer2->GetCurrentPokemon().movement[index].moveName, 210.0f + 216.0f * i, 382.0f + 78.0f * e, true);
+          DrawText(trainer1->GetCurrentPokemon().movement[index].moveName, 210.0f + 216.0f * i, 382.0f + 78.0f * e, true);
           // Movement PP Text
           char ppText[10];
-          snprintf(ppText, 10, "%d/%d", trainer2->GetCurrentPokemon().movement[index].currentPP, trainer2->GetCurrentPokemon().movement[index].pp);
+          snprintf(ppText, 10, "%d/%d", trainer1->GetCurrentPokemon().movement[index].currentPP, trainer1->GetCurrentPokemon().movement[index].pp);
           DrawText(ppText, 210.0f + 216.0f * i, 420.0f + 78.0f * e, true);
         } 
       }
@@ -428,6 +428,9 @@ void Game::DrawCombatHUD(){
   }
   // Normal HUD -> Player HP & Enemy HP
   DrawText(trainer1->GetCurrentPokemon().name, 419, 235, true);
+  char hpText[10];
+  snprintf(hpText, 10, "%.0f   %.0f", trainer1->GetCurrentPokemon().currentStats.HP, trainer1->GetCurrentPokemon().currentStats.maxHP);
+  DrawText(hpText, 535, 272, true);
   DrawLifeBar(trainer1->GetCurrentPokemon().currentStats, 512, 262, 96, 4, 200);
 
   DrawText(trainer2->GetCurrentPokemon().name, 60, 32, true);
