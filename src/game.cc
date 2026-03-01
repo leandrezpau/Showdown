@@ -264,8 +264,8 @@ void Game::ResultFromActions() {
   if(playerActions.decided[0] == true){
     std::cout << "\n\n--- RESOLUCION DEL TURNO ---";
 
-    Pokemon* p1 = &trainer1->GetCurrentPokemon();
-    Pokemon* p2 = &trainer2->GetCurrentPokemon();
+    Pokemon* p1 = &trainer1->team[trainer1->currentPokemonIndex];
+    Pokemon* p2 = &trainer2->team[trainer2->currentPokemonIndex];
 
     // Comprueba si el Pokemon del JUGADOR 1 se ha desmayado
     if (p1->currentStats.HP <= 0 && p1->state != kStateFainted) {
@@ -459,11 +459,11 @@ void Game::DrawLifeBar(Stats stats, float posX, float posY, float lenght, float 
     barColor = {0, 255, 0, alpha};    // Green
   }
   else if (hpPercent > 0.2f) {
-    if(alpha == 80) alpha == 200;
+    if(alpha == 80) alpha = 200;
     barColor = {255, 255, 0, alpha};  // Yellow
   }
   else {
-    if(alpha == 80) alpha == 200;
+    if(alpha == 80) alpha = 200;
     barColor = {255, 0, 0, alpha};    // Red
   }
 
