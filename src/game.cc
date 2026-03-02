@@ -4,6 +4,7 @@
 #include "battleai.h"
 #include <iostream>
 
+using namespace std;
 
 Game::Game(SDL_Renderer* renderer_, TTF_Font* font_){
   background.SetTextureID(background.GetTextureID());
@@ -30,7 +31,7 @@ Game::Game(SDL_Renderer* renderer_, TTF_Font* font_){
 }
 // Configura los entrenadores al inicio del combate y cura a sus equipos
 void Game::InitBattle(Trainer* _trainer1, Trainer* _trainer2) {
-  std::cout << "\n" << _trainer1->name << "you are being challenged by " << _trainer2->name;
+  cout << "\n" << _trainer1->name << "you are being challenged by " << _trainer2->name;
 
   trainer1 = _trainer1;
   trainer2 = _trainer2;
@@ -72,7 +73,7 @@ void Game::DecideActions() {
     // === TURNO JUGADOR 2 (IA) === 
     // Entra solo la primera vez q se llama la funcion
     if (running && trainer2->isAI && playerActions.decided[1] == false) {
-      std::cout << "\n" << trainer2->name << " (IA) esta decidiendo su jugada...\n";
+      cout << "\n" << trainer2->name << " (IA) esta decidiendo su jugada...\n";
 
       // Llamamos a la IA pas�ndole el entrenador rival y el Pok�mon activo del jugador
       // Usamos GetActivePokemon() que devuelve un puntero, tal como lo definiste en trainer.h
@@ -101,10 +102,10 @@ void Game::DecideActions() {
                 if (index < trainer1->team.size() && trainer1->team[index].currentStats.HP > 0) {
                   trainer1->currentPokemonIndex = index;
                   fightManager = kFightWaitingChoice;
-                  std::cout << "\n" << trainer1->name << " envia a " << trainer1->team[index].name << "!";
+                  cout << "\n" << trainer1->name << " envia a " << trainer1->team[index].name << "!";
                 }
                 else {
-                  std::cout << "\nEse Pokemon no es valido o esta debilitado. Elige otro.";
+                  cout << "\nEse Pokemon no es valido o esta debilitado. Elige otro.";
                 }
               }else{
                 if(index >= 1 || index <= 2){
@@ -120,10 +121,11 @@ void Game::DecideActions() {
             if(index != -1){
               playerActions.playerIndex[0] = index;
               if(ValidateAction(playerActions)){
+                fightManager = kFightPlayingChoice;
                 return;
               }else{
                 playerActions.playerIndex[0] = 0;
-                fightManager = kFightPlayingChoice;
+                
               }
             }
             break;
@@ -136,10 +138,10 @@ void Game::DecideActions() {
               if (playerActions.playerAction[0] == kActionAttack) {
                 playerActions.playerIndex[0] = index;
                 if (ValidateAction(playerActions)) {
+                  fightManager = kFightPlayingChoice;
                   return;
                 } else {
                   playerActions.playerIndex[0] = 0;
-                  fightManager = kFightPlayingChoice;
                 }
               }
             }
@@ -162,12 +164,12 @@ bool Game::ValidateAction(PlayerActions act_){
       Pokemon poke = trainer1->GetCurrentPokemon();
       if(poke.movement.size() < act_.playerIndex[0] + 1){
         isValid = false;
-        std::cout << "\nYour poke does't have a move in that slot";
+        cout << "\nYour poke does't have a move in that slot";
         break;
       }else{
         if(poke.movement[act_.playerIndex[0]].currentPP <= 0){
           isValid = false;
-          std::cout << "\nThat Movement doesn't have PP";
+          cout << "\nThat Movement doesn't have PP";
           break;
         }
       }
@@ -177,12 +179,12 @@ bool Game::ValidateAction(PlayerActions act_){
     case kActionChangePoke:{
       if(trainer1->team.size() < act_.playerIndex[0] + 1){
         isValid = false;
-        std::cout << "\nYou don't have pokemon in that slot";
+        cout << "\nYou don't have pokemon in that slot";
         break;
       }else{
         if(trainer1->team[act_.playerIndex[0]].currentStats.HP <= 0){
           isValid = false;
-          std::cout << "\nThat poke is fainted";
+          cout << "\nThat poke is fainted";
           break;
         }
       }
@@ -190,7 +192,7 @@ bool Game::ValidateAction(PlayerActions act_){
     }
     //IF ACTION WAS NULL (SOMETHING CRASHED)
     case kActionNULL:{
-      std::cout << "\nNo action played";
+      cout << "\nNo action played";
       break;
     }
   }
@@ -201,7 +203,7 @@ bool Game::ValidateAction(PlayerActions act_){
 // Motor de Ejecucion: Procesa las acciones elegidas respetando el sistema de prioridades de Pokemon
 void Game::PlayActions() {
   if(playerActions.decided[0] == true){
-    std::cout << "\n\n--- COMIENZA EL TURNO ---";
+    cout << "\n\n--- COMIENZA EL TURNO ---";
 
     Pokemon* p1 = &trainer1->team[trainer1->currentPokemonIndex];
     Pokemon* p2 = &trainer2->team[trainer2->currentPokemonIndex];
@@ -211,13 +213,13 @@ void Game::PlayActions() {
     if (playerActions.playerAction[0] == kActionChangePoke) {
       trainer1->currentPokemonIndex = playerActions.playerIndex[0];
       p1 = &trainer1->team[trainer1->currentPokemonIndex];
-      std::cout << "\n" << trainer1->name << " retiro a su Pokemon y envio a " << p1->name << "!";
+      cout << "\n" << trainer1->name << " retiro a su Pokemon y envio a " << p1->name << "!";
     }
 
     if (playerActions.playerAction[1] == kActionChangePoke) {
       trainer2->currentPokemonIndex = playerActions.playerIndex[1];
       p2 = &trainer2->team[trainer2->currentPokemonIndex];
-      std::cout << "\n" << trainer2->name << " retiro a su Pokemon y envio a " << p2->name << "!";
+      cout << "\n" << trainer2->name << " retiro a su Pokemon y envio a " << p2->name << "!";
     }
 
     // === PRIORIDAD 2: ATAQUES (Resolucion por Velocidad) ===
@@ -240,10 +242,13 @@ void Game::PlayActions() {
       // Si el atacante o el defensor murieron antes en este mismo turno, el ataque no ocurre
       if (attacker->currentStats.HP > 0 && defender->currentStats.HP > 0) {
         Movement& move = attacker->movement[moveIndex];
-        if (move.currentPP > 0) move.currentPP--;
-        attacker->UseMove(*defender, move);
+        if (move.currentPP > 0){
+          move.currentPP--;
+          attacker->UseMove(*defender, move);
+          cout << "Finalizado ataque de " << attacker->name << " a " << defender->name;
+        }
       }
-      };
+    };
 
     // Ejecutamos en el orden calculado
     if (p1GoesFirst) {
@@ -262,7 +267,7 @@ void Game::PlayActions() {
 // Fase Final del Turno: Revisa caidos y fuerza la entrada de nuevos Pokemon al campo
 void Game::ResultFromActions() {
   if(playerActions.decided[0] == true){
-    std::cout << "\n\n--- RESOLUCION DEL TURNO ---";
+    cout << "\n\n--- RESOLUCION DEL TURNO ---";
 
     Pokemon* p1 = &trainer1->team[trainer1->currentPokemonIndex];
     Pokemon* p2 = &trainer2->team[trainer2->currentPokemonIndex];
@@ -271,12 +276,12 @@ void Game::ResultFromActions() {
     if (p1->currentStats.HP <= 0 && p1->state != kStateFainted) {
       p1->currentStats.HP = 0;
       p1->state = kStateFainted;
-      std::cout << "\n!" << p1->name << " de " << trainer1->name << " se ha debilitado!";
+      cout << "\n!" << p1->name << " de " << trainer1->name << " se ha debilitado!";
 
       // Si le quedan Pokemon vivos, forzamos un cambio via consola/SDL
       if (trainer1->HasAvailablePokemon()) {
         bool choosing = true;
-        std::cout << "\nElige a tu proximo Pokemon (1 - " << trainer1->team.size() << "): ";
+        cout << "\nElige a tu proximo Pokemon (1 - " << trainer1->team.size() << "): ";
       }
     }
 
@@ -284,17 +289,17 @@ void Game::ResultFromActions() {
     if (p2->currentStats.HP <= 0 && p2->state != kStateFainted) {
       p2->currentStats.HP = 0;
       p2->state = kStateFainted;
-      std::cout << "\n!" << p2->name << " de " << trainer2->name << " se ha debilitado!";
+      cout << "\n!" << p2->name << " de " << trainer2->name << " se ha debilitado!";
 
       if (trainer2->HasAvailablePokemon()) {
         if (trainer2->isAI) {
           // La IA elige automaticamente a su mejor opcion de reserva
           Pokemon* currentP1 = &trainer1->team[trainer1->currentPokemonIndex];
-          std::pair<int, float> aiSwitch = BattleAI::ChooseSwitch(trainer2, currentP1);
+          pair<int, float> aiSwitch = BattleAI::ChooseSwitch(trainer2, currentP1);
 
           if (aiSwitch.first != -1) {
             trainer2->currentPokemonIndex = aiSwitch.first;
-            std::cout << "\n" << trainer2->name << " envia a " << trainer2->team[trainer2->currentPokemonIndex].name << "!";
+            cout << "\n" << trainer2->name << " envia a " << trainer2->team[trainer2->currentPokemonIndex].name << "!";
           }
         }
       }
@@ -405,13 +410,13 @@ void Game::ResetAction(){
     playerActions.decided[i] = false;
   }
 }
-void Game::DrawText(const std::string& str, float posX, float posY, bool loweredText, float scale, SDL_Color color){
-  std::string pokeName = str;
+void Game::DrawText(const string& str, float posX, float posY, bool loweredText, float scale, SDL_Color color){
+  string pokeName = str;
   scale = scale / 2;
 
   if(loweredText && pokeName.size() >= 1){
     for(int i = 1; i < pokeName.size(); i++){
-      pokeName[i] = std::tolower(pokeName[i]);
+      pokeName[i] = tolower(pokeName[i]);
     }
   }
   SDL_Surface* surface = TTF_RenderText_Solid(font, pokeName.c_str(), pokeName.size(), color);
