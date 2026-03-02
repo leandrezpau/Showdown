@@ -35,5 +35,4 @@ Movement::Movement(std::string n){
 
   //Falta añadir lo de affected stats
 }
-
 #endif //_MOVEMENTS_CC_

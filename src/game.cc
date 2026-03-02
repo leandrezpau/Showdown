@@ -16,15 +16,6 @@ Game::Game(SDL_Renderer* renderer_, TTF_Font* font_){
   pokebar.InitSpriteSrc(false);
   pokebar.InitSpriteDst(0, 0, 1);
 
-  for(int i = 0; i < Type::kNTypes; i++){
-    typeIcons_s[i].SetTextureID(typeIcons_s[i].GetTextureID());
-    char iconFile[50];
-    snprintf(iconFile, 50, "../assets/HUD/UI/%s_ui.png", Type::NameByType((en_Types) i).c_str());
-    typeIcons_s[i].SelectSpriteFromRoute(iconFile);
-    typeIcons_s[i].InitSpriteSrc(false);
-    typeIcons_s[i].InitSpriteDst(0, 0, 1);
-  }
-
   renderer = renderer_;
   font = font_;
 }
@@ -361,19 +352,7 @@ void Game::DrawCombatHUD(){
         for(int e = 0; e < 2; e++){
           int index = i + e * 2;
           // Rectangle Colors For Movements
-          SDL_FRect rect = { 208.0f + 216.0f * i, 380.0f + 78.0f * e, 216.0f, 78.0f };
-          SDL_SetRenderDrawColor(renderer, 250, i * 50, i * 27 + e * 99, 255);
-          SDL_RenderFillRect(renderer, &rect);
-
-          // Movements text
-          DrawText(trainer1->GetCurrentPokemon().movement[index].moveName, 210.0f + 216.0f * i, 382.0f + 78.0f * e, true);
-          // Movement PP Text
-          char ppText[10];
-          snprintf(ppText, 10, "%d/%d", trainer1->GetCurrentPokemon().movement[index].currentPP, trainer1->GetCurrentPokemon().movement[index].pp);
-          DrawText(ppText, 210.0f + 216.0f * i, 420.0f + 78.0f * e, true);
-
-          SDL_FRect iconDst = { 285.0f + 216.0f * i, 420.0f + 78.0f * e, 64.0f, 24.0f};
-          typeIcons_s[(int) trainer1->GetCurrentPokemon().movement[index].moveType.type].DrawSprite(150, iconDst);
+          DrawMovement(trainer1->GetCurrentPokemon().movement[index], 208.0f + 216.0f * i, 380.0f + 78.0f * e, false);
         }
       }
       break;
@@ -470,6 +449,25 @@ void Game::DrawLifeBar(Stats stats, float posX, float posY, float lenght, float 
   SDL_SetRenderDrawColor(renderer, barColor.r, barColor.g, barColor.b, barColor.a);
   SDL_RenderFillRect(renderer, &rect);
 }
+
+void Game::DrawMovement(Movement move, float posX, float posY, bool drawType){
+  // Rectangle Colors For Movements
+  SDL_FRect rect = { posX, posY, 216.0f, 78.0f };
+  float color = (float) move.moveType.type / 18 * 255;
+  SDL_SetRenderDrawColor(renderer, color, color, color, 255);
+  SDL_RenderFillRect(renderer, &rect);
+
+  // Movements text
+  DrawText(move.moveName, posX + 2, posY + 2, true);
+  // Movement PP Text
+  char ppText[10];
+  snprintf(ppText, 10, "%d/%d", move.currentPP, move.pp);
+  DrawText(ppText, posX + 2, posY + 40, true);
+
+  SDL_FRect iconDst = { posX + 77, posY + 40, 64.0f, 24.0f};
+  move.moveType.typeIcons_s[(int) move.moveType.type].DrawSprite(150, iconDst);
+}
+
 void Game::DrawSelectPokemon(){
   for(int i = 0; i < trainer1->team.size(); i++){
     int jump = (i >= 3) ? 70 : 0;
@@ -606,5 +604,26 @@ int Game::SelectBattleAction(SDL_Event event_){
     }
   }
   return -1;
+}
+
+int ClickedHere(SDL_FRect rectangle, SDL_Event click){
+  if (click.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+    int x_ = click.button.x;
+    int y_ = click.button.y;
+    int button = click.button.button;
+
+    if (button == SDL_BUTTON_LEFT) {
+      if (x_ >= rectangle.x && 
+          y_ >= rectangle.y && 
+          x_ <= rectangle.x + rectangle.w && 
+          y_ <= rectangle.x + rectangle.h)
+      {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+  }
+  return 0;
 }
 #endif //_GAME_CC_

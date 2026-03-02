@@ -56,7 +56,6 @@ public:
 
   Sprite background;
   Sprite pokebar;
-  Sprite typeIcons_s[18];
 
   int winner = 0;
   bool running = true;
@@ -91,6 +90,7 @@ public:
 
   void DrawText(const std::string& str, float posX, float posY, bool loweredText, float scale = 2.0f, SDL_Color color = {168, 184, 184, 255});
   void DrawLifeBar(Stats stats, float posX, float posY, float lenght, float width, unsigned char alpha);
+  void DrawMovement(Movement move, float posX, float posY, bool drawType);
 
   void DrawSelectPokemon();
   int SelectBattleAction(SDL_Event event_);
