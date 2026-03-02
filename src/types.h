@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <unordered_map>
 
+#include "sprites/sprites.h"
+
 constexpr float IMM = 0.0f; // Inmune (Immune)
 constexpr float NVE = 0.5f; // No muy efectivo (Not Very Effective)
 constexpr float NEU = 1.0f; // Neutro (Neutral)
@@ -40,9 +42,12 @@ enum en_Types{
 class Type {
 public:
   static const int kNTypes = 18;
+  static Sprite typeIcons_s[kNTypes];
 
   en_Types type;
   std::string typeName;
+  
+
   float GetEffectivenessAgainst(Type defender1, Type defender2);
   float GetEffectivenessAgainst(Type defender);
   
@@ -54,7 +59,7 @@ public:
   void SetStringName();
 
   static std::string NameByType(en_Types typeEnum);
-  Type(en_Types t = TYPE_NORMAL) : type(t) {}
+  Type();
 };
 
 

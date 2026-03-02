@@ -24,6 +24,18 @@ static const float TypeChart[TYPE_COUNT][TYPE_COUNT] = {
   /* STE */ { NEU, NVE, NVE, NVE, NEU, SUP, NEU, NEU, NEU, NEU, NEU, NEU, SUP, NEU, NEU, NEU, NVE, SUP },
   /* FAI */ { NEU, NVE, NEU, NEU, NEU, NEU, SUP, NVE, NEU, NEU, NEU, NEU, NEU, NEU, SUP, SUP, NVE, NEU }
 };
+Sprite Type::typeIcons_s[Type::kNTypes];
+
+Type::Type(){
+  for(int i = 0; i < Type::kNTypes; i++){
+    typeIcons_s[i].SetTextureID(typeIcons_s[i].GetTextureID());
+    char iconFile[50];
+    snprintf(iconFile, 50, "../assets/HUD/UI/%s_ui.png", Type::NameByType((en_Types) i).c_str());
+    typeIcons_s[i].SelectSpriteFromRoute(iconFile);
+    typeIcons_s[i].InitSpriteSrc(false);
+    typeIcons_s[i].InitSpriteDst(0, 0, 1);
+  }
+}
 
 float Type::GetEffectivenessAgainst(Type defender) {
   if (this->type >= TYPE_COUNT || defender.type >= TYPE_COUNT ||
