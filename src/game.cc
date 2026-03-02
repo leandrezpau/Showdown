@@ -73,6 +73,7 @@ void Game::DecideActions() {
       // Guardamos la decisi�n de la IA en el �ndice 1 (correspondiente al Jugador 2)
       playerActions.playerAction[1] = aiDecision.playerAction[0];
       playerActions.playerIndex[1] = aiDecision.playerIndex[0];
+
       playerActions.decided[1] = true;
     }
 
@@ -374,13 +375,13 @@ void Game::DrawCombatHUD(){
   snprintf(hpText, 10, "%.0f", trainer1->GetCurrentPokemon().currentStats.maxHP);
   DrawText(hpText, 574, 272, true, 1.5);
   // User Life Green bar
-  DrawLifeBar(trainer1->GetCurrentPokemon().currentStats, 512, 262, 96, 4, 200);
+  DrawLifeBar(trainer1->GetCurrentPokemon().currentStats, 512, 262, 96, 4, false);
 
   // ENEMY HUD
   // Enemy Pokemon Name
   DrawText(trainer2->GetCurrentPokemon().name, 60, 32, true);
   // Enemy Life Bar
-  DrawLifeBar(trainer2->GetCurrentPokemon().currentStats, 88, 60, 96, 4, 200);
+  DrawLifeBar(trainer2->GetCurrentPokemon().currentStats, 88, 60, 96, 4, false);
 }
 void Game::ResetAction(){
   for(int i = 0; i < 2; i++){
@@ -431,28 +432,48 @@ void Game::DrawText(const string& str, float posX, float posY, bool loweredText,
   SDL_DestroyTexture(textToDraw);
 }
 
-void Game::DrawLifeBar(Stats stats, float posX, float posY, float lenght, float width, unsigned char alpha){
+void Game::DrawLifeBar(Stats stats, float posX, float posY, float lenght, float height, bool big){
   float barLenght = lenght * (stats.HP / stats.maxHP);
-  SDL_FRect rect = { posX, posY, barLenght, width};
+  float halfHeight = height / 2.0f;
+  SDL_FRect rect = { posX, posY, barLenght, halfHeight};
 
   SDL_Color barColor;
   float hpPercent = stats.HP / stats.maxHP;
 
   // Color by percentage
   if (hpPercent > 0.5f) {
-    barColor = {0, 255, 0, alpha};    // Green
+    barColor = {0, 255, 74, 255};    // Green
   }
   else if (hpPercent > 0.2f) {
-    if(alpha == 80) alpha = 200;
-    barColor = {255, 255, 0, alpha};  // Yellow
+    barColor = {234, 255, 0, 255};  // Yellow
   }
   else {
-    if(alpha == 80) alpha = 200;
-    barColor = {255, 0, 0, alpha};    // Red
+    barColor = {255, 0, 0, 255};    // Red
   }
+  if(!big){
+    SDL_SetRenderDrawColor(renderer, barColor.r, barColor.g, barColor.b, barColor.a);
+    SDL_RenderFillRect(renderer, &rect);
+    rect.y += halfHeight;
+    SDL_SetRenderDrawColor(renderer, barColor.r * 0.74, barColor.g * 0.74, barColor.b * 0.74, barColor.a * 0.74);
+    SDL_RenderFillRect(renderer, &rect);
+  }else{
+    rect.h -= 2;
+    SDL_SetRenderDrawColor(renderer, barColor.r, barColor.g, barColor.b, barColor.a);
+    SDL_RenderFillRect(renderer, &rect);
+    rect.w += 2;
+    rect.y += 2;
+    SDL_SetRenderDrawColor(renderer, barColor.r, barColor.g, barColor.b, barColor.a);
+    SDL_RenderFillRect(renderer, &rect);
+    rect.y += 2;
+    SDL_SetRenderDrawColor(renderer, barColor.r * 0.74, barColor.g * 0.74, barColor.b * 0.74, barColor.a * 0.7);
+    SDL_RenderFillRect(renderer, &rect);
+    rect.y += 2;
+    rect.w -= 2;
+    SDL_SetRenderDrawColor(renderer, barColor.r * 0.74, barColor.g * 0.74, barColor.b * 0.74, barColor.a * 0.74);
+    SDL_RenderFillRect(renderer, &rect);
+  }
+  
 
-  SDL_SetRenderDrawColor(renderer, barColor.r, barColor.g, barColor.b, barColor.a);
-  SDL_RenderFillRect(renderer, &rect);
 }
 
 void Game::DrawMovement(Movement move, float posX, float posY, bool drawType){
@@ -478,15 +499,18 @@ void Game::DrawSelectPokemon(){
     int jump = (i >= 3) ? 70 : 0;
     int row = i % 3;
     SDL_FRect iconDst = {
-      74.0f + row * 190.0f, 
+      80.0f + row * 190.0f, 
       395.0f + jump, 
-      50.0f, 50.0f
+      50.0f, 
+      50.0f
     };
     SDL_FRect barDst = {
-      70.0f + row * 190.0f, 
+      76.0f + row * 190.0f, 
       385.0f + jump, 
-      189.0f, 69.0f
+      189.0f, 
+      69.0f
     };
+
     pokebar.DrawSprite(150, barDst);
     trainer1->team[i].DrawIcon(iconDst);
 
@@ -495,9 +519,9 @@ void Game::DrawSelectPokemon(){
       trainer1->team[i].currentStats, 
       70.0f + row * 190.0f + 74, 
       385.0f + 48 + jump, 
-      100, 
+      102, 
       8, 
-      80);
+      true);
   }
 }
 int Game::SelectBattleAction(SDL_Event event_){

@@ -176,14 +176,19 @@ PlayerActions BattleAI::GetBestAction(Trainer* aiTrainer, Pokemon* playerPokemon
 
   // Comparamos puntuaciones (Ataque vs Cambio)
   if (switchOption.second > attackOption.second && switchOption.first != -1) {
-    std::cout << "IA decide CAMBIAR de Pokemon. Score Cambio: " << switchOption.second << "vs Score Ataque: " << attackOption.second; 
+    std::cout << "IA decide CAMBIAR de Pokemon. Score Cambio: " << switchOption.second << " vs Score Ataque: " << attackOption.second; 
     actionToTake.playerAction[0] = kActionChangePoke;
     actionToTake.playerIndex[0] = switchOption.first;
   }
   else {
     std::cout << "IA decide ATACAR. Score Ataque: " << attackOption.second << " vs Score Cambio: " << switchOption.second;
     actionToTake.playerAction[0] = kActionAttack;
-    actionToTake.playerIndex[0] = attackOption.first;
+    if(attackOption.first >= 3 || attackOption.first >= 0){
+      actionToTake.playerIndex[0] = attackOption.first;
+    }else{
+      actionToTake.playerIndex[0] = 0;
+    }
+    
   }
 
   return actionToTake;
