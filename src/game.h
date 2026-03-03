@@ -60,37 +60,37 @@ public:
   int winner = 0;
   bool running = true;
 
-
+  // Heal Players for next battle
   void HealPlayer(Trainer* healedTrainer);
 
   void PlayBattle();
   //>>Sistema de Batalla<<
 
-  //Se eligen entrenadores
+  // Se eligen entrenadores
   void InitBattle(Trainer* _trainer1, Trainer* _trainer2);
-  //Lanzan primer pokemon
-  //__
-  //Ambos eligen que hacer
+
+  // Ambos eligen que hacer
   void DecideActions();
-  //Some actions may not perform, so we check them here, if not return to DecideActions();
+  // Some actions may not perform, so we check them here, if not return to DecideActions();
   bool ValidateAction(PlayerActions act_);
-  //Se realiza accion
+  // Se realiza accion
   void PlayActions();
-  //Ocurren sucesos
+  // Ocurren sucesos
   void ResultFromActions();
-  //__ 
+  // Game drawing, battle hud, pokemon, etc
   void DrawGame();
+
   //Finaliza combate
   // 0 -> Not ended | 1 -> Trainer 1 won | 2 -> Trainer 2 won
   int EndedBattle(Trainer* _trainer1, Trainer* _trainer2);
-  //Ganador / Perdedor
-  //
+
   void ResetAction();
   void DrawCombatHUD();
 
   void DrawText(const std::string& str, float posX, float posY, bool loweredText, float scale = 2.0f, SDL_Color color = {168, 184, 184, 255});
   void DrawLifeBar(Stats stats, float posX, float posY, float lenght, float height, bool big);
   void DrawMovement(Movement move, float posX, float posY, bool drawType);
+  void DrawEnd();
 
   void DrawSelectPokemon();
   int SelectBattleAction(SDL_Event event_);

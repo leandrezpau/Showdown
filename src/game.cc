@@ -45,6 +45,7 @@ int Game::EndedBattle(Trainer* _trainer1, Trainer* _trainer2) {
 
 // Restaura HP, PP y estados alterados de todo el equipo de un entrenador
 void Game::HealPlayer(Trainer* healedTrainer) {
+  healedTrainer->currentPokemonIndex = 0;
   for (int i = 0; i < healedTrainer->team.size(); i++) {
     if (true) { // Sanity check if pokemon exists
       Pokemon* poke = &healedTrainer->team[i];
@@ -53,7 +54,12 @@ void Game::HealPlayer(Trainer* healedTrainer) {
       for(int e = 0; e < poke->movement.size(); e++){
         poke->movement[e].currentPP = poke->movement[e].pp;
       }
-      poke->currentStats = poke->baseStats;
+      poke->SetIVs();
+      poke->UpdateEvs();
+      poke->SetNature();
+
+      poke->CalcCurrentStats();
+
       poke->state = PokeState::kStateAlive;
     }
   }
@@ -85,59 +91,88 @@ void Game::DecideActions() {
         return;
       }
       if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN){
-        switch(playerActions.playerAction[0]){
-          case kActionNULL:{
+        switch(fightManager){
+          case kFightEnd:{
             int index = SelectBattleAction(event);
-            // When pokemon is Fainted, to select new poke
-            if(index != -1){
-              if (trainer1->GetCurrentPokemon().currentStats.HP <= 0){
-                if (index < trainer1->team.size() && trainer1->team[index].currentStats.HP > 0) {
-                  trainer1->currentPokemonIndex = index;
-                  fightManager = kFightWaitingChoice;
-                  cout << "\n" << trainer1->name << " envia a " << trainer1->team[index].name << "!";
-                }
-                else {
-                  cout << "\nEse Pokemon no es valido o esta debilitado. Elige otro.";
-                }
-              }else{
-                if(index >= 1 || index <= 2){
-                  playerActions.playerAction[0] = (en_Actions) index;
-                }
+            switch(index){
+              case -1:{
+                // Nothing
+                break;
+              }
+              case 1:{
+                // Play Again
+                HealPlayer(trainer1);
+                HealPlayer(trainer2);
+
+                ResetAction();
+
+                fightManager = kFightWaitingChoice;
+                break;
+              }
+              case 2:{
+                // End Game
+                sceneManager = kSceneAfterFight;
+                break;
               }
             }
             break;
           }
-          case kActionChangePoke:{
-            // When Changing pokemon
-            int index = SelectBattleAction(event);
-            if(index != -1){
-              playerActions.playerIndex[0] = index;
-              if(ValidateAction(playerActions)){
-                fightManager = kFightPlayingChoice;
-                return;
-              }else{
-                playerActions.playerIndex[0] = 0;
-                
-              }
-            }
-            break;
-          }
-          case kActionAttack:{
-            // When selecting which movement to use
-            int index = SelectBattleAction(event);
-            if(index != -1){
-              Pokemon poke = trainer1->GetCurrentPokemon();
-              if (playerActions.playerAction[0] == kActionAttack) {
-                playerActions.playerIndex[0] = index;
-                if (ValidateAction(playerActions)) {
-                  fightManager = kFightPlayingChoice;
-                  return;
-                } else {
-                  playerActions.playerIndex[0] = 0;
+          default:{
+            switch(playerActions.playerAction[0]){
+              case kActionNULL:{
+                int index = SelectBattleAction(event);
+                // When pokemon is Fainted, to select new poke
+                if(index != -1){
+                  if (trainer1->GetCurrentPokemon().currentStats.HP <= 0){
+                    if (index < trainer1->team.size() && trainer1->team[index].currentStats.HP > 0) {
+                      trainer1->currentPokemonIndex = index;
+                      fightManager = kFightWaitingChoice;
+                      cout << "\n" << trainer1->name << " envia a " << trainer1->team[index].name << "!";
+                    }
+                    else {
+                      cout << "\nEse Pokemon no es valido o esta debilitado. Elige otro.";
+                    }
+                  }else{
+                    if(index >= 1 || index <= 2){
+                      playerActions.playerAction[0] = (en_Actions) index;
+                    }
+                  }
                 }
+                break;
+              }
+              case kActionChangePoke:{
+                // When Changing pokemon
+                int index = SelectBattleAction(event);
+                if(index != -1){
+                  playerActions.playerIndex[0] = index;
+                  if(ValidateAction(playerActions)){
+                    fightManager = kFightPlayingChoice;
+                    return;
+                  }else{
+                    playerActions.playerIndex[0] = 0;
+                    
+                  }
+                }
+                break;
+              }
+              case kActionAttack:{
+                // When selecting which movement to use
+                int index = SelectBattleAction(event);
+                if(index != -1){
+                  Pokemon poke = trainer1->GetCurrentPokemon();
+                  if (playerActions.playerAction[0] == kActionAttack) {
+                    playerActions.playerIndex[0] = index;
+                    if (ValidateAction(playerActions)) {
+                      fightManager = kFightPlayingChoice;
+                      return;
+                    } else {
+                      playerActions.playerIndex[0] = 0;
+                    }
+                  }
+                }
+                break;
               }
             }
-            break;
           }
         }
       }
@@ -303,39 +338,61 @@ void Game::ResultFromActions() {
 
 // Bucle principal de la Escena de Combate
 void Game::PlayBattle() {
-  switch (EndedBattle(trainer1, trainer2)) {
+
+  // 1. Ambos eligen que hacer
+  DecideActions();
+  // 2. Se realizan las acciones por orden de prioridad/velocidad
+  PlayActions();
+  // 3. Se resuelven los desmayos y se limpia el turno
+  ResultFromActions();
+
+  // Comprobamos si la partida termino en este turno
+  winner = EndedBattle(trainer1, trainer2);
+  switch (winner) {
+  case 0: break;
   case 1:
-  case 2:
-    sceneManager = kSceneAfterFight;
-    break; // A�adido un break preventivo
-
-  case 0:
-    // 1. Ambos eligen que hacer
-    DecideActions();
-    // 2. Se realizan las acciones por orden de prioridad/velocidad
-    PlayActions();
-    // 3. Se resuelven los desmayos y se limpia el turno
-    ResultFromActions();
-
-    // Comprobamos si la partida termino en este turno
-    winner = EndedBattle(trainer1, trainer2);
-    switch (winner) {
-    case 0: break;
-    case 1:
-    case 2: sceneManager = kSceneAfterFight; break;
-    }
-    break; // A�adido un break preventivo
+  case 2: fightManager = kFightEnd; break;
   }
 }
 void Game::DrawGame(){
   background.DrawSprite();
-  if(trainer1->team[trainer1->currentPokemonIndex].currentStats.HP <= 0) trainer1->team[trainer1->currentPokemonIndex].ApplyFilter(255, 100, 100);
+  
+  if(trainer1->team[trainer1->currentPokemonIndex].currentStats.HP <= 0){
+    trainer1->team[trainer1->currentPokemonIndex].ApplyFilter(255, 100, 100);
+  }else{
+    trainer1->team[trainer1->currentPokemonIndex].ApplyFilter(255, 255, 255);
+  }
   trainer1->team[trainer1->currentPokemonIndex].DrawSprite();
+
+  if(trainer2->team[trainer2->currentPokemonIndex].currentStats.HP <= 0){
+    trainer2->team[trainer2->currentPokemonIndex].ApplyFilter(255, 100, 100);
+  }else{
+      trainer2->team[trainer2->currentPokemonIndex].ApplyFilter(255, 255, 255);
+  }
   trainer2->team[trainer2->currentPokemonIndex].DrawSprite();
 
-  int nMoves = trainer1->team[trainer1->currentPokemonIndex].movement.size();
-
-  DrawCombatHUD();
+  switch(fightManager){
+    case kFightInit:{
+      break;
+    }
+    case kFightWaitingChoice:{
+      DrawCombatHUD();
+      break;
+    }
+    case kFightPlayingChoice:{
+      DrawCombatHUD();
+      break;
+    }
+    case kFightResults:{
+      DrawCombatHUD();
+      break;
+    }
+    case kFightEnd:{
+      DrawEnd();
+      break;
+    }
+  }
+  
 }
 void Game::DrawCombatHUD(){
   switch(playerActions.playerAction[0]){
@@ -391,6 +448,34 @@ void Game::ResetAction(){
   }
 }
 
+void Game::DrawEnd(){
+  switch(EndedBattle(trainer1, trainer2)){
+    case 1:{DrawText("Loser",          250, 400, true); break;}
+    case 2:{DrawText("Winner",          250, 400, true); break;}
+  }
+  
+  DrawText("Play Again",          100, 433, true);
+  DrawText("End Game",  379, 433, true);
+
+  // USER HUD
+  // User Pokemon Name
+  DrawText(trainer1->GetCurrentPokemon().name, 419, 235, true);
+  // Current HP / Max HP un the HUD
+  char hpText[10];
+  snprintf(hpText, 10, "%.0f", trainer1->GetCurrentPokemon().currentStats.HP);
+  DrawText(hpText, 537, 272, true, 1.5);
+
+  snprintf(hpText, 10, "%.0f", trainer1->GetCurrentPokemon().currentStats.maxHP);
+  DrawText(hpText, 574, 272, true, 1.5);
+  // User Life Green bar
+  DrawLifeBar(trainer1->GetCurrentPokemon().currentStats, 512, 262, 96, 4, false);
+
+  // ENEMY HUD
+  // Enemy Pokemon Name
+  DrawText(trainer2->GetCurrentPokemon().name, 60, 32, true);
+  // Enemy Life Bar
+  DrawLifeBar(trainer2->GetCurrentPokemon().currentStats, 88, 60, 96, 4, false);
+}
 void Game::DrawText(const string& str, float posX, float posY, bool loweredText, float scale, SDL_Color color){
   string pokeName = str;
   scale = scale / 2;
@@ -631,6 +716,7 @@ int Game::SelectBattleAction(SDL_Event event_){
           break;
         }
         case kFightEnd:{
+          return WhichAction((float) x, (float) y);
           break;
         }
       }

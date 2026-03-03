@@ -34,6 +34,7 @@
 */
 int main(int argc, char* argv[]){
   system("cls");
+  srand(time(NULL));
   printf("\n\n");
 
   SDL_Init(SDL_INIT_VIDEO);
@@ -69,15 +70,15 @@ int main(int argc, char* argv[]){
   Trainer train1{"Goldi", false};
   Trainer train2{"IA Trainer", true};
 
-  train1.AddPokemon(Pokemon{392, 50, 0, false, en_SpriteType::type_Attacker});
-  train1.AddPokemon(Pokemon{646, 50, 0, true, en_SpriteType::type_Attacker});
-  train1.AddPokemon(Pokemon{888, 50, 0, true, en_SpriteType::type_Attacker});
-  train1.AddPokemon(Pokemon{699, 50, 0, true, en_SpriteType::type_Attacker});
+  train1.AddPokemon(Pokemon{rand() % 900, 50, 0, false, en_SpriteType::type_Attacker});
+  train1.AddPokemon(Pokemon{rand() % 900, 50, 0, true, en_SpriteType::type_Attacker});
+  train1.AddPokemon(Pokemon{rand() % 900, 50, 0, true, en_SpriteType::type_Attacker});
+  train1.AddPokemon(Pokemon{rand() % 900, 50, 0, true, en_SpriteType::type_Attacker});
 
-  train2.AddPokemon(Pokemon{6, 50, 0, true, en_SpriteType::type_Defender});
-  train2.AddPokemon(Pokemon{586, 50, 0, true, en_SpriteType::type_Defender});
-  train2.AddPokemon(Pokemon{326, 50, 0, true, en_SpriteType::type_Defender});
-  train2.AddPokemon(Pokemon{444, 50, 0, true, en_SpriteType::type_Defender});
+  train2.AddPokemon(Pokemon{rand() % 900, 50, 0, true, en_SpriteType::type_Defender});
+  train2.AddPokemon(Pokemon{rand() % 900, 50, 0, true, en_SpriteType::type_Defender});
+  train2.AddPokemon(Pokemon{rand() % 900, 50, 0, true, en_SpriteType::type_Defender});
+  train2.AddPokemon(Pokemon{rand() % 900, 50, 0, true, en_SpriteType::type_Defender});
 
   for(auto &poke : train1.team){
     poke.SetMovement("");
