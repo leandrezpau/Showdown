@@ -54,8 +54,12 @@ public:
   bool fully_evolved; // He is in his last stage?
   bool shiny;         // Shiny?
 
-  Stats baseStats;    // Base stats
-  Stats currentStats; // Stats now he is leveled up
+  Stats baseStats;        // Species' inherent stats (fixed per ID)
+  Stats currentStats;     // Final calculated stats (Level + IVs + EVs + Nature)
+  Stats ivs;              // Individual Values (Genetic: 0-31 per stat, fixed at spawn)
+  Stats evs;              // Effort Values (Training: 0-252 per stat, 510 total cap)
+  Stats natureMultiplier; // Nature modifiers (0.9, 1.0, or 1.1 per stat)
+
   std::string name;   // Name of the pokemon
   Type type1;         // First type
   Type type2;         // Secondary type
@@ -73,6 +77,11 @@ public:
   void SetNewPokemon(int _id, int _level, int _gender, bool _shiny, en_SpriteType spriteType_);
 
   void SetMovement(std::string moveName);
+
+  void CalcCurrentStats();
+  void SetIVs();
+  void UpdateEvs();
+  void SetNature();
 
   void PrintPokemon();
   void InitSprites();

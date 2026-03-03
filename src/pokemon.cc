@@ -32,7 +32,8 @@ Pokemon::Pokemon(int _id, int _level, int _gender, bool _shiny, en_SpriteType sp
                   (float) pokemon_.maxhp };
 
   baseStats = stats_;
-  currentStats = stats_;
+  
+  CalcCurrentStats(); // Current Stats = (Level + IVs + EVs + Nature)
   
   //Movements
   for(int i = 0; i < 4; i++){
@@ -231,5 +232,49 @@ void Pokemon::SetMovement(std::string moveName){
   if(movement.size() < 4){
     movement.push_back(Movement{moveName});
   }
+}
+void Pokemon::SetIVs(){
+  ivs = { 
+          (float) (rand() % 32), // HP
+          (float) (rand() % 32), // Attack
+          (float) (rand() % 32), // Deffense
+          (float) (rand() % 32), // Special Attack
+          (float) (rand() % 32), // Special Defense
+          (float) (rand() % 32), // Velocity
+          (float) (rand() % 32), // Max HP
+        };
+}
+void Pokemon::SetNature(){
+  natureMultiplier = {
+    1.0,  // HP
+    1.0,  // Attack
+    1.0,  // Deffense
+    1.0,  // Special Attack
+    1.0,  // Special Defense
+    1.0,  // Velocity
+    1.0,  // Max HP
+  };
+}
+void Pokemon::UpdateEvs(){
+  evs = {
+    1.0,  // HP
+    1.0,  // Attack
+    1.0,  // Deffense
+    1.0,  // Special Attack
+    1.0,  // Special Defense
+    1.0,  // Velocity
+    1.0,  // Max HP
+  };
+}
+void Pokemon::CalcCurrentStats(){
+  currentStats.maxHP = (((2 * baseStats.HP + ivs.HP + (evs.HP / 4)) * level) / 100) + level + 10;
+  currentStats.HP = currentStats.maxHP; // HP Calculations
+
+  // Stats Calculations
+  currentStats.Atk    = ((((2 * baseStats.Atk + ivs.Atk + (evs.Atk / 4)) * level) / 100) + 5) * natureMultiplier.Atk;
+  currentStats.Def    = ((((2 * baseStats.Def + ivs.Def + (evs.Def / 4)) * level) / 100) + 5) * natureMultiplier.Def;
+  currentStats.spcAtk = ((((2 * baseStats.spcAtk + ivs.spcAtk + (evs.spcAtk / 4)) * level) / 100) + 5) * natureMultiplier.spcAtk;
+  currentStats.spcDef = ((((2 * baseStats.spcDef + ivs.spcDef + (evs.spcDef / 4)) * level) / 100) + 5) * natureMultiplier.spcDef;
+  currentStats.Vel    = ((((2 * baseStats.Vel + ivs.Vel + (evs.Vel / 4)) * level) / 100) + 5) * natureMultiplier.Vel;
 }
 #endif

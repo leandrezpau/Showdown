@@ -65,6 +65,7 @@ C:/
   │  └─ SpritesAnimated/
   │
   ├─ bin/
+  │  └─ ShowDown.exe
   │
   ├─ build/
   │  └─ ShowDown.sln
@@ -74,6 +75,7 @@ C:/
   ├─ include/
   │  ├─ SDL3/
   │  ├─ SDL3_image/
+  │  ├─ SDL3_ttf/
   │  └─ sqlite/
   │
   ├─ lib/
@@ -115,6 +117,7 @@ C:/
 - C / C++
 - SDL3
 - SDL3_image
+- SDL3_ttf
 - SQLite3
 - CMake
 - Premake
@@ -127,23 +130,10 @@ C:/
 ## Windows
 - Visual Studio 2022
 - SDK de Windows
-- SDL3
-- SDL3_image
-- SQLite3
 
 ## macOS
 - Clang
 - Make
-- SDL3
-- SDL3_image
-- SQLite3
-
-## Linux
-- GCC o Clang
-- Make
-- SDL3
-- SDL3_image
-- SQLite3
 
 ---
 
@@ -151,42 +141,51 @@ C:/
 
 ## SDL3
 
-Descargar desde el repositorio oficial:
+Ya instalado
 
 https://github.com/libsdl-org/SDL
 
-Colocar:
-- headers en `include/SDL3`
-- libs en `lib/x64` o arquitectura correspondiente
-
----
 
 ## SDL3_image
 
+Ya instalado
+
 https://github.com/libsdl-org/SDL_image
 
-Colocar:
-- headers en `include/SDL3_image`
-- libs en `lib/`
+## SDL3_ttf
 
----
+Ya instalado
+
+https://github.com/libsdl-org/SDL_ttf
+
 
 ## SQLite
 
+Ya instalado
+
 https://www.sqlite.org/download.html
 
-Colocar:
-- headers en `include/sqlite`
-- librerías en `lib/`
 
----
+# Compilación
 
-# ⚙️ Compilación
-
----
-
-## 🔹 Opción 1: Visual Studio (Recomendada en Windows)
+## Windows: Visual Studio (Recomendada)
 
 1. Ejecutar:
 
 tools/compile_vs2022.bat
+
+build/ShowDown.sln
+
+* Click sobre "Depurador Local de Windows"
+
+## Windows: MSCV
+
+1. Ejecutar:
+
+Abrir: x64 Native Tools Command Prompt for VS 2022
+
+ir a /tools
+
+ejecutar ./lang_compile.bat
+
+* .exe Generado en /bin/ShowDown.exe
