@@ -42,7 +42,6 @@ enum en_Types{
 class Type {
 public:
   static const int kNTypes = 18;
-  static Sprite typeIcons_s[kNTypes];
 
   en_Types type;
   std::string typeName;
@@ -59,7 +58,6 @@ public:
   void SetStringName();
 
   static std::string NameByType(en_Types typeEnum);
-  Type();
 };
 
 

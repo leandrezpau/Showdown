@@ -36,7 +36,8 @@ public:
   StatID affectedStat;    // Stat modified by the move (if it changes stats)
   int stageChange;        // Amount of stat stages increased or decreased
 
-  void DrawMovement(bool drawType);
+  static Sprite typeIcons_s[Type::kNTypes];
+  static Sprite classAttack_s[3];
 
   Movement();          // Default constructor with no data
   Movement(std::string n);

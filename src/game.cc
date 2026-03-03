@@ -390,6 +390,7 @@ void Game::ResetAction(){
     playerActions.decided[i] = false;
   }
 }
+
 void Game::DrawText(const string& str, float posX, float posY, bool loweredText, float scale, SDL_Color color){
   string pokeName = str;
   scale = scale / 2;
@@ -490,8 +491,12 @@ void Game::DrawMovement(Movement move, float posX, float posY, bool drawType){
   snprintf(ppText, 10, "%d/%d", move.currentPP, move.pp);
   DrawText(ppText, posX + 2, posY + 40, true);
 
+  // Icon of the type of the attack (Fire, water, grass...)
   SDL_FRect iconDst = { posX + 77, posY + 40, 64.0f, 24.0f};
-  move.moveType.typeIcons_s[(int) move.moveType.type].DrawSprite(150, iconDst);
+  move.typeIcons_s[(int) move.moveType.type].DrawSprite(150, iconDst);
+  // Draw class of attack, (Physical, Special or Status)
+  SDL_FRect typeAttackDst = { posX + 151, posY + 40, 56.0f, 28.0f};
+  move.classAttack_s[move.moveClass - 1].DrawSprite(150, typeAttackDst);
 }
 
 void Game::DrawSelectPokemon(){
