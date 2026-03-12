@@ -1,5 +1,6 @@
-/build
-./build
+build/
+.vscode/
+.DS_Store
 bin/TestSDL.exe
 bin/TestSDL.pdb
 bin/ShowDown.exe

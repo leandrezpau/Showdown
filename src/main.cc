@@ -70,7 +70,7 @@ int main(int argc, char* argv[]){
   Trainer train1{"Goldi", false};
   Trainer train2{"IA Trainer", true};
 
-  train1.AddPokemon(Pokemon{rand() % 900, 50, 0, false, en_SpriteType::type_Attacker});
+  train1.AddPokemon(Pokemon{122, 50, 0, false, en_SpriteType::type_Attacker});
   train1.AddPokemon(Pokemon{rand() % 900, 50, 0, true, en_SpriteType::type_Attacker});
   train1.AddPokemon(Pokemon{rand() % 900, 50, 0, true, en_SpriteType::type_Attacker});
   train1.AddPokemon(Pokemon{rand() % 900, 50, 0, true, en_SpriteType::type_Attacker});
